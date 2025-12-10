@@ -66,21 +66,21 @@ class QDMGraphicsView(QGraphicsView):
         last_scene_mouse_position: Last mouse position in scene coordinates
 
     Signals:
-        scenePosChanged: Emitted when cursor position changes (x, y)
+        scene_pos_changed: Emitted when cursor position changes (x, y)
     """
 
     # Signal for scene position changes
-    scenePosChanged = pyqtSignal(int, int)
+    scene_pos_changed = pyqtSignal(int, int)
 
-    def __init__(self, grScene: QDMGraphicsScene, parent: QWidget | None = None) -> None:
+    def __init__(self, gr_scene: QDMGraphicsScene, parent: QWidget | None = None) -> None:
         """Initialize the graphics view.
 
         Args:
-            grScene: QDMGraphicsScene to display
+            gr_scene: QDMGraphicsScene to display
             parent: Parent widget
         """
         super().__init__(parent)
-        self.grScene = grScene
+        self.grScene = gr_scene
 
         # Initialize UI
         self.initUI()
@@ -271,18 +271,18 @@ class QDMGraphicsView(QGraphicsView):
             return
 
         # Enable MMB dragging by faking left button events
-        releaseEvent = QMouseEvent(
+        release_event = QMouseEvent(
             QEvent.MouseButtonRelease, event.localPos(), event.screenPos(),
             Qt.LeftButton, Qt.NoButton, event.modifiers()
         )
-        super().mouseReleaseEvent(releaseEvent)
+        super().mouseReleaseEvent(release_event)
         self.setDragMode(QGraphicsView.ScrollHandDrag)
 
-        fakeEvent = QMouseEvent(
+        fake_event = QMouseEvent(
             event.type(), event.localPos(), event.screenPos(),
             Qt.LeftButton, event.buttons() | Qt.LeftButton, event.modifiers()
         )
-        super().mousePressEvent(fakeEvent)
+        super().mousePressEvent(fake_event)
 
     def middleMouseButtonRelease(self, event: QMouseEvent) -> None:
         """Handle middle mouse button release to stop panning.
@@ -290,11 +290,11 @@ class QDMGraphicsView(QGraphicsView):
         Args:
             event: Mouse event
         """
-        fakeEvent = QMouseEvent(
+        fake_event = QMouseEvent(
             event.type(), event.localPos(), event.screenPos(),
             Qt.LeftButton, event.buttons() & ~Qt.LeftButton, event.modifiers()
         )
-        super().mouseReleaseEvent(fakeEvent)
+        super().mouseReleaseEvent(fake_event)
         self.setDragMode(QGraphicsView.RubberBandDrag)
 
     # Left mouse button - main interactions
@@ -318,12 +318,12 @@ class QDMGraphicsView(QGraphicsView):
         if hasattr(item, "node") or isinstance(item, QDMGraphicsEdge) or item is None:
             if is_shift_pressed(event):
                 event.ignore()
-                fakeEvent = QMouseEvent(
+                fake_event = QMouseEvent(
                     QEvent.MouseButtonPress, event.localPos(), event.screenPos(),
                     Qt.LeftButton, event.buttons() | Qt.LeftButton,
                     event.modifiers() | Qt.ControlModifier
                 )
-                super().mousePressEvent(fakeEvent)
+                super().mousePressEvent(fake_event)
                 return
 
         # Start node dragging
@@ -367,11 +367,11 @@ class QDMGraphicsView(QGraphicsView):
             if is_ctrl_pressed(event):
                 # Ctrl+Click = start edge cutting
                 self.mode = MODE_EDGE_CUT
-                fakeEvent = QMouseEvent(
+                fake_event = QMouseEvent(
                     QEvent.MouseButtonRelease, event.localPos(), event.screenPos(),
                     Qt.LeftButton, Qt.NoButton, event.modifiers()
                 )
-                super().mouseReleaseEvent(fakeEvent)
+                super().mouseReleaseEvent(fake_event)
                 QApplication.setOverrideCursor(Qt.CrossCursor)
                 return
             else:
@@ -395,12 +395,12 @@ class QDMGraphicsView(QGraphicsView):
             if hasattr(item, "node") or isinstance(item, QDMGraphicsEdge) or item is None:
                 if is_shift_pressed(event):
                     event.ignore()
-                    fakeEvent = QMouseEvent(
+                    fake_event = QMouseEvent(
                         event.type(), event.localPos(), event.screenPos(),
                         Qt.LeftButton, Qt.NoButton,
                         event.modifiers() | Qt.ControlModifier
                     )
-                    super().mouseReleaseEvent(fakeEvent)
+                    super().mouseReleaseEvent(fake_event)
                     return
 
             # Finish edge drag
@@ -524,7 +524,7 @@ class QDMGraphicsView(QGraphicsView):
             dump_exception(e)
 
         self.last_scene_mouse_position = scenepos
-        self.scenePosChanged.emit(int(scenepos.x()), int(scenepos.y()))
+        self.scene_pos_changed.emit(int(scenepos.x()), int(scenepos.y()))
 
         super().mouseMoveEvent(event)
 
@@ -572,8 +572,8 @@ class QDMGraphicsView(QGraphicsView):
         items = self.grScene.items(scanrect)
         items = list(filter(lambda x: isinstance(x, QDMGraphicsSocket), items))
 
-        for grSocket in items:
-            grSocket.isHighlighted = highlighted
+        for gr_socket in items:
+            gr_socket.isHighlighted = highlighted
 
         return items
 
@@ -627,14 +627,14 @@ class QDMGraphicsView(QGraphicsView):
             event: Wheel event
         """
         # Calculate zoom factor
-        zoomOutFactor = 1 / self.zoomInFactor
+        zoom_out_factor = 1 / self.zoomInFactor
 
         # Calculate zoom direction
         if event.angleDelta().y() > 0:
-            zoomFactor = self.zoomInFactor
+            zoom_factor = self.zoomInFactor
             self.zoom += self.zoomStep
         else:
-            zoomFactor = zoomOutFactor
+            zoom_factor = zoom_out_factor
             self.zoom -= self.zoomStep
 
         # Clamp zoom
@@ -646,4 +646,4 @@ class QDMGraphicsView(QGraphicsView):
 
         # Apply zoom
         if not clamped or self.zoomClamp is False:
-            self.scale(zoomFactor, zoomFactor)
+            self.scale(zoom_factor, zoom_factor)

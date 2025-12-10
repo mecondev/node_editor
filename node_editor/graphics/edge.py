@@ -236,7 +236,7 @@ class QDMGraphicsEdge(QGraphicsPathItem):
     def paint(
         self,
         painter,
-        QStyleOptionGraphicsItem: "QStyleOptionGraphicsItem",
+        option: "QStyleOptionGraphicsItem",
         widget=None,
     ) -> None:
         """Paint the graphics edge.

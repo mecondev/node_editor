@@ -31,13 +31,13 @@ class EdgeRerouting:
         first_mb_release: Flag for first mouse button release detection
     """
 
-    def __init__(self, grView: QDMGraphicsView) -> None:
+    def __init__(self, gr_view: QDMGraphicsView) -> None:
         """Initialize edge rerouting.
 
         Args:
-            grView: QDMGraphicsView instance
+            gr_view: QDMGraphicsView instance
         """
-        self.grView = grView
+        self.grView = gr_view
         self.start_socket: Socket | None = None
         self.rerouting_edges: list[Edge] = []
         self.is_rerouting: bool = False
@@ -126,11 +126,11 @@ class EdgeRerouting:
 
         start_position = self.start_socket.node.getSocketScenePosition(self.start_socket)
 
-        EdgeClass = self.getEdgeClass()
+        edge_class = self.getEdgeClass()
         for edge in self.getAffectedEdges():
             other_socket = edge.getOtherSocket(self.start_socket)
 
-            new_edge = EdgeClass(self.start_socket.node.scene, edge_type=edge.edge_type)
+            new_edge = edge_class(self.start_socket.node.scene, edge_type=edge.edge_type)
             new_edge.start_socket = other_socket
             new_edge.grEdge.setSource(*other_socket.node.getSocketScenePosition(other_socket))
             new_edge.grEdge.setDestination(*start_position)

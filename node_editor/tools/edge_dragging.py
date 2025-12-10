@@ -34,13 +34,13 @@ class EdgeDragging:
         drag_start_socket: Socket where the drag started
     """
 
-    def __init__(self, grView: QDMGraphicsView) -> None:
+    def __init__(self, gr_view: QDMGraphicsView) -> None:
         """Initialize edge dragging.
 
         Args:
-            grView: QDMGraphicsView instance
+            gr_view: QDMGraphicsView instance
         """
-        self.grView = grView
+        self.grView = gr_view
         self.drag_edge: Edge | None = None
         self.drag_start_socket = None
 
@@ -77,8 +77,8 @@ class EdgeDragging:
                 pass
 
             self.drag_start_socket = item.socket
-            EdgeClass = self.getEdgeClass()
-            self.drag_edge = EdgeClass(
+            edge_class = self.getEdgeClass()
+            self.drag_edge = edge_class(
                 item.socket.node.scene,
                 item.socket,
                 None,
@@ -148,8 +148,8 @@ class EdgeDragging:
                                 socket.removeAllEdges(silent=False)
 
                     # Create new edge
-                    EdgeClass = self.getEdgeClass()
-                    new_edge = EdgeClass(
+                    edge_class = self.getEdgeClass()
+                    new_edge = edge_class(
                         item.socket.node.scene,
                         self.drag_start_socket,
                         item.socket,

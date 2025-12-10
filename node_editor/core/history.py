@@ -151,7 +151,7 @@ class SceneHistory:
 
     # History management
 
-    def storeHistory(self, desc: str, setModified: bool = False) -> None:
+    def storeHistory(self, desc: str, set_modified: bool = False) -> None:
         """Store current state to history stack.
 
         Args:
@@ -162,7 +162,7 @@ class SceneHistory:
             - History Modified event
             - History Stored event
         """
-        if setModified:
+        if set_modified:
             self.scene.has_been_modified = True
 
         if DEBUG:

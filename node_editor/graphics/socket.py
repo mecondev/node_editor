@@ -92,12 +92,12 @@ class QDMGraphicsSocket(QGraphicsItem):
         self._pen_highlight.setWidthF(2.0)
         self._brush = QBrush(self._color_background)
 
-    def paint(self, painter, QStyleOptionGraphicsItem, widget=None) -> None:
+    def paint(self, painter, option, widget=None) -> None:
         """Paint socket as a circle.
 
         Args:
             painter: QPainter to use
-            QStyleOptionGraphicsItem: Style options
+            option: QStyleOptionGraphicsItem (style options)
             widget: Widget being painted on
         """
         painter.setBrush(self._brush)

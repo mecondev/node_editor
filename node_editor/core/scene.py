@@ -51,8 +51,8 @@ class Scene(Serializable):
     """
 
     # Class attributes for dependency injection
-    historyClass = None  # Set after imports
-    clipboardClass = None  # Set after imports
+    history_class = None  # Set after imports
+    clipboard_class = None  # Set after imports
 
     def __init__(self) -> None:
         """Initialize a new Scene."""
@@ -488,8 +488,8 @@ class Scene(Serializable):
             if not found:
                 # Create new node
                 try:
-                    NodeClass = self.getNodeClassFromData(node_data)
-                    new_node = NodeClass(self)
+                    node_class = self.getNodeClassFromData(node_data)
+                    new_node = node_class(self)
                     new_node.deserialize(node_data, hashmap, restore_id, *args, **kwargs)
                     new_node.onDeserialized(node_data)
                 except Exception as e:
@@ -522,8 +522,8 @@ class Scene(Serializable):
 
             if not found:
                 # Create new edge
-                EdgeClass = self.getEdgeClass()
-                new_edge = EdgeClass(self)
+                edge_class = self.getEdgeClass()
+                new_edge = edge_class(self)
                 new_edge.deserialize(edge_data, hashmap, restore_id, *args, **kwargs)
             else:
                 # Reuse existing edge

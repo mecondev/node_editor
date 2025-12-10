@@ -240,7 +240,7 @@ class QDMGraphicsNode(QGraphicsItem):
         self.grContent.node = self.node  # type: ignore
         self.grContent.setParentItem(self)
 
-    def paint(self, painter, QStyleOptionGraphicsItem: "QStyleOptionGraphicsItem", widget=None) -> None:
+    def paint(self, painter, option: "QStyleOptionGraphicsItem", widget=None) -> None:
         """Paint the rounded rectangular node.
 
         Args:

@@ -30,14 +30,14 @@ class EdgeSnapping:
         edge_snapping_radius: Radius within which to snap to sockets
     """
 
-    def __init__(self, grView: QDMGraphicsView, snapping_radius: float = 24) -> None:
+    def __init__(self, gr_view: QDMGraphicsView, snapping_radius: float = 24) -> None:
         """Initialize edge snapping.
 
         Args:
-            grView: QDMGraphicsView instance
+            gr_view: QDMGraphicsView instance
             snapping_radius: Radius for socket snapping
         """
-        self.grView = grView
+        self.grView = gr_view
         self.grScene = self.grView.grScene
         self.edge_snapping_radius = snapping_radius
 
@@ -51,8 +51,8 @@ class EdgeSnapping:
             QDMGraphicsSocket to snap to or None
         """
         scenepos = self.grView.mapToScene(event.pos())
-        grSocket, pos = self.getSnappedToSocketPosition(scenepos)
-        return grSocket
+        gr_socket, pos = self.getSnappedToSocketPosition(scenepos)
+        return gr_socket
 
     def getSnappedToSocketPosition(
         self, scenepos: QPointF

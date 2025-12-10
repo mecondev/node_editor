@@ -28,8 +28,8 @@ class QDMGraphicsScene(QGraphicsScene):
     """
 
     # Signals
-    itemSelected = Signal()
-    itemsDeselected = Signal()
+    item_selected = Signal()
+    items_deselected = Signal()
 
     def __init__(self, scene: "Scene", parent: QWidget | None = None):
         """Initialize graphics scene.

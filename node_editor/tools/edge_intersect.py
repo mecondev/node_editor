@@ -30,14 +30,14 @@ class EdgeIntersect:
         hoveredList: List of graphics items being hovered over
     """
 
-    def __init__(self, grView: QDMGraphicsView) -> None:
+    def __init__(self, gr_view: QDMGraphicsView) -> None:
         """Initialize edge intersect.
 
         Args:
-            grView: QDMGraphicsView instance
+            gr_view: QDMGraphicsView instance
         """
-        self.grScene = grView.grScene
-        self.grView = grView
+        self.grScene = gr_view.grScene
+        self.grView = gr_view
         self.draggedNode: Node | None = None
         self.hoveredList: list = []
 
@@ -112,9 +112,9 @@ class EdgeIntersect:
         Returns:
             QRectF describing node's position and area
         """
-        nodePos = node.grNode.scenePos()
-        x = nodePos.x()
-        y = nodePos.y()
+        node_pos = node.grNode.scenePos()
+        x = node_pos.x()
+        y = node_pos.y()
         w = node.grNode.width
         h = node.grNode.height
         return QRectF(x, y, w, h)
@@ -127,18 +127,18 @@ class EdgeIntersect:
             scene_pos_y: Current Y position
         """
         rect = self.hotZoneRect(self.draggedNode)
-        grItems = self.grScene.items(rect)
+        gr_items = self.grScene.items(rect)
 
         # Reset hovered state
-        for grEdge in self.hoveredList:
-            grEdge.hovered = False
+        for gr_edge in self.hoveredList:
+            gr_edge.hovered = False
         self.hoveredList = []
 
         # Set new hovered items
-        for grItem in grItems:
-            if hasattr(grItem, 'edge') and not self.draggedNode.hasConnectedEdge(grItem.edge):
-                self.hoveredList.append(grItem)
-                grItem.hovered = True
+        for gr_item in gr_items:
+            if hasattr(gr_item, 'edge') and not self.draggedNode.hasConnectedEdge(gr_item.edge):
+                self.hoveredList.append(gr_item)
+                gr_item.hovered = True
 
     def intersect(self, node_box: QRectF) -> Edge | None:
         """Check for intersection with edges.
@@ -150,10 +150,10 @@ class EdgeIntersect:
             First intersecting Edge or None
         """
         # Returns the first edge that intersects with the dropped node
-        grItems = self.grScene.items(node_box)
-        for grItem in grItems:
-            if hasattr(grItem, 'edge') and not self.draggedNode.hasConnectedEdge(grItem.edge):
-                return grItem.edge
+        gr_items = self.grScene.items(node_box)
+        for gr_item in gr_items:
+            if hasattr(gr_item, 'edge') and not self.draggedNode.hasConnectedEdge(gr_item.edge):
+                return gr_item.edge
         return None
 
     def isConnected(self, node: Node) -> bool:

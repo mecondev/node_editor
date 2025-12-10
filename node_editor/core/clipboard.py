@@ -160,8 +160,8 @@ class SceneClipboard:
         created_nodes = []
 
         for node_data in data['nodes']:
-            NodeClass = self.scene.getNodeClassFromData(node_data)
-            new_node = NodeClass(self.scene)
+            node_class = self.scene.getNodeClassFromData(node_data)
+            new_node = node_class(self.scene)
             new_node.deserialize(node_data, hashmap, restore_id=False, *args, **kwargs)
             created_nodes.append(new_node)
 
