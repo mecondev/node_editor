@@ -12,26 +12,27 @@ from typing import TYPE_CHECKING
 from PyQt5.QtCore import QPointF, QRectF
 
 if TYPE_CHECKING:
-    from node_editor.graphics.view import QDMGraphicsView
-    from node_editor.graphics.socket import QDMGraphicsSocket
     from PyQt5.QtGui import QMouseEvent
+
+    from node_editor.graphics.socket import QDMGraphicsSocket
+    from node_editor.graphics.view import QDMGraphicsView
 
 
 class EdgeSnapping:
     """Handles socket snapping for easier edge connections.
-    
+
     When dragging an edge, this class helps snap the end point to nearby
     sockets within a specified radius.
-    
+
     Attributes:
         grView: Reference to the QDMGraphicsView
         grScene: Reference to the QDMGraphicsScene
         edge_snapping_radius: Radius within which to snap to sockets
     """
-    
+
     def __init__(self, grView: QDMGraphicsView, snapping_radius: float = 24) -> None:
         """Initialize edge snapping.
-        
+
         Args:
             grView: QDMGraphicsView instance
             snapping_radius: Radius for socket snapping
@@ -39,33 +40,33 @@ class EdgeSnapping:
         self.grView = grView
         self.grScene = self.grView.grScene
         self.edge_snapping_radius = snapping_radius
-    
+
     def getSnappedSocketItem(self, event: QMouseEvent) -> QDMGraphicsSocket | None:
         """Get the socket item to snap to based on mouse event.
-        
+
         Args:
             event: Mouse event
-            
+
         Returns:
             QDMGraphicsSocket to snap to or None
         """
         scenepos = self.grView.mapToScene(event.pos())
         grSocket, pos = self.getSnappedToSocketPosition(scenepos)
         return grSocket
-    
+
     def getSnappedToSocketPosition(
         self, scenepos: QPointF
     ) -> tuple[QDMGraphicsSocket | None, QPointF]:
         """Get socket and position to snap to.
-        
+
         Args:
             scenepos: Current scene position
-            
+
         Returns:
             Tuple of (socket to snap to or None, snapped position)
         """
         from node_editor.graphics.socket import QDMGraphicsSocket
-        
+
         scanrect = QRectF(
             scenepos.x() - self.edge_snapping_radius,
             scenepos.y() - self.edge_snapping_radius,
@@ -74,10 +75,10 @@ class EdgeSnapping:
         )
         items = self.grScene.items(scanrect)
         items = list(filter(lambda x: isinstance(x, QDMGraphicsSocket), items))
-        
+
         if len(items) == 0:
             return None, scenepos
-        
+
         selected_item = items[0]
         if len(items) > 1:
             # Calculate the nearest socket
@@ -89,9 +90,9 @@ class EdgeSnapping:
                 if dist < nearest:
                     nearest = dist
                     selected_item = grsock
-        
+
         selected_item.isHighlighted = True
-        
+
         calcpos = selected_item.socket.node.getSocketScenePosition(selected_item.socket)
-        
+
         return selected_item, QPointF(*calcpos)

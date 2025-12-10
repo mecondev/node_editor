@@ -3,15 +3,15 @@ Base Node Classes - Foundation for creating custom nodes.
 
 Usage:
     from node_editor.nodes import BaseNode, NodeRegistry
-    
+
     @NodeRegistry.register(100)
     class MyNode(BaseNode):
         op_title = "My Custom Node"
         category = "Custom"
-        
+
         def __init__(self, scene):
             super().__init__(scene, inputs=[1], outputs=[1])
-        
+
         def eval(self):
             # Get input value
             input_val = self.get_input_value(0)
@@ -25,15 +25,15 @@ Usage:
 
 class BaseNode:
     """Base class for all custom nodes.
-    
+
     Subclass this to create your own node types.
-    
+
     Class Attributes:
         op_code: Unique identifier (set by registry)
         op_title: Display title for the node
         category: Category for grouping in UI
         icon: Path to icon file (optional)
-    
+
     Instance Attributes:
         scene: Reference to the scene
         value: Cached output value
@@ -51,7 +51,7 @@ class BaseNode:
 
     def __init__(self, scene, inputs: list | None = None, outputs: list | None = None):
         """Initialize the node.
-        
+
         Args:
             scene: The scene this node belongs to
             inputs: List of input socket types
@@ -70,12 +70,12 @@ class BaseNode:
 
     def eval(self):
         """Evaluate this node and return the result.
-        
+
         Override this method in subclasses to implement node logic.
-        
+
         Returns:
             The computed value
-            
+
         Raises:
             NotImplementedError: If not overridden in subclass
         """
@@ -85,21 +85,20 @@ class BaseNode:
 
     def get_input_value(self, index: int):
         """Get the value from an input socket.
-        
+
         Args:
             index: Input socket index
-            
+
         Returns:
             The value from the connected node, or None if not connected
         """
         # This will be implemented after core migration
-        pass
 
     def on_input_changed(self, socket=None):
         """Called when an input connection changes.
-        
+
         Override to add custom behavior.
-        
+
         Args:
             socket: The socket that changed (optional)
         """
@@ -108,25 +107,23 @@ class BaseNode:
 
     def mark_dirty(self, dirty: bool = True):
         """Mark this node as needing re-evaluation.
-        
+
         Args:
             dirty: Whether the node is dirty
         """
         # This will be implemented after core migration
-        pass
 
     def mark_invalid(self, invalid: bool = True):
         """Mark this node as having invalid inputs.
-        
+
         Args:
             invalid: Whether the node is invalid
         """
         # This will be implemented after core migration
-        pass
 
     def serialize(self) -> dict:
         """Serialize node to dictionary.
-        
+
         Returns:
             Dictionary representation of the node
         """
@@ -136,11 +133,11 @@ class BaseNode:
 
     def deserialize(self, data: dict, hashmap: dict | None = None) -> bool:
         """Deserialize node from dictionary.
-        
+
         Args:
             data: Dictionary with node data
             hashmap: Optional map for ID translation
-            
+
         Returns:
             True if successful
         """
@@ -149,7 +146,7 @@ class BaseNode:
 
 class EvaluableNode(BaseNode):
     """Node that supports automatic evaluation propagation.
-    
+
     Use this as base class for nodes that need automatic
     re-evaluation when inputs change.
     """
@@ -168,13 +165,13 @@ class EvaluableNode(BaseNode):
             self.mark_dirty(False)
             self.mark_invalid(False)
             return result
-        except Exception as e:
+        except Exception:
             self.mark_invalid(True)
             raise
 
     def eval_implementation(self):
         """Override this to implement evaluation logic.
-        
+
         Returns:
             The computed value
         """

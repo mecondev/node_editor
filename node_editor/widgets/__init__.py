@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Widgets module - Reusable Qt widgets for node editor.
 

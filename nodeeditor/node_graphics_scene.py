@@ -1,13 +1,14 @@
-# -*- coding: utf-8 -*-
 """
 A module containing Graphic representation of :class:`~nodeeditor.node_scene.Scene`
 """
 import math
+
+from PyQt5.QtCore import QLine, QRect, Qt, pyqtSignal as Signal
+from PyQt5.QtGui import QColor, QFont, QPainter, QPen
 from PyQt5.QtWidgets import QGraphicsScene, QWidget
-from PyQt5.QtCore import pyqtSignal as Signal, QRect, QLine, Qt
-from PyQt5.QtGui import QColor, QPen, QFont, QPainter
+
+from nodeeditor.node_graphics_view import DEBUG_STATE, STATE_STRING
 from nodeeditor.utils import dumpException
-from nodeeditor.node_graphics_view import STATE_STRING, DEBUG_STATE
 
 
 class QDMGraphicsScene(QGraphicsScene):
@@ -65,7 +66,6 @@ class QDMGraphicsScene(QGraphicsScene):
     # the drag events won't be allowed until dragMoveEvent is overriden
     def dragMoveEvent(self, event):
         """Overriden Qt's dragMoveEvent to enable Qt's Drag Events"""
-        pass
 
     def setGrScene(self, width: int, height: int):
         """Set `width` and `height` of the `Graphics Scene`"""

@@ -80,7 +80,6 @@ class QDMGraphicsScene(QGraphicsScene):
         Args:
             event: Qt drag event
         """
-        pass
 
     def setGrScene(self, width: int, height: int) -> None:
         """Set width and height of graphics scene.

@@ -1,13 +1,21 @@
-# -*- coding: utf-8 -*-
 """
 A module containing NodeEditor's class for representing `Node`.
 """
 from collections import OrderedDict
-from nodeeditor.node_graphics_node import QDMGraphicsNode
+
 from nodeeditor.node_content_widget import QDMNodeContentWidget
+from nodeeditor.node_graphics_node import QDMGraphicsNode
 from nodeeditor.node_serializable import Serializable
-from nodeeditor.node_socket import Socket, LEFT_BOTTOM, LEFT_CENTER, LEFT_TOP, RIGHT_BOTTOM, RIGHT_CENTER, RIGHT_TOP
-from nodeeditor.utils_no_qt import dumpException, pp
+from nodeeditor.node_socket import (
+    LEFT_BOTTOM,
+    LEFT_CENTER,
+    LEFT_TOP,
+    RIGHT_BOTTOM,
+    RIGHT_CENTER,
+    RIGHT_TOP,
+    Socket,
+)
+from nodeeditor.utils_no_qt import dumpException
 
 DEBUG = False
 
@@ -192,7 +200,6 @@ class Node(Serializable):
         :param new_edge: reference to the changed :class:`~nodeeditor.node_edge.Edge`
         :type new_edge: :class:`~nodeeditor.node_edge.Edge`
         """
-        pass
 
     def onInputChanged(self, socket: 'Socket'):
         """Event handling when Node's input Edge has changed. We auto-mark this `Node` to be `Dirty` with all it's
@@ -207,11 +214,9 @@ class Node(Serializable):
     def onDeserialized(self, data: dict):
         """Event manually called when this node was deserialized. Currently called when node is deserialized from scene
         Passing `data` containing the data which have been deserialized """
-        pass
 
     def onDoubleClicked(self, event):
         """Event handling double click on Graphics Node in `Scene`"""
-        pass
 
     def doSelect(self, new_state: bool=True):
         """Shortcut method for selecting/deselecting the `Node`
@@ -333,7 +338,6 @@ class Node(Serializable):
 
     def onMarkedDirty(self):
         """Called when this `Node` has been marked as `Dirty`. This method is supposed to be overridden"""
-        pass
 
     def markChildrenDirty(self, new_value: bool=True):
         """Mark all first level children of this `Node` to be `Dirty`. Not this `Node` it self. Not other descendants
@@ -373,7 +377,6 @@ class Node(Serializable):
 
     def onMarkedInvalid(self):
         """Called when this `Node` has been marked as `Invalid`. This method is supposed to be overridden"""
-        pass
 
     def markChildrenInvalid(self, new_value: bool=True):
         """Mark all first level children of this `Node` to be `Invalid`. Not this `Node` it self. Not other descendants

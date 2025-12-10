@@ -1,17 +1,16 @@
-# -*- coding: utf-8 -*-
 """
 A module containing all code for working with Clipboard
 """
 from collections import OrderedDict
-from nodeeditor.node_graphics_edge import QDMGraphicsEdge
-from nodeeditor.node_edge import Edge
 
+from nodeeditor.node_edge import Edge
+from nodeeditor.node_graphics_edge import QDMGraphicsEdge
 
 DEBUG = False
 DEBUG_PASTING = False
 
 
-class SceneClipboard():
+class SceneClipboard:
     """
     Class contains all the code for serialization/deserialization from Clipboard
     """

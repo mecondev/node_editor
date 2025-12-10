@@ -1,11 +1,8 @@
-# -*- encoding: utf-8 -*-
 """
 Module with some helper functions
 """
 from PyQt5.QtCore import QFile, Qt
 from PyQt5.QtWidgets import QApplication
-
-from nodeeditor.utils_no_qt import dumpException, pp
 
 
 def loadStylesheet(filename: str):

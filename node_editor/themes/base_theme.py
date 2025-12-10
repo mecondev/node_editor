@@ -76,10 +76,10 @@ class BaseTheme:
     @classmethod
     def get_socket_color(cls, socket_type: int) -> QColor:
         """Get color for a socket type.
-        
+
         Args:
             socket_type: Socket type index
-            
+
         Returns:
             QColor for the socket type
         """

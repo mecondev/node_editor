@@ -1,18 +1,18 @@
-# -*- coding: utf-8 -*-
 """
 A module containing `Graphics View` for NodeEditor
 """
-from PyQt5.QtWidgets import QGraphicsView, QApplication
-from PyQt5.QtCore import pyqtSignal as Signal, QPoint, Qt, QEvent, QPointF, QRectF
-from PyQt5.QtGui import QPainter, QDragEnterEvent, QDropEvent, QMouseEvent, QKeyEvent, QWheelEvent
-from nodeeditor.node_graphics_socket import QDMGraphicsSocket
-from nodeeditor.node_graphics_edge import QDMGraphicsEdge
+from PyQt5.QtCore import QEvent, QPoint, QPointF, QRectF, Qt, pyqtSignal as Signal
+from PyQt5.QtGui import QDragEnterEvent, QDropEvent, QKeyEvent, QMouseEvent, QPainter, QWheelEvent
+from PyQt5.QtWidgets import QApplication, QGraphicsView
+
 from nodeeditor.node_edge_dragging import EdgeDragging
-from nodeeditor.node_edge_rerouting import EdgeRerouting
 from nodeeditor.node_edge_intersect import EdgeIntersect
+from nodeeditor.node_edge_rerouting import EdgeRerouting
 from nodeeditor.node_edge_snapping import EdgeSnapping
 from nodeeditor.node_graphics_cutline import QDMCutLine
-from nodeeditor.utils import dumpException, pp, isCTRLPressed, isSHIFTPressed, isALTPressed
+from nodeeditor.node_graphics_edge import QDMGraphicsEdge
+from nodeeditor.node_graphics_socket import QDMGraphicsSocket
+from nodeeditor.utils import dumpException, isALTPressed, isCTRLPressed, isSHIFTPressed
 
 MODE_NOOP = 1               #: Mode representing ready state
 MODE_EDGE_DRAG = 2          #: Mode representing when we drag edge state
@@ -410,7 +410,7 @@ class QDMGraphicsView(QGraphicsView):
                 self.cutline.line_points.append(scenepos)
                 self.cutline.update()
 
-        except Exception as e:
+        except Exception:
             dumpException()
 
         self.last_scene_mouse_position = scenepos

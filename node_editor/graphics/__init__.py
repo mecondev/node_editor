@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Graphics module - Qt Graphics classes for visual representation.
 

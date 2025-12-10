@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 """
 A module containing Graphics representation of a :class:`~nodeeditor.node_socket.Socket`
 """
+from PyQt5.QtCore import QRectF, Qt
+from PyQt5.QtGui import QBrush, QColor, QPen
 from PyQt5.QtWidgets import QGraphicsItem
-from PyQt5.QtGui import QColor, QBrush, QPen
-from PyQt5.QtCore import Qt, QRectF
 
 SOCKET_COLORS = [
     QColor("#FFFF7700"),

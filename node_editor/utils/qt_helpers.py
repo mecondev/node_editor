@@ -6,16 +6,14 @@ from PyQt5.QtWidgets import QApplication
 
 def loadStylesheet(filename: str) -> None:
     """Load a QSS stylesheet to the current QApplication.
-    
+
     Args:
         filename: Path to the QSS stylesheet file
     """
-    print(f"Loading stylesheet: {filename}")
     file = QFile(filename)
     if not file.open(QFile.ReadOnly | QFile.Text):
-        print(f"Warning: Could not open stylesheet: {filename}")
         return
-        
+
     stylesheet = file.readAll()
     app = QApplication.instance()
     if app:
@@ -24,7 +22,7 @@ def loadStylesheet(filename: str) -> None:
 
 def loadStylesheets(*filenames: str) -> None:
     """Load and concatenate multiple QSS stylesheets.
-    
+
     Args:
         *filenames: Variable number of stylesheet file paths
     """
@@ -32,11 +30,10 @@ def loadStylesheets(*filenames: str) -> None:
     for filename in filenames:
         file = QFile(filename)
         if not file.open(QFile.ReadOnly | QFile.Text):
-            print(f"Warning: Could not open stylesheet: {filename}")
             continue
         stylesheet = file.readAll()
         combined += "\n" + str(stylesheet, encoding="utf-8")
-    
+
     app = QApplication.instance()
     if app:
         app.setStyleSheet(combined)
@@ -44,10 +41,10 @@ def loadStylesheets(*filenames: str) -> None:
 
 def isCTRLPressed(event) -> bool:
     """Check if CTRL/CMD key is pressed.
-    
+
     Args:
         event: Qt event object
-        
+
     Returns:
         True if Control modifier is pressed
     """
@@ -56,10 +53,10 @@ def isCTRLPressed(event) -> bool:
 
 def isSHIFTPressed(event) -> bool:
     """Check if SHIFT key is pressed.
-    
+
     Args:
         event: Qt event object
-        
+
     Returns:
         True if Shift modifier is pressed
     """
@@ -68,10 +65,10 @@ def isSHIFTPressed(event) -> bool:
 
 def isALTPressed(event) -> bool:
     """Check if ALT key is pressed.
-    
+
     Args:
         event: Qt event object
-        
+
     Returns:
         True if Alt modifier is pressed
     """

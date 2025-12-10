@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Node Editor - A portable PyQt5 node-based visual programming framework.
 
@@ -10,13 +9,13 @@ Usage:
 Example:
     # Embed in your application
     from node_editor import NodeEditorWidget
-    
+
     widget = NodeEditorWidget(parent)
     layout.addWidget(widget)
-    
+
     # Create custom nodes
     from node_editor.nodes import BaseNode, NodeRegistry
-    
+
     @NodeRegistry.register(100)
     class MyNode(BaseNode):
         op_title = "My Custom Node"

@@ -65,8 +65,8 @@ class Node(Serializable):
         self.scene = scene
 
         # Initialize variables
-        self.content: "QDMNodeContentWidget" | None = None
-        self.grNode: "QDMGraphicsNode" | None = None
+        self.content: QDMNodeContentWidget | None = None
+        self.grNode: QDMGraphicsNode | None = None
 
         self.initInnerClasses()
         self.initSettings()
@@ -229,7 +229,6 @@ class Node(Serializable):
         Args:
             new_edge: Reference to the changed Edge
         """
-        pass
 
     def onInputChanged(self, socket: Socket) -> None:
         """Event handler when node's input edge has changed.
@@ -250,7 +249,6 @@ class Node(Serializable):
         Args:
             data: Dictionary containing deserialized data
         """
-        pass
 
     def onDoubleClicked(self, event) -> None:
         """Event handler for double click on graphics node.
@@ -260,7 +258,6 @@ class Node(Serializable):
         Args:
             event: Qt mouse event
         """
-        pass
 
     def doSelect(self, new_state: bool = True) -> None:
         """Select or deselect the node.
@@ -287,10 +284,7 @@ class Node(Serializable):
         Returns:
             True if edge is connected
         """
-        for socket in self.inputs + self.outputs:
-            if socket.isConnected(edge):
-                return True
-        return False
+        return any(socket.isConnected(edge) for socket in self.inputs + self.outputs)
 
     def getSocketPosition(
         self, index: int, position: int, num_out_of: int = 1
@@ -377,23 +371,23 @@ class Node(Serializable):
     def remove(self) -> None:
         """Safely remove this node."""
         if DEBUG:
-            print("> Removing Node", self)
+            pass
         if DEBUG:
-            print(" - remove all edges from sockets")
+            pass
         for socket in self.inputs + self.outputs:
             for edge in socket.edges.copy():
                 if DEBUG:
-                    print("    - removing from socket:", socket, "edge:", edge)
+                    pass
                 edge.remove()
         if DEBUG:
-            print(" - remove grNode")
+            pass
         self.scene.grScene.removeItem(self.grNode)
         self.grNode = None
         if DEBUG:
-            print(" - remove node from the scene")
+            pass
         self.scene.removeNode(self)
         if DEBUG:
-            print(" - everything was done.")
+            pass
 
     # Node evaluation methods
 
@@ -420,7 +414,6 @@ class Node(Serializable):
 
         Override to handle dirty state changes.
         """
-        pass
 
     def markChildrenDirty(self, new_value: bool = True) -> None:
         """Mark all first level children as dirty.
@@ -464,7 +457,6 @@ class Node(Serializable):
 
         Override to handle invalid state changes.
         """
-        pass
 
     def markChildrenInvalid(self, new_value: bool = True) -> None:
         """Mark all first level children as invalid.

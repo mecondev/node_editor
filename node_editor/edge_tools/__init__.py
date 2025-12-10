@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Edge Tools module - Utilities for edge manipulation.
 

@@ -1,14 +1,14 @@
-# -*- coding: utf-8 -*-
 """
 A module containing the Edge Snapping functions which are used in :class:`~nodeeditor.node_graphics_view.QDMGraphicsView` class.
 """
 
 
 from PyQt5.QtCore import QPointF, QRectF
+
 from nodeeditor.node_graphics_socket import QDMGraphicsSocket
 
 
-class EdgeSnapping():
+class EdgeSnapping:
     def __init__(self, grView: 'QGraphicsView', snapping_radius: float = 24):
         self.grView = grView
         self.grScene = self.grView.grScene

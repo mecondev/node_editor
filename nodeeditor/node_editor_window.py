@@ -1,10 +1,12 @@
-# -*- coding: utf-8 -*-
 """
 A module containing the Main Window class
 """
-import os, json
-from PyQt5.QtCore import QSize, QSettings, QPoint
-from PyQt5.QtWidgets import QMainWindow, QLabel, QAction, QMessageBox, QFileDialog, QApplication
+import json
+import os
+
+from PyQt5.QtCore import QPoint, QSettings, QSize
+from PyQt5.QtWidgets import QAction, QApplication, QFileDialog, QLabel, QMainWindow, QMessageBox
+
 from nodeeditor.node_editor_widget import NodeEditorWidget
 
 
@@ -221,7 +223,6 @@ class NodeEditorWindow(QMainWindow):
         Event triggered after choosing filename and before actual fileSave(). We are passing current_nodeeditor because
         we will loose focus after asking with QFileDialog and therefore getCurrentNodeEditorWidget will return None
         """
-        pass
 
     def onEditUndo(self):
         """Handle Edit Undo operation"""

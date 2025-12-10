@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Nodes module - Node system with registry and built-in nodes.
 
@@ -13,8 +12,8 @@ Built-in Nodes:
     - CompareNode: Comparison operations
 """
 
-from node_editor.nodes.registry import NodeRegistry
 from node_editor.nodes.base import BaseNode
+from node_editor.nodes.registry import NodeRegistry
 
 __all__ = [
     "NodeRegistry",

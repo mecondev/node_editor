@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 """
 A module containing the class for Cutting Line
 """
-from PyQt5.QtGui import QPen, QPainterPath, QPolygonF, QPainter
+from PyQt5.QtCore import QPointF, QRectF, Qt
+from PyQt5.QtGui import QPainter, QPainterPath, QPen, QPolygonF
 from PyQt5.QtWidgets import QGraphicsItem, QWidget
-from PyQt5.QtCore import Qt, QRectF, QPointF
 
 
 class QDMCutLine(QGraphicsItem):

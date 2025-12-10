@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 """
 A module containing Serializable "Interface". We pretend its an abstract class
 """
 from collections import OrderedDict
 
 
-class Serializable():
+class Serializable:
     def __init__(self):
         """
         Default constructor automatically creates data which are common to any serializable object.
@@ -21,7 +20,7 @@ class Serializable():
         :return: data serialized in ``OrderedDict``
         :rtype: ``OrderedDict``
         """
-        raise NotImplemented()
+        raise NotImplementedError()
 
     def deserialize(self, data: dict, hashmap: dict={}, restore_id: bool=True) -> bool:
         """
@@ -38,4 +37,4 @@ class Serializable():
         :return: ``True`` if deserialization was successful, otherwise ``False``
         :rtype: ``bool``
         """
-        raise NotImplemented()
+        raise NotImplementedError()

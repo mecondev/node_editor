@@ -75,13 +75,13 @@ class Socket(Serializable):
         self.is_output = not self.is_input
 
         if DEBUG:
-            print(f"Socket creating: index={self.index}, pos={self.position}, node={self.node}")
+            pass
 
         # Create graphics socket
-        self.grSocket: "QDMGraphicsSocket" = self.__class__.Socket_GR_Class(self)
+        self.grSocket: QDMGraphicsSocket = self.__class__.Socket_GR_Class(self)
         self.setSocketPosition()
 
-        self.edges: list["Edge"] = []
+        self.edges: list[Edge] = []
 
     def __str__(self) -> str:
         edge_type = "ME" if self.is_multi_edges else "SE"
@@ -122,12 +122,12 @@ class Socket(Serializable):
             (x, y) position tuple
         """
         if DEBUG:
-            print(f"  GSP: index={self.index}, pos={self.position}, node={self.node}")
+            pass
         result = self.node.getSocketPosition(
             self.index, self.position, self.count_on_this_node_side
         )
         if DEBUG:
-            print(f"  result: {result}")
+            pass
         return result
 
     def hasAnyEdge(self) -> bool:
@@ -166,10 +166,7 @@ class Socket(Serializable):
         if edge in self.edges:
             self.edges.remove(edge)
         elif DEBUG_REMOVE_WARNINGS:
-            print(
-                f"Warning: Socket.removeEdge - tried to remove {edge} "
-                f"but it's not in edges list"
-            )
+            pass
 
     def removeAllEdges(self, silent: bool = False) -> None:
         """Disconnect all edges from this socket.

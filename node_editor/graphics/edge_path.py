@@ -1,9 +1,15 @@
 """Graphics edge path calculators for different edge styles."""
 
+from __future__ import annotations
+
 import math
+from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import QPointF
 from PyQt5.QtGui import QPainterPath
+
+if TYPE_CHECKING:
+    from node_editor.graphics.edge import QDMGraphicsEdge
 
 # Edge path constants
 EDGE_CP_ROUNDNESS = 100  # Bezier control point distance on the line
@@ -16,7 +22,7 @@ EDGE_CURVATURE = 2
 class GraphicsEdgePathBase:
     """Base class for calculating graphics path to draw for an edge."""
 
-    def __init__(self, owner: "QDMGraphicsEdge"):
+    def __init__(self, owner: QDMGraphicsEdge):
         """Initialize path calculator.
 
         Args:

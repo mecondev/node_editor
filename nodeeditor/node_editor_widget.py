@@ -1,16 +1,25 @@
-# -*- coding: utf-8 -*-
 """
 A module containing ``NodeEditorWidget`` class
 """
 import os
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QBrush, QPen, QFont, QColor
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QApplication, QMessageBox, QLabel, QGraphicsItem, QTextEdit, QPushButton
 
-from nodeeditor.node_scene import Scene, InvalidFile
-from nodeeditor.node_node import Node
-from nodeeditor.node_edge import Edge, EDGE_TYPE_BEZIER
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QBrush, QColor, QFont, QPen
+from PyQt5.QtWidgets import (
+    QApplication,
+    QGraphicsItem,
+    QLabel,
+    QMessageBox,
+    QPushButton,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
+)
+
+from nodeeditor.node_edge import EDGE_TYPE_BEZIER, Edge
 from nodeeditor.node_graphics_view import QDMGraphicsView
+from nodeeditor.node_node import Node
+from nodeeditor.node_scene import InvalidFile, Scene
 from nodeeditor.utils import dumpException
 
 
@@ -170,8 +179,6 @@ class NodeEditorWidget(QWidget):
 
     def addCustomNode(self):
         """Testing method to create a custom Node with custom content"""
-        from nodeeditor.node_content_widget import QDMNodeContentWidget
-        from nodeeditor.node_serializable import Serializable
 
         class NNodeContent(QLabel):  # , Serializable):
             def __init__(self, node, parent=None):

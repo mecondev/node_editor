@@ -1,12 +1,17 @@
-# -*- coding: utf-8 -*-
 """
 A module containing the Graphics representation of an Edge
 """
-from PyQt5.QtWidgets import QGraphicsPathItem, QWidget, QGraphicsItem
-from PyQt5.QtGui import QColor, QPen, QPainterPath
-from PyQt5.QtCore import Qt, QRectF, QPointF
+from PyQt5.QtCore import QPointF, QRectF, Qt
+from PyQt5.QtGui import QColor, QPainterPath, QPen
+from PyQt5.QtWidgets import QGraphicsItem, QGraphicsPathItem, QWidget
 
-from nodeeditor.node_graphics_edge_path import GraphicsEdgePathBezier, GraphicsEdgePathDirect, GraphicsEdgePathSquare, GraphicsEdgePathImprovedSharp, GraphicsEdgePathImprovedBezier
+from nodeeditor.node_graphics_edge_path import (
+    GraphicsEdgePathBezier,
+    GraphicsEdgePathDirect,
+    GraphicsEdgePathImprovedBezier,
+    GraphicsEdgePathImprovedSharp,
+    GraphicsEdgePathSquare,
+)
 
 
 class QDMGraphicsEdge(QGraphicsPathItem):
@@ -70,7 +75,13 @@ class QDMGraphicsEdge(QGraphicsPathItem):
 
     def determineEdgePathClass(self):
         """Decide which GraphicsEdgePath class should be used to calculate path according to edge.edge_type value"""
-        from nodeeditor.node_edge import EDGE_TYPE_BEZIER, EDGE_TYPE_DIRECT, EDGE_TYPE_SQUARE, EDGE_TYPE_IMPROVED_SHARP, EDGE_TYPE_IMPROVED_BEZIER
+        from nodeeditor.node_edge import (
+            EDGE_TYPE_BEZIER,
+            EDGE_TYPE_DIRECT,
+            EDGE_TYPE_IMPROVED_BEZIER,
+            EDGE_TYPE_IMPROVED_SHARP,
+            EDGE_TYPE_SQUARE,
+        )
         if self.edge.edge_type == EDGE_TYPE_BEZIER:
             return GraphicsEdgePathBezier
         if self.edge.edge_type == EDGE_TYPE_DIRECT:

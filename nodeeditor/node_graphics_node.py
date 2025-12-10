@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 """
 A module containing Graphics representation of :class:`~nodeeditor.node_node.Node`
 """
-from PyQt5.QtWidgets import QGraphicsItem, QWidget, QGraphicsTextItem
-from PyQt5.QtGui import QFont, QColor, QPen, QBrush, QPainterPath
-from PyQt5.QtCore import Qt, QRectF
+from PyQt5.QtCore import QRectF, Qt
+from PyQt5.QtGui import QBrush, QColor, QFont, QPainterPath, QPen
+from PyQt5.QtWidgets import QGraphicsItem, QGraphicsTextItem, QWidget
 
 
 class QDMGraphicsNode(QGraphicsItem):

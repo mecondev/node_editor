@@ -3,40 +3,45 @@ Theme Engine - Manages theme loading and switching.
 
 Usage:
     from node_editor.themes import ThemeEngine
-    
+
     ThemeEngine.set_theme("dark")
     theme = ThemeEngine.get_theme()
 """
 
+from __future__ import annotations
+
 import os
-from typing import Dict, Optional, Type
+from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import QFile
 from PyQt5.QtWidgets import QApplication
+
+if TYPE_CHECKING:
+    from node_editor.themes.base_theme import BaseTheme
 
 
 class ThemeEngine:
     """Manages theme loading and switching for the node editor."""
 
-    _current_theme: Optional["BaseTheme"] = None
-    _themes: Dict[str, Type["BaseTheme"]] = {}
+    _current_theme: BaseTheme | None = None
+    _themes: dict[str, type[BaseTheme]] = {}
 
     @classmethod
-    def register_theme(cls, theme_class: Type["BaseTheme"]) -> None:
+    def register_theme(cls, theme_class: type[BaseTheme]) -> None:
         """Register a theme class.
-        
+
         Args:
             theme_class: A theme class that inherits from BaseTheme
         """
         cls._themes[theme_class.name] = theme_class
 
     @classmethod
-    def get_theme(cls, name: Optional[str] = None) -> Optional["BaseTheme"]:
+    def get_theme(cls, name: str | None = None) -> BaseTheme | None:
         """Get current theme or theme by name.
-        
+
         Args:
             name: Theme name. If None, returns current theme.
-            
+
         Returns:
             Theme instance or None if not found
         """
@@ -48,10 +53,10 @@ class ThemeEngine:
     @classmethod
     def set_theme(cls, name: str) -> None:
         """Set the current theme and apply it.
-        
+
         Args:
             name: Name of the theme to activate
-            
+
         Raises:
             ValueError: If theme is not registered
         """

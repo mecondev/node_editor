@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 A module containing all code for working with History (Undo/Redo)
 """
@@ -8,7 +7,7 @@ DEBUG = False
 DEBUG_SELECTION = False
 
 
-class SceneHistory():
+class SceneHistory:
     """Class contains all the code for undo/redo operations"""
     def __init__(self, scene: 'Scene'):
         """

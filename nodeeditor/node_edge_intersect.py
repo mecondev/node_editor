@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
 """
 A module containing the intersecting nodes functionality. If a node gets dragged and dropped on an existing edge
 it will intersect that edge.
 """
-from PyQt5.QtWidgets import QGraphicsView
 from PyQt5.QtCore import QRectF
+from PyQt5.QtWidgets import QGraphicsView
+
 from nodeeditor.node_edge import Edge
 
 

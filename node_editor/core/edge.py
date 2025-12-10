@@ -1,5 +1,6 @@
 """Edge class for connecting nodes and edge type constants."""
 
+import contextlib
 from collections import OrderedDict
 from typing import TYPE_CHECKING
 
@@ -58,8 +59,8 @@ class Edge(Serializable):
         self.scene = scene
 
         # Initialize sockets
-        self._start_socket: "Socket | None" = None
-        self._end_socket: "Socket | None" = None
+        self._start_socket: Socket | None = None
+        self._end_socket: Socket | None = None
 
         self.start_socket = start_socket
         self.end_socket = end_socket
@@ -179,10 +180,7 @@ class Edge(Serializable):
         Returns:
             True if edge is valid
         """
-        for validator in cls.getEdgeValidators():
-            if not validator(start_socket, end_socket):
-                return False
-        return True
+        return all(validator(start_socket, end_socket) for validator in cls.getEdgeValidators())
 
     def reconnect(self, from_socket: "Socket", to_socket: "Socket") -> None:
         """Reconnect edge from one socket to another.
@@ -276,30 +274,28 @@ class Edge(Serializable):
 
         # Hide graphics edge
         if DEBUG:
-            print(" - hide grEdge")
+            pass
         self.grEdge.hide()
 
         if DEBUG:
-            print(" - remove grEdge", self.grEdge)
+            pass
         self.scene.grScene.removeItem(self.grEdge)
 
         self.scene.grScene.update()
 
         if DEBUG:
-            print("# Removing Edge", self)
+            pass
         if DEBUG:
-            print(" - remove edge from all sockets")
+            pass
         self.remove_from_sockets()
 
         if DEBUG:
-            print(" - remove edge from scene")
-        try:
-            self.scene.removeEdge(self)
-        except ValueError:
             pass
+        with contextlib.suppress(ValueError):
+            self.scene.removeEdge(self)
 
         if DEBUG:
-            print(" - everything is done.")
+            pass
 
         try:
             # Notify nodes from old sockets

@@ -1,17 +1,18 @@
-# -*- coding: utf-8 -*-
 """
 A module containing the representation of the NodeEditor's Scene
 """
-import os, sys, json
+import json
+import os
+import sys
 from collections import OrderedDict
-from nodeeditor.utils_no_qt import dumpException, pp
-from nodeeditor.node_serializable import Serializable
+
+from nodeeditor.node_edge import Edge
 from nodeeditor.node_graphics_scene import QDMGraphicsScene
 from nodeeditor.node_node import Node
-from nodeeditor.node_edge import Edge
-from nodeeditor.node_scene_history import SceneHistory
 from nodeeditor.node_scene_clipboard import SceneClipboard
-
+from nodeeditor.node_scene_history import SceneHistory
+from nodeeditor.node_serializable import Serializable
+from nodeeditor.utils_no_qt import dumpException
 
 DEBUG_REMOVE_WARNINGS = False
 
@@ -319,7 +320,7 @@ class Scene(Serializable):
         :raises: :class:`~nodeeditor.node_scene.InvalidFile` if there was an error decoding JSON file
         """
 
-        with open(filename, "r") as file:
+        with open(filename) as file:
             raw_data = file.read()
             try:
                 if sys.version_info >= (3, 9):

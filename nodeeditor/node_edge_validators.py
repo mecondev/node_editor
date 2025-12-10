@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 A module containing the Edge Validator functions which can be registered as callbacks to
 :class:`~nodeeditor.node_edge.Edge` class.
