@@ -41,8 +41,11 @@ class BaseTheme:
     node_title_padding_v = 4.0
 
     # Edge colors
+    edge_color = QColor("#001000")
     edge_color_default = QColor("#001000")
+    edge_selected_color = QColor("#00ff00")
     edge_color_selected = QColor("#00ff00")
+    edge_hovered_color = QColor("#FF37A6FF")
     edge_color_dragging = QColor("#FFFFFF")
     edge_width = 3.0
     edge_width_selected = 5.0
