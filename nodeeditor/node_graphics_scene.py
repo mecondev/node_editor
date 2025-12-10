@@ -3,9 +3,9 @@
 A module containing Graphic representation of :class:`~nodeeditor.node_scene.Scene`
 """
 import math
-from qtpy.QtWidgets import QGraphicsScene, QWidget
-from qtpy.QtCore import Signal, QRect, QLine, Qt
-from qtpy.QtGui import QColor, QPen, QFont, QPainter
+from PyQt5.QtWidgets import QGraphicsScene, QWidget
+from PyQt5.QtCore import pyqtSignal as Signal, QRect, QLine, Qt
+from PyQt5.QtGui import QColor, QPen, QFont, QPainter
 from nodeeditor.utils import dumpException
 from nodeeditor.node_graphics_view import STATE_STRING, DEBUG_STATE
 

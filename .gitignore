@@ -1,30 +1,178 @@
-# Byte-compiled / optimized / DLL files
+# =======================================
+# General Python Files
+# =======================================
+
+# Byte-compiled Python files
 __pycache__/
 *.py[cod]
-*$py.class
-
-.idea
-.tox
-
-
-# Distribution / packaging
-.Python
-env/
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
+*.pyo
+*.pyd
 *.egg-info/
-.installed.cfg
-*.egg
-/venv/
 
-NOTES.md
+# Backup or temp Python files
+*.bak
+*.backup
+*.tmp
+
+# Compiled shared objects (Linux extensions)
+*.so
+
+# =======================================
+#  Virtual Environments & Dependencies
+# =======================================
+
+# Local virtualenv folders
+.venv/
+venv/
+env/
+
+# Python environment variables (secrets, tokens)
+.env
+.env.*
+
+# Pipenv and poetry files
+Pipfile.lock
+poetry.lock
+
+# =======================================
+# Build, dist and packaging
+# =======================================
+
+build/
+dist/
+*.egg-info/
+.eggs/
+*.spec
+
+# Archives & tarballs
+*.tar.gz
+*.zip
+*.tar
+*.rar
+
+# Backup tarballs
+backups/
+*.backup.*
+*.bak.tar.gz
+
+# =======================================
+#  Test-related folders and outputs
+# =======================================
+
+test/__pycache__/
+test/output/
+test/logs/
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# =======================================
+# Scripts
+# =======================================
+
+# Shell and auxiliary scripts
+*.sh
+*.command
+
+
+# Allow tracking the `scripts/` directory
+!scripts/
+!scripts/**
+
+# AI-related or generated assets
+*.ai
+.ai/
+*.ipynb
+.ipynb_checkpoints/
+
+# =======================================
+# IDEs / Editor folders
+# =======================================
+
+# VSCode
+.vscode/
+
+# JetBrains / PyCharm
+.idea/
+*.iml
+
+# Sublime
+*.sublime-workspace
+*.sublime-project
+
+# cursor
+.cursor/
+.cursorignore
+.cursorrules
+
+# Emacs / Vim
+*~
+*.swp
+*.swo
+
+# =======================================
+#  Logs
+# =======================================
+# Keep only the logs/ folder structure
+logs/*.log*
+!logs/.gitkeep
+*.log
+debug.log
+.mypy_cache/
+.ruff_cache/
+
+# =======================================
+# GUI-related files (PyQt5, resources)
+# =======================================
+
+*.qrc
+*.ui.py
+resources_rc.py
+*.qmlc
+*.qmlcache
+__pycache__/resources_rc.py
+
+# =======================================
+#  User project-specific
+# =======================================
+
+# Output folders
+output/
+dump/
+temp/
+examples/
+
+# User working files
+notes/
+*.notes.txt
+*.draft.*
+.cache/
+reports/
+.continue
+*.swp
+*.swo
+*~
+.DS_Store
+*.bak
+*.tmp
+*.patch
+
+# Benchmark and performance files
+benchmark_report_*.json
+performance_report_*.json
+performance_report_*.html
+comprehensive_test_report_*.json
+unit_tests*.xml
+test_results/*
+*_profiling.py
+*_benchmarks.py
+*_performance.py
+
+# =======================================
+# System Files (Windows/macOS)
+# =======================================
+
+Thumbs.db
+desktop.ini
+ehthumbs.db

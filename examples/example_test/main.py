@@ -1,5 +1,5 @@
 import os, sys, inspect
-from qtpy.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication
 
 sys.path.insert(0, os.path.join( os.path.dirname(__file__), "..", ".." ))
 

@@ -2,11 +2,9 @@
 """
 A module containing `Graphics View` for NodeEditor
 """
-from qtpy.QtWidgets import QGraphicsView, QApplication
-from qtpy.QtCore import Signal, QPoint, Qt, QEvent, QPointF, QRectF
-from qtpy.QtGui import QPainter, QDragEnterEvent, QDropEvent, QMouseEvent, QKeyEvent, QWheelEvent
-
-from nodeeditor import _QT_API_NAME as QT_API
+from PyQt5.QtWidgets import QGraphicsView, QApplication
+from PyQt5.QtCore import pyqtSignal as Signal, QPoint, Qt, QEvent, QPointF, QRectF
+from PyQt5.QtGui import QPainter, QDragEnterEvent, QDropEvent, QMouseEvent, QKeyEvent, QWheelEvent
 from nodeeditor.node_graphics_socket import QDMGraphicsSocket
 from nodeeditor.node_graphics_edge import QDMGraphicsEdge
 from nodeeditor.node_edge_dragging import EdgeDragging
@@ -210,32 +208,20 @@ class QDMGraphicsView(QGraphicsView):
             return
 
         # faking events for enable MMB dragging the scene
-        if QT_API in ("pyqt5", "pyside2"):
-            releaseEvent = QMouseEvent(QEvent.MouseButtonRelease, event.localPos(), event.screenPos(),
-                                       Qt.LeftButton, Qt.NoButton, event.modifiers())
-        elif QT_API in ("pyqt6", "pyside6"):
-            releaseEvent = QMouseEvent(QEvent.MouseButtonRelease, event.localPos(),
-                                       Qt.MouseButton.LeftButton, Qt.MouseButton.NoButton, event.modifiers())
+        releaseEvent = QMouseEvent(QEvent.MouseButtonRelease, event.localPos(), event.screenPos(),
+                                   Qt.LeftButton, Qt.NoButton, event.modifiers())
         super().mouseReleaseEvent(releaseEvent)
         self.setDragMode(QGraphicsView.ScrollHandDrag)
-        if QT_API in ("pyqt5", "pyside2"):
-            fakeEvent = QMouseEvent(event.type(), event.localPos(), event.screenPos(),
-                                    Qt.LeftButton, event.buttons() | Qt.LeftButton, event.modifiers())
-        elif QT_API in ("pyqt6", "pyside6"):
-            fakeEvent = QMouseEvent(event.type(), event.localPos(),
-                                    Qt.MouseButton.LeftButton, event.buttons() | Qt.MouseButton.LeftButton, event.modifiers())
+        fakeEvent = QMouseEvent(event.type(), event.localPos(), event.screenPos(),
+                                Qt.LeftButton, event.buttons() | Qt.LeftButton, event.modifiers())
         super().mousePressEvent(fakeEvent)
 
 
 
     def middleMouseButtonRelease(self, event: QMouseEvent):
         """When Middle mouse button was released"""
-        if QT_API in ("pyqt5", "pyside2"):
-            fakeEvent = QMouseEvent(event.type(), event.localPos(), event.screenPos(),
-                                    Qt.LeftButton, event.buttons() & ~Qt.LeftButton, event.modifiers())
-        elif QT_API in ("pyqt6", "pyside6"):
-            fakeEvent = QMouseEvent(event.type(), event.localPos(),
-                                    Qt.MouseButton.LeftButton, event.buttons() & ~Qt.MouseButton.LeftButton, event.modifiers())
+        fakeEvent = QMouseEvent(event.type(), event.localPos(), event.screenPos(),
+                                Qt.LeftButton, event.buttons() & ~Qt.LeftButton, event.modifiers())
         super().mouseReleaseEvent(fakeEvent)
         self.setDragMode(QGraphicsView.RubberBandDrag)
 
@@ -255,14 +241,9 @@ class QDMGraphicsView(QGraphicsView):
         if hasattr(item, "node") or isinstance(item, QDMGraphicsEdge) or item is None:
             if isSHIFTPressed(event):
                 event.ignore()
-                if QT_API in ("pyqt5", "pyside2"):
-                    fakeEvent = QMouseEvent(QEvent.MouseButtonPress, event.localPos(), event.screenPos(),
-                                            Qt.LeftButton, event.buttons() | Qt.LeftButton,
-                                            event.modifiers() | Qt.ControlModifier)
-                elif QT_API in ("pyqt6", "pyside6"):
-                    fakeEvent = QMouseEvent(QEvent.MouseButtonPress, event.localPos(),
-                                            Qt.MouseButton.LeftButton, event.buttons() | Qt.MouseButton.LeftButton,
-                                            event.modifiers() | Qt.KeyboardModifier.ControlModifier)
+                fakeEvent = QMouseEvent(QEvent.MouseButtonPress, event.localPos(), event.screenPos(),
+                                        Qt.LeftButton, event.buttons() | Qt.LeftButton,
+                                        event.modifiers() | Qt.ControlModifier)
                 super().mousePressEvent(fakeEvent)
                 return
 
@@ -297,12 +278,8 @@ class QDMGraphicsView(QGraphicsView):
         if item is None:
             if isCTRLPressed(event):
                 self.mode = MODE_EDGE_CUT
-                if QT_API in ("pyqt5", "pyside2"):
-                    fakeEvent = QMouseEvent(QEvent.MouseButtonRelease, event.localPos(), event.screenPos(),
-                                            Qt.LeftButton, Qt.NoButton, event.modifiers())
-                elif QT_API in ("pyqt6", "pyside6"):
-                    fakeEvent = QMouseEvent(QEvent.MouseButtonRelease, event.localPos(),
-                                            Qt.MouseButton.LeftButton, Qt.MouseButton.NoButton, event.modifiers())
+                fakeEvent = QMouseEvent(QEvent.MouseButtonRelease, event.localPos(), event.screenPos(),
+                                        Qt.LeftButton, Qt.NoButton, event.modifiers())
                 super().mouseReleaseEvent(fakeEvent)
                 QApplication.setOverrideCursor(Qt.CrossCursor)
                 return
@@ -323,14 +300,9 @@ class QDMGraphicsView(QGraphicsView):
             if hasattr(item, "node") or isinstance(item, QDMGraphicsEdge) or item is None:
                 if isSHIFTPressed(event):
                     event.ignore()
-                    if QT_API in ("pyqt5", "pyside2"):
-                        fakeEvent = QMouseEvent(event.type(), event.localPos(), event.screenPos(),
-                                                Qt.LeftButton, Qt.NoButton,
-                                                event.modifiers() | Qt.ControlModifier)
-                    elif QT_API in ("pyqt6", "pyside6"):
-                        fakeEvent = QMouseEvent(event.type(), event.localPos(),
-                                            Qt.MouseButton.LeftButton, Qt.MouseButton.NoButton,
-                                            event.modifiers() | Qt.KeyboardModifier.ControlModifier)
+                    fakeEvent = QMouseEvent(event.type(), event.localPos(), event.screenPos(),
+                                            Qt.LeftButton, Qt.NoButton,
+                                            event.modifiers() | Qt.ControlModifier)
                     super().mouseReleaseEvent(fakeEvent)
                     return
 
