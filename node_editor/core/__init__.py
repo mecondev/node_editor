@@ -20,6 +20,16 @@ from node_editor.core.socket import (
     Socket,
 )
 
+
+# Late binding for graphics classes to avoid circular imports
+def _init_graphics_classes():
+    """Initialize graphics class references."""
+    from node_editor.graphics.socket import QDMGraphicsSocket
+
+    Socket.Socket_GR_Class = QDMGraphicsSocket
+
+_init_graphics_classes()
+
 __all__ = [
     "Serializable",
     "Socket",

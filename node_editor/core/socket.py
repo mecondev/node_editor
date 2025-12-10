@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING
 from node_editor.core.serializable import Serializable
 
 if TYPE_CHECKING:
-    from node_editor.core.node import Node
     from node_editor.core.edge import Edge
+    from node_editor.core.node import Node
     from node_editor.graphics.socket import QDMGraphicsSocket
 
 # Socket position constants
@@ -40,7 +40,7 @@ class Socket(Serializable):
         grSocket: Graphics representation
     """
 
-    Socket_GR_Class: type["QDMGraphicsSocket"] = None  # type: ignore # Set at runtime
+    Socket_GR_Class: type["QDMGraphicsSocket"] | None = None  # Set at module load
 
     def __init__(
         self,
