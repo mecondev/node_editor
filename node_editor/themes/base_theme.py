@@ -4,7 +4,7 @@ Base Theme - Abstract base class for themes.
 All themes should inherit from this class and define their colors.
 """
 
-from PyQt5.QtGui import QColor, QFont
+from PyQt5.QtGui import QColor
 
 
 class BaseTheme:
@@ -67,7 +67,7 @@ class BaseTheme:
     cutline_width = 2.0
 
     # Fonts
-    node_title_font = QFont("Ubuntu", 10)
+    node_title_font = "Ubuntu"
     node_title_font_size = 10
 
     @classmethod
