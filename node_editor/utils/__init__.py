@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Utils module - Helper functions and utilities.
 
@@ -6,10 +5,25 @@ Functions:
     - loadStylesheet: Load a QSS stylesheet
     - loadStylesheets: Load multiple stylesheets
     - dumpException: Debug helper for exceptions
+    - pp: Pretty print
 """
 
-# Will be populated after migration
-# from node_editor.utils.qt_helpers import loadStylesheet, loadStylesheets
-# from node_editor.utils.helpers import dumpException, pp
+from node_editor.utils.helpers import dumpException, pp
+from node_editor.utils.qt_helpers import (
+    isALTPressed,
+    isCTRLPressed,
+    isSHIFTPressed,
+    loadStylesheet,
+    loadStylesheets,
+)
 
-__all__ = []
+__all__ = [
+    "dumpException",
+    "pp",
+    "loadStylesheet",
+    "loadStylesheets",
+    "isCTRLPressed",
+    "isSHIFTPressed",
+    "isALTPressed",
+]
+

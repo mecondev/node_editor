@@ -1,22 +1,16 @@
-# -*- coding: utf-8 -*-
 """
 Core module - Contains fundamental classes for the node editor.
 
 Classes:
-    - Node: Base node class
-    - Edge: Connection between sockets
-    - Socket: Connection point on nodes
-    - Scene: Container for nodes and edges
     - Serializable: Base class for serialization
+    - Node: Base node class (to be migrated)
+    - Edge: Connection between sockets (to be migrated)
+    - Socket: Connection point on nodes (to be migrated)
+    - Scene: Container for nodes and edges (to be migrated)
 """
 
-# Will be populated after migration
-# from node_editor.core.node import Node
-# from node_editor.core.edge import Edge
-# from node_editor.core.socket import Socket
-# from node_editor.core.scene import Scene
-# from node_editor.core.serializable import Serializable
-# from node_editor.core.history import SceneHistory
-# from node_editor.core.clipboard import SceneClipboard
+from node_editor.core.serializable import Serializable
 
-__all__ = []
+__all__ = [
+    "Serializable",
+]
