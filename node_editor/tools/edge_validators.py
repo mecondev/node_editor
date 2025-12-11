@@ -73,15 +73,10 @@ def edge_cannot_connect_two_outputs_or_two_inputs(
     Returns:
         True if valid (output-to-input), False if invalid.
     """
-    if input_socket.is_output and output_socket.is_output:
-        print_error("Connecting 2 outputs")
-        return False
-
-    if input_socket.is_input and output_socket.is_input:
-        print_error("Connecting 2 inputs")
-        return False
-
-    return True
+    return not (
+        (input_socket.is_output and output_socket.is_output)
+        or (input_socket.is_input and output_socket.is_input)
+    )
 
 
 def edge_cannot_connect_input_and_output_of_same_node(
@@ -99,11 +94,7 @@ def edge_cannot_connect_input_and_output_of_same_node(
     Returns:
         True if valid (different nodes), False if same node.
     """
-    if input_socket.node == output_socket.node:
-        print_error("Connecting the same node")
-        return False
-
-    return True
+    return input_socket.node != output_socket.node
 
 
 def edge_cannot_connect_input_and_output_of_different_type(
@@ -121,8 +112,4 @@ def edge_cannot_connect_input_and_output_of_different_type(
     Returns:
         True if types match, False if different types.
     """
-    if input_socket.socket_type != output_socket.socket_type:
-        print_error("Connecting sockets with different colors")
-        return False
-
-    return True
+    return input_socket.socket_type == output_socket.socket_type
