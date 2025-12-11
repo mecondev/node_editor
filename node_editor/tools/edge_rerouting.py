@@ -10,12 +10,15 @@ Date: 2025-12-11
 
 from __future__ import annotations
 
+import logging
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from node_editor.core.edge import Edge
     from node_editor.core.socket import Socket
     from node_editor.graphics.view import QDMGraphicsView
+
+logger = logging.getLogger(__name__)
 
 DEBUG_REROUTING = False
 
@@ -46,14 +49,15 @@ class EdgeRerouting:
         self.is_rerouting: bool = False
         self.first_mb_release: bool = False
 
-    def print(self, *_args) -> None:
-        """Helper function for debug printing.
+    def print(self, *args) -> None:
+        """Helper function for debug logging.
 
         Args:
-            *args: Arguments to print
+            *args: Arguments to log
         """
         if DEBUG_REROUTING:
-            pass
+            message = " ".join(str(arg) for arg in args)
+            logger.debug(message)
 
     def getEdgeClass(self) -> type[Edge]:
         """Get the Edge class to use.
