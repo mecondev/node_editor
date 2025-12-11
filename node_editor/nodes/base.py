@@ -153,6 +153,13 @@ class EvaluableNode(BaseNode):
     """
 
     def __init__(self, scene, inputs=None, outputs=None):
+        """Initialize an evaluable node.
+
+        Args:
+            scene: The Scene instance
+            inputs: List of input socket types (None for no inputs)
+            outputs: List of output socket types (None for no outputs)
+        """
         super().__init__(scene, inputs, outputs)
         self.mark_dirty()
 

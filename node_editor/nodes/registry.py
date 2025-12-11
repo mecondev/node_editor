@@ -45,6 +45,17 @@ class NodeRegistry:
                 ...
         """
         def decorator(node_class: type) -> type:
+            """Decorator to register a node class with the given op_code.
+
+            Args:
+                node_class: The node class to register
+
+            Returns:
+                The registered node class (unmodified)
+
+            Raises:
+                ValueError: If op_code is already registered
+            """
             if op_code in cls._nodes:
                 existing = cls._nodes[op_code].__name__
                 raise ValueError(

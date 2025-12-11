@@ -91,6 +91,11 @@ class Node(Serializable):
         self._is_invalid = False
 
     def __str__(self) -> str:
+        """Return string representation of node.
+
+        Returns:
+            String in format: <title:ClassName ID>
+        """
         return (
             f"<{self.title}:{self.__class__.__name__} {hex(id(self))[2:5]}..{hex(id(self))[-3:]}>"
         )

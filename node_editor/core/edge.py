@@ -77,6 +77,11 @@ class Edge(Serializable):
         self.scene.addEdge(self)
 
     def __str__(self) -> str:
+        """Return string representation of edge.
+
+        Returns:
+            String in format: <Edge ID -- S:socket E:socket>
+        """
         return (
             f"<Edge {hex(id(self))[2:5]}..{hex(id(self))[-3:]} -- "
             f"S:{self.start_socket} E:{self.end_socket}>"

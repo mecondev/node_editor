@@ -89,6 +89,11 @@ class Socket(Serializable):
         self.edges: list[Edge] = []
 
     def __str__(self) -> str:
+        """Return string representation of socket.
+
+        Returns:
+            String in format: <Socket #index ME/SE ID> (ME=multi-edge, SE=single-edge)
+        """
         edge_type = "ME" if self.is_multi_edges else "SE"
         return f"<Socket #{self.index} {edge_type} {hex(id(self))[2:5]}..{hex(id(self))[-3:]}>"
 
