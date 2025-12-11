@@ -1,16 +1,29 @@
-"""
-Graphics module - Qt Graphics classes for visual representation.
+"""Graphics module for Qt visual representation of node editor components.
+
+This module contains Qt graphics items and views for rendering the
+visual node graph interface:
 
 Classes:
-    - QDMGraphicsSocket: Visual representation of sockets
-    - QDMGraphicsNode: Visual representation of nodes
-    - QDMGraphicsView: Custom QGraphicsView with zoom and pan (to be migrated)
-    - QDMGraphicsScene: Custom QGraphicsScene with grid (to be migrated)
-    - QDMGraphicsEdge: Visual representation of edges (to be migrated)
-    - QDMGraphicsCutLine: Line for cutting edges (to be migrated)
+    QDMGraphicsSocket: Colored circle for socket connection points.
+    QDMGraphicsNode: Node rectangle with title, content, and sockets.
+    QDMGraphicsEdge: Path connecting sockets with multiple styles.
+    QDMGraphicsScene: Scene with grid background and selection signals.
+    QDMGraphicsView: View with zoom, pan, and interaction handling.
+    QDMCutLine: Dashed line for cutting multiple edges.
 
-Author: Michael Economou
-Date: 2025-12-11
+Path Calculators:
+    GraphicsEdgePathBase: Abstract base for path computation.
+    GraphicsEdgePathDirect: Straight line path.
+    GraphicsEdgePathBezier: Smooth Bezier curve path.
+    GraphicsEdgePathSquare: Right-angle stepped path.
+    GraphicsEdgePathImprovedSharp: Sharp corners with horizontal ends.
+    GraphicsEdgePathImprovedBezier: Adaptive Bezier with horizontal ends.
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 from node_editor.graphics.node import QDMGraphicsNode

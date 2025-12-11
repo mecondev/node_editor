@@ -1,11 +1,20 @@
-"""
-Edge Snapping - Socket snapping functionality.
+"""Socket snapping for easier edge connections.
 
-This module provides socket snapping to help users connect edges more easily
-by automatically snapping to nearby sockets.
+This module provides EdgeSnapping, which automatically snaps edge endpoints
+to nearby sockets during edge creation or rerouting. This improves the user
+experience by making it easier to connect to small socket targets.
 
-Author: Michael Economou
-Date: 2025-12-11
+The snapping behavior:
+    1. User drags edge near a socket
+    2. If within snapping radius, endpoint jumps to socket center
+    3. Socket highlights to show valid snap target
+    4. On release, edge connects to snapped socket
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 from __future__ import annotations
@@ -22,36 +31,36 @@ if TYPE_CHECKING:
 
 
 class EdgeSnapping:
-    """Handles socket snapping for easier edge connections.
+    """Manages socket snapping during edge operations.
 
-    When dragging an edge, this class helps snap the end point to nearby
-    sockets within a specified radius.
+    Detects nearby sockets and snaps edge endpoints to their centers,
+    making precise connections easier for users.
 
     Attributes:
-        grView: Reference to the QDMGraphicsView
-        grScene: Reference to the QDMGraphicsScene
-        edge_snapping_radius: Radius within which to snap to sockets
+        grView: QDMGraphicsView being used.
+        grScene: QDMGraphicsScene for item queries.
+        edge_snapping_radius: Distance within which to snap to sockets.
     """
 
     def __init__(self, gr_view: QDMGraphicsView, snapping_radius: float = 24) -> None:
-        """Initialize edge snapping.
+        """Initialize edge snapping handler.
 
         Args:
-            gr_view: QDMGraphicsView instance
-            snapping_radius: Radius for socket snapping
+            gr_view: QDMGraphicsView to operate on.
+            snapping_radius: Pixel radius for socket detection.
         """
         self.grView = gr_view
         self.grScene = self.grView.grScene
         self.edge_snapping_radius = snapping_radius
 
     def getSnappedSocketItem(self, event: QMouseEvent) -> QDMGraphicsSocket | None:
-        """Get the socket item to snap to based on mouse event.
+        """Find socket to snap to from mouse event.
 
         Args:
-            event: Mouse event
+            event: Mouse event containing cursor position.
 
         Returns:
-            QDMGraphicsSocket to snap to or None
+            QDMGraphicsSocket to snap to, or None if no socket nearby.
         """
         scenepos = self.grView.mapToScene(event.pos())
         gr_socket, pos = self.getSnappedToSocketPosition(scenepos)
@@ -60,13 +69,16 @@ class EdgeSnapping:
     def getSnappedToSocketPosition(
         self, scenepos: QPointF
     ) -> tuple[QDMGraphicsSocket | None, QPointF]:
-        """Get socket and position to snap to.
+        """Find nearest socket and its center position.
+
+        Searches within snapping radius for sockets and returns the
+        nearest one with its scene position for snapping.
 
         Args:
-            scenepos: Current scene position
+            scenepos: Current position in scene coordinates.
 
         Returns:
-            Tuple of (socket to snap to or None, snapped position)
+            Tuple of (socket to snap to or None, snapped position).
         """
         from node_editor.graphics.socket import QDMGraphicsSocket
 
@@ -84,7 +96,6 @@ class EdgeSnapping:
 
         selected_item = items[0]
         if len(items) > 1:
-            # Calculate the nearest socket
             nearest = float('inf')
             for grsock in items:
                 grsock_scenepos = grsock.socket.node.getSocketScenePosition(grsock.socket)

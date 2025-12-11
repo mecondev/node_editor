@@ -1,45 +1,48 @@
-"""
-Base Node Classes - Foundation for creating custom nodes.
+"""Base classes for custom node implementation.
+
+This module provides BaseNode and EvaluableNode as foundation classes
+for creating custom node types in the node editor.
 
 Usage:
-    from node_editor.nodes import BaseNode, NodeRegistry
+    Create a custom node with automatic registration::
 
-    @NodeRegistry.register(100)
-    class MyNode(BaseNode):
-        op_title = "My Custom Node"
-        category = "Custom"
+        from node_editor.nodes import BaseNode, NodeRegistry
 
-        def __init__(self, scene):
-            super().__init__(scene, inputs=[1], outputs=[1])
+        @NodeRegistry.register(100)
+        class MyNode(BaseNode):
+            op_title = "My Custom Node"
+            category = "Custom"
 
-        def eval(self):
-            # Get input value
-            input_val = self.get_input_value(0)
-            # Process
-            result = input_val * 2
-            # Set output
-            self._value = result
-            return result
+            def __init__(self, scene):
+                super().__init__(scene, inputs=[1], outputs=[1])
 
-Author: Michael Economou
-Date: 2025-12-11
+            def eval(self):
+                input_val = self.get_input_value(0)
+                result = input_val * 2
+                self._value = result
+                return result
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 
 class BaseNode:
-    """Base class for all custom nodes.
+    """Base class for all custom node types.
 
-    Subclass this to create your own node types.
+    Subclass this to create nodes with custom behavior. Override
+    the eval() method to implement node computation logic.
 
-    Class Attributes:
-        op_code: Unique identifier (set by registry)
-        op_title: Display title for the node
-        category: Category for grouping in UI
-        icon: Path to icon file (optional)
-
-    Instance Attributes:
-        scene: Reference to the scene
-        value: Cached output value
+    Attributes:
+        op_code: Unique identifier assigned by registry.
+        op_title: Display title shown in node header.
+        category: Category name for UI grouping.
+        icon: Optional path to icon file.
+        scene: Scene containing this node.
+        value: Cached output value from evaluation.
     """
 
     # Override these in subclasses
@@ -53,14 +56,13 @@ class BaseNode:
     content_label_objname: str = "node_content"
 
     def __init__(self, scene, inputs: list | None = None, outputs: list | None = None):
-        """Initialize the node.
+        """Initialize a base node.
 
         Args:
-            scene: The scene this node belongs to
-            inputs: List of input socket types
-            outputs: List of output socket types
+            scene: Scene instance containing this node.
+            inputs: List of input socket type indices.
+            outputs: List of output socket type indices.
         """
-        # This will be replaced with actual Node init after migration
         self.scene = scene
         self._value = None
         self._inputs = inputs or []
@@ -68,40 +70,42 @@ class BaseNode:
 
     @property
     def value(self):
-        """Get the cached output value."""
+        """Get the cached output value from last evaluation."""
         return self._value
 
     def eval(self):
-        """Evaluate this node and return the result.
+        """Evaluate this node and compute output value.
 
-        Override this method in subclasses to implement node logic.
+        Override this method in subclasses to implement the
+        node's computation logic.
 
         Returns:
-            The computed value
+            Computed output value.
 
         Raises:
-            NotImplementedError: If not overridden in subclass
+            NotImplementedError: If not overridden in subclass.
         """
         raise NotImplementedError(f"{self.__class__.__name__} must implement eval()")
 
     def get_input_value(self, index: int):
-        """Get the value from an input socket.
+        """Get value from a connected input socket.
 
         Args:
-            index: Input socket index
+            index: Input socket index (0-based).
 
         Returns:
-            The value from the connected node, or None if not connected
+            Value from connected node, or None if not connected.
         """
         # This will be implemented after core migration
 
     def on_input_changed(self, _socket=None):
-        """Called when an input connection changes.
+        """Handle input connection changes.
 
-        Override to add custom behavior.
+        Called when an input socket is connected or disconnected.
+        Default behavior marks node dirty and re-evaluates.
 
         Args:
-            socket: The socket that changed (optional)
+            _socket: Socket that changed (optional).
         """
         self.mark_dirty()
         self.eval()
@@ -110,54 +114,57 @@ class BaseNode:
         """Mark this node as needing re-evaluation.
 
         Args:
-            dirty: Whether the node is dirty
+            dirty: Whether node needs evaluation.
         """
         # This will be implemented after core migration
 
     def mark_invalid(self, invalid: bool = True):
-        """Mark this node as having invalid inputs.
+        """Mark this node as having invalid state.
 
         Args:
-            invalid: Whether the node is invalid
+            invalid: Whether node has invalid inputs.
         """
         # This will be implemented after core migration
 
     def serialize(self) -> dict:
-        """Serialize node to dictionary.
+        """Serialize node state to dictionary.
 
         Returns:
-            Dictionary representation of the node
+            Dictionary containing node data.
         """
         return {
             "op_code": self.__class__.op_code,
         }
 
     def deserialize(self, _data: dict, _hashmap: dict | None = None) -> bool:
-        """Deserialize node from dictionary.
+        """Restore node state from dictionary.
 
         Args:
-            data: Dictionary with node data
-            hashmap: Optional map for ID translation
+            _data: Dictionary with serialized node data.
+            _hashmap: Optional ID translation map.
 
         Returns:
-            True if successful
+            True if deserialization succeeded.
         """
         return True
 
 
 class EvaluableNode(BaseNode):
-    """Node that supports automatic evaluation propagation.
+    """Node with automatic evaluation propagation.
 
-    Use this as base class for nodes that need automatic
-    re-evaluation when inputs change.
+    Extends BaseNode with automatic dirty propagation through
+    the node graph when inputs change.
+
+    Attributes:
+        Inherits all attributes from BaseNode.
     """
 
     def __init__(self, scene, inputs=None, outputs=None):
         """Initialize an evaluable node.
 
         Args:
-            scene: The Scene instance
-            inputs: List of input socket types (None for no inputs)
+            scene: Scene instance containing this node.
+            inputs: List of input socket type indices.
             outputs: List of output socket types (None for no outputs)
         """
         super().__init__(scene, inputs, outputs)

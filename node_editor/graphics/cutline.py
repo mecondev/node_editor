@@ -1,11 +1,18 @@
-"""
-Cut Line - Visual line for cutting edges.
+"""Cut line graphics item for slicing through edges.
 
-This module provides the QDMCutLine class which represents a cutting line
-that users can draw to cut through multiple edges at once.
+This module defines QDMCutLine, a graphics item that renders a dashed
+line following the mouse cursor. When the cut line intersects edges,
+those edges are removed from the scene.
 
-Author: Michael Economou
-Date: 2025-12-11
+Usage:
+    The cut line is activated by Ctrl+Left-Click and follows mouse
+    movement until button release. All intersected edges are deleted.
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 from __future__ import annotations
@@ -16,46 +23,44 @@ from PyQt5.QtWidgets import QGraphicsItem, QWidget
 
 
 class QDMCutLine(QGraphicsItem):
-    """Graphics item representing a cutting line for cutting edges.
+    """Cutting line for removing edges by intersection.
 
-    The user can draw this line by holding Ctrl and left-clicking.
-    All edges that intersect with the line will be removed.
+    Renders as a white dashed line and tracks mouse movement.
+    After release, edges intersecting any segment are deleted.
 
     Attributes:
-        line_points: List of QPointF representing the path of the line
+        line_points: Sequential QPointF positions forming the line.
     """
 
     def __init__(self, parent: QWidget | None = None) -> None:
-        """Initialize the cut line.
+        """Initialize cut line graphics item.
 
         Args:
-            parent: Parent widget
+            parent: Optional parent widget.
         """
         super().__init__(parent)
 
         self.line_points: list[QPointF] = []
 
-        # White dashed pen
         self._pen = QPen(Qt.white)
         self._pen.setWidthF(2.0)
         self._pen.setDashPattern([3, 3])
 
-        # Draw on top of everything
         self.setZValue(2)
 
     def boundingRect(self) -> QRectF:
-        """Get the bounding rectangle of the cut line.
+        """Calculate bounding rectangle enclosing all points.
 
         Returns:
-            QRectF bounding rectangle
+            QRectF containing all line points.
         """
         return self.shape().boundingRect()
 
     def shape(self) -> QPainterPath:
-        """Calculate the painter path from line points.
+        """Build painter path from line points.
 
         Returns:
-            QPainterPath representing the cutting line
+            QPainterPath connecting all points in sequence.
         """
         QPolygonF(self.line_points)
 
@@ -64,19 +69,18 @@ class QDMCutLine(QGraphicsItem):
             for pt in self.line_points[1:]:
                 path.lineTo(pt)
         else:
-            # Return minimal path if no points
             path = QPainterPath(QPointF(0, 0))
             path.lineTo(QPointF(1, 1))
 
         return path
 
     def paint(self, painter: QPainter, _option, _widget=None) -> None:
-        """Paint the cutting line.
+        """Render the dashed cut line.
 
         Args:
-            painter: QPainter to paint with
-            option: Style options (unused)
-            widget: Widget being painted on (unused)
+            painter: QPainter for rendering.
+            _option: Style options (unused).
+            _widget: Target widget (unused).
         """
         painter.setRenderHint(QPainter.Antialiasing)
         painter.setBrush(Qt.NoBrush)

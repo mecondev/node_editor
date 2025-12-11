@@ -1,8 +1,16 @@
-"""
-Dark theme for node editor.
+"""Dark theme for the node editor.
 
-Author: Michael Economou
-Date: 2025-12-11
+This module provides DarkTheme, a theme with dark backgrounds and
+light foreground colors suitable for low-light environments.
+
+Classes:
+    DarkTheme: Dark color scheme theme inheriting from BaseTheme.
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 from PyQt5.QtGui import QColor, QFont
@@ -11,7 +19,16 @@ from node_editor.themes.base_theme import BaseTheme
 
 
 class DarkTheme(BaseTheme):
-    """Dark theme with dark backgrounds and light text."""
+    """Dark theme with dark backgrounds and light text.
+
+    Provides a dark color palette optimized for extended use
+    in low-light conditions. Uses muted backgrounds with
+    high-contrast accent colors.
+
+    Attributes:
+        name: Theme identifier ("dark").
+        display_name: Human-readable name ("Dark Theme").
+    """
 
     # Theme metadata
     name = "dark"

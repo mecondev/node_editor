@@ -1,14 +1,23 @@
-"""
-Theme Engine - Manages theme loading and switching.
+"""Theme engine for managing visual themes.
+
+This module provides ThemeEngine, which handles theme registration,
+switching, and stylesheet application. It maintains the current theme
+state and provides access to theme properties.
 
 Usage:
-    from node_editor.themes import ThemeEngine
+    Register and switch themes::
 
-    ThemeEngine.set_theme("dark")
-    theme = ThemeEngine.get_theme()
+        from node_editor.themes import ThemeEngine
 
-Author: Michael Economou
-Date: 2025-12-11
+        ThemeEngine.set_theme("dark")
+        theme = ThemeEngine.get_theme()
+        print(theme.node_background)
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 from __future__ import annotations
@@ -24,31 +33,38 @@ if TYPE_CHECKING:
 
 
 class ThemeEngine:
-    """Manages theme loading and switching for the node editor."""
+    """Manages theme registration, switching, and application.
+
+    Maintains a registry of available themes and handles the
+    application of theme stylesheets when switching.
+
+    Attributes:
+        _current_theme: Currently active theme instance.
+        _themes: Dictionary mapping theme names to theme classes.
+    """
 
     _current_theme: BaseTheme | None = None
     _themes: dict[str, type[BaseTheme]] = {}
 
     @classmethod
     def register_theme(cls, theme_class: type[BaseTheme]) -> None:
-        """Register a theme class.
+        """Register a theme class for use.
 
         Args:
-            theme_class: A theme class that inherits from BaseTheme
+            theme_class: Theme class inheriting from BaseTheme.
         """
         cls._themes[theme_class.name] = theme_class
 
     @classmethod
     def current_theme(cls) -> BaseTheme:
-        """Get the current theme instance.
+        """Get the current theme, auto-initializing if needed.
 
-        Auto-initializes with dark theme if none is set.
+        If no theme is set, automatically initializes with dark theme.
 
         Returns:
-            Current theme instance
+            Currently active theme instance.
         """
         if cls._current_theme is None:
-            # Auto-initialize with dark theme
             from node_editor.themes.dark.theme import DarkTheme
 
             cls.register_theme(DarkTheme)
@@ -57,13 +73,13 @@ class ThemeEngine:
 
     @classmethod
     def get_theme(cls, name: str | None = None) -> BaseTheme | None:
-        """Get current theme or theme by name.
+        """Get current theme or a specific theme by name.
 
         Args:
-            name: Theme name. If None, returns current theme.
+            name: Theme name to retrieve, or None for current theme.
 
         Returns:
-            Theme instance or None if not found
+            Theme instance, or None if named theme not found.
         """
         if name:
             theme_class = cls._themes.get(name)
@@ -72,13 +88,13 @@ class ThemeEngine:
 
     @classmethod
     def set_theme(cls, name: str) -> None:
-        """Set the current theme and apply it.
+        """Activate a theme and apply its stylesheet.
 
         Args:
-            name: Name of the theme to activate
+            name: Name of registered theme to activate.
 
         Raises:
-            ValueError: If theme is not registered
+            ValueError: If theme name is not registered.
         """
         if name not in cls._themes:
             available = ", ".join(cls._themes.keys())
@@ -90,7 +106,11 @@ class ThemeEngine:
 
     @classmethod
     def _apply_stylesheet(cls, theme_name: str) -> None:
-        """Load and apply the QSS stylesheet for a theme."""
+        """Load and apply QSS stylesheet for a theme.
+
+        Args:
+            theme_name: Name of theme whose stylesheet to apply.
+        """
         theme_dir = os.path.dirname(__file__)
         qss_path = os.path.join(theme_dir, theme_name, "style.qss")
 
@@ -104,11 +124,18 @@ class ThemeEngine:
 
     @classmethod
     def available_themes(cls) -> list:
-        """Return list of available theme names."""
+        """Get list of registered theme names.
+
+        Returns:
+            List of available theme name strings.
+        """
         return list(cls._themes.keys())
 
     @classmethod
     def reload_theme(cls) -> None:
-        """Reload the current theme (useful after editing QSS)."""
+        """Reload and reapply the current theme.
+
+        Useful for refreshing after QSS file modifications.
+        """
         if cls._current_theme:
             cls.set_theme(cls._current_theme.name)

@@ -1,8 +1,20 @@
-"""
-Graphics representation of Scene.
+"""Graphics scene for Qt rendering of the node graph.
 
-Author: Michael Economou
-Date: 2025-12-11
+This module defines QDMGraphicsScene, the Qt graphics scene that renders
+the visual representation of the node graph. It draws the grid background
+and emits signals for selection changes.
+
+The scene supports:
+    - Configurable grid with light and dark lines
+    - Background color theming
+    - Selection change signaling
+    - Optional debug state display
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 import math
@@ -17,42 +29,42 @@ from node_editor.themes.theme_engine import ThemeEngine
 if TYPE_CHECKING:
     from node_editor.core.scene import Scene
 
-# Import DEBUG_STATE from view (will be set later)
 DEBUG_STATE = False
 
 
 class QDMGraphicsScene(QGraphicsScene):
-    """Graphics representation of Scene.
+    """Qt graphics scene rendering the node graph background.
 
-    Handles grid background drawing and item selection events.
+    Draws a configurable grid pattern as the scene background and emits
+    signals when item selection changes. Connects to the logical Scene
+    for coordination between model and view.
+
+    Signals:
+        item_selected: Emitted when any item is selected.
+        items_deselected: Emitted when selection is cleared.
 
     Attributes:
-        scene: Reference to logical Scene
-        gridSize: Size of grid cells in pixels
-        gridSquares: Number of grid cells between dark lines
+        scene: Reference to logical Scene model.
+        gridSize: Pixel size of grid cells.
+        gridSquares: Number of cells between major (dark) grid lines.
     """
 
-    # Signals
     item_selected = Signal()
     items_deselected = Signal()
 
     def __init__(self, scene: "Scene", parent: QWidget | None = None):
-        """Initialize graphics scene.
+        """Initialize graphics scene with grid.
 
         Args:
-            scene: Reference to logical Scene
-            parent: Parent widget
+            scene: Logical Scene this graphics scene represents.
+            parent: Optional parent widget.
         """
         super().__init__(parent)
 
         self.scene = scene
 
-        # Fix Qt bug with item removal
-        # https://bugreports.qt.io/browse/QTBUG-18021
-        # https://bugreports.qt.io/browse/QTBUG-50691
         self.setItemIndexMethod(QGraphicsScene.ItemIndexMethod.NoIndex)
 
-        # Grid settings
         self.gridSize = 20
         self.gridSquares = 5
 
@@ -60,51 +72,50 @@ class QDMGraphicsScene(QGraphicsScene):
         self.setBackgroundBrush(self._color_background)
 
     def initAssets(self) -> None:
-        """Initialize Qt objects using theme."""
+        """Initialize pens and colors from current theme."""
         theme = ThemeEngine.current_theme()
 
-        # Scene colors from theme
         self._color_background = theme.scene_background
         self._color_light = theme.scene_grid_light
         self._color_dark = theme.scene_grid_dark
         self._color_state = QColor("#cccccc")
 
-        # Grid pens
         self._pen_light = QPen(self._color_light)
         self._pen_light.setWidth(1)
         self._pen_dark = QPen(self._color_dark)
         self._pen_dark.setWidth(2)
 
-        # State display pen and font
         self._pen_state = QPen(self._color_state)
         self._font_state = QFont("Ubuntu", 16)
 
     def dragMoveEvent(self, event) -> None:
-        """Enable Qt drag events.
+        """Accept drag move events for drop support.
 
         Args:
-            event: Qt drag event
+            event: Qt drag move event.
         """
 
     def setGrScene(self, width: int, height: int) -> None:
-        """Set width and height of graphics scene.
+        """Configure scene dimensions centered at origin.
 
         Args:
-            width: Scene width in pixels
-            height: Scene height in pixels
+            width: Total scene width in pixels.
+            height: Total scene height in pixels.
         """
         self.setSceneRect(-width // 2, -height // 2, width, height)
 
     def drawBackground(self, painter: QPainter, rect: QRect) -> None:
-        """Draw background grid.
+        """Render grid background pattern.
+
+        Draws light grid lines at gridSize intervals and dark lines
+        at gridSize * gridSquares intervals.
 
         Args:
-            painter: QPainter to use
-            rect: Rectangle area to draw
+            painter: QPainter for drawing operations.
+            rect: Visible rectangle area to draw.
         """
         super().drawBackground(painter, rect)
 
-        # Create grid
         left = int(math.floor(rect.left()))
         right = int(math.ceil(rect.right()))
         top = int(math.floor(rect.top()))
@@ -113,7 +124,6 @@ class QDMGraphicsScene(QGraphicsScene):
         first_left = left - (left % self.gridSize)
         first_top = top - (top % self.gridSize)
 
-        # Compute all lines to be drawn
         lines_light, lines_dark = [], []
         for x in range(first_left, right, self.gridSize):
             if (x % (self.gridSize * self.gridSquares) != 0):
@@ -127,20 +137,18 @@ class QDMGraphicsScene(QGraphicsScene):
             else:
                 lines_dark.append(QLine(left, y, right, y))
 
-        # Draw the lines
         painter.setPen(self._pen_light)
         try:
-            painter.drawLines(*lines_light)  # PyQt5
+            painter.drawLines(*lines_light)
         except TypeError:
-            painter.drawLines(lines_light)  # PySide2
+            painter.drawLines(lines_light)
 
         painter.setPen(self._pen_dark)
         try:
-            painter.drawLines(*lines_dark)  # PyQt5
+            painter.drawLines(*lines_dark)
         except TypeError:
-            painter.drawLines(lines_dark)  # PySide2
+            painter.drawLines(lines_dark)
 
-        # Draw state debug info if enabled
         if DEBUG_STATE:
             try:
                 from node_editor.graphics.view import STATE_STRING

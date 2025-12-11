@@ -1,17 +1,31 @@
-"""
-Edge Validators - Validation functions for edge connections.
+"""Edge validation callback functions.
 
-This module provides validation callback functions that can be registered
-to the Edge class to validate edge connections.
+This module provides validation functions that can be registered with the
+Edge class to enforce connection rules. Validators are called before an
+edge is created to determine if the connection is allowed.
 
-Example usage:
-    from node_editor.tools.edge_validators import *
+Example:
+    Register validators to the Edge class::
 
-    Edge.registerEdgeValidator(edge_cannot_connect_two_outputs_or_two_inputs)
-    Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_same_node)
+        from node_editor.tools.edge_validators import (
+            edge_cannot_connect_two_outputs_or_two_inputs,
+            edge_cannot_connect_input_and_output_of_same_node,
+        )
 
-Author: Michael Economou
-Date: 2025-12-11
+        Edge.registerEdgeValidator(edge_cannot_connect_two_outputs_or_two_inputs)
+        Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_same_node)
+
+Available validators:
+    - edge_validator_debug: Debug logging (always allows)
+    - edge_cannot_connect_two_outputs_or_two_inputs: Prevents output-output or input-input
+    - edge_cannot_connect_input_and_output_of_same_node: Prevents self-connections
+    - edge_cannot_connect_input_and_output_of_different_type: Enforces type matching
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 from __future__ import annotations
@@ -21,28 +35,19 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from node_editor.core.socket import Socket
 
-DEBUG = False
-
-
-def print_error(*_args) -> None:
-    """Helper function for printing validation errors.
-
-    Args:
-        *args: Arguments to print
-    """
-    if DEBUG:
-        pass
-
 
 def edge_validator_debug(input_socket: Socket, output_socket: Socket) -> bool:
-    """Debug validator that always returns True but prints debug info.
+    """Debug validator that logs socket information.
+
+    Iterates through all sockets on both nodes for debugging purposes.
+    Always allows the connection.
 
     Args:
-        input_socket: Input socket
-        output_socket: Output socket
+        input_socket: First socket in the connection.
+        output_socket: Second socket in the connection.
 
     Returns:
-        Always True
+        Always True (connection allowed).
     """
     for _s in input_socket.node.inputs + input_socket.node.outputs:
         pass
@@ -56,14 +61,17 @@ def edge_validator_debug(input_socket: Socket, output_socket: Socket) -> bool:
 def edge_cannot_connect_two_outputs_or_two_inputs(
     input_socket: Socket, output_socket: Socket
 ) -> bool:
-    """Validate that edge doesn't connect two outputs or two inputs.
+    """Prevent connecting two outputs or two inputs together.
+
+    Edges must connect an output socket to an input socket, not
+    two sockets of the same direction.
 
     Args:
-        input_socket: First socket
-        output_socket: Second socket
+        input_socket: First socket in the connection.
+        output_socket: Second socket in the connection.
 
     Returns:
-        True if connection is valid
+        True if valid (output-to-input), False if invalid.
     """
     if input_socket.is_output and output_socket.is_output:
         print_error("Connecting 2 outputs")
@@ -79,14 +87,17 @@ def edge_cannot_connect_two_outputs_or_two_inputs(
 def edge_cannot_connect_input_and_output_of_same_node(
     input_socket: Socket, output_socket: Socket
 ) -> bool:
-    """Validate that edge doesn't connect the same node to itself.
+    """Prevent connecting a node to itself.
+
+    A node cannot have an edge from one of its outputs to one of
+    its own inputs.
 
     Args:
-        input_socket: First socket
-        output_socket: Second socket
+        input_socket: First socket in the connection.
+        output_socket: Second socket in the connection.
 
     Returns:
-        True if connection is valid
+        True if valid (different nodes), False if same node.
     """
     if input_socket.node == output_socket.node:
         print_error("Connecting the same node")
@@ -98,14 +109,17 @@ def edge_cannot_connect_input_and_output_of_same_node(
 def edge_cannot_connect_input_and_output_of_different_type(
     input_socket: Socket, output_socket: Socket
 ) -> bool:
-    """Validate that edge connects sockets of the same type (color).
+    """Enforce socket type matching for connections.
+
+    Only sockets of the same type (indicated by color) can be
+    connected together.
 
     Args:
-        input_socket: First socket
-        output_socket: Second socket
+        input_socket: First socket in the connection.
+        output_socket: Second socket in the connection.
 
     Returns:
-        True if connection is valid
+        True if types match, False if different types.
     """
     if input_socket.socket_type != output_socket.socket_type:
         print_error("Connecting sockets with different colors")

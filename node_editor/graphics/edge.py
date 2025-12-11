@@ -1,8 +1,21 @@
-"""
-Graphics representation of an Edge.
+"""Graphics representation of edges connecting sockets.
 
-Author: Michael Economou
-Date: 2025-12-11
+This module defines QDMGraphicsEdge, the Qt graphics item that renders
+edge connections between nodes. It supports multiple path styles
+(direct, bezier, square) and handles visual states including selection
+and hover effects.
+
+The graphics edge:
+    - Renders paths between source and destination points
+    - Supports pluggable path calculation classes
+    - Shows selection and hover visual feedback
+    - Integrates with theme system for colors
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 from typing import TYPE_CHECKING
@@ -27,37 +40,36 @@ if TYPE_CHECKING:
 
 
 class QDMGraphicsEdge(QGraphicsPathItem):
-    """Base class for graphics edge.
+    """Qt graphics item rendering edge connections.
 
-    Handles visual representation of edges with different path styles.
+    Displays visual connection between two sockets using a configurable
+    path style. Handles mouse interaction for selection and provides
+    hover highlighting.
 
     Attributes:
-        edge: Reference to logical Edge
-        pathCalculator: Instance calculating the path to draw
-        posSource: [x, y] source position in scene
-        posDestination: [x, y] destination position in scene
-        hovered: Whether mouse is hovering over edge
+        edge: Reference to logical Edge model.
+        pathCalculator: Instance computing the connection path.
+        posSource: [x, y] source position in scene coordinates.
+        posDestination: [x, y] destination position in scene coordinates.
+        hovered: True while mouse hovers over this edge.
     """
 
     def __init__(self, edge: "Edge", parent: QWidget | None = None):
-        """Initialize graphics edge.
+        """Initialize graphics edge for a logical edge.
 
         Args:
-            edge: Reference to logical Edge
-            parent: Parent widget
+            edge: Logical Edge this graphics item represents.
+            parent: Optional parent widget.
         """
         super().__init__(parent)
 
         self.edge = edge
 
-        # Create instance of path calculator
         self.pathCalculator = self.determineEdgePathClass()(self)
 
-        # Interaction flags
         self._last_selected_state = False
         self.hovered = False
 
-        # Position variables
         self.posSource = [0, 0]
         self.posDestination = [200, 100]
 
@@ -65,21 +77,19 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         self.initUI()
 
     def initUI(self) -> None:
-        """Set up QGraphicsPathItem."""
+        """Configure item flags for selection and interaction."""
         self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable)
         self.setAcceptHoverEvents(True)
         self.setZValue(-1)
 
     def initAssets(self) -> None:
-        """Initialize Qt objects like QColor, QPen using theme."""
+        """Initialize pens for various visual states from theme."""
         theme = ThemeEngine.current_theme()
 
-        # Edge colors from theme
         self._color = self._default_color = theme.edge_color
         self._color_selected = theme.edge_selected_color
         self._color_hovered = theme.edge_hovered_color
 
-        # Pens for different states
         self._pen = QPen(self._color)
         self._pen_selected = QPen(self._color_selected)
         self._pen_dragging = QPen(self._color)
@@ -92,19 +102,19 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         self._pen_hovered.setWidthF(theme.edge_width + 2.0)
 
     def createEdgePathCalculator(self):
-        """Create instance of GraphicsEdgePathBase.
+        """Instantiate new path calculator based on edge type.
 
         Returns:
-            Path calculator instance
+            GraphicsEdgePathBase subclass instance.
         """
         self.pathCalculator = self.determineEdgePathClass()(self)
         return self.pathCalculator
 
     def determineEdgePathClass(self):
-        """Determine which path class to use based on edge_type.
+        """Select path calculator class based on edge_type constant.
 
         Returns:
-            GraphicsEdgePath class
+            Class type for computing edge path.
         """
         from node_editor.core.edge import (
             EDGE_TYPE_BEZIER,
@@ -128,15 +138,18 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         return GraphicsEdgePathImprovedBezier
 
     def makeUnselectable(self) -> None:
-        """Disable click detection (used for drag edges)."""
+        """Disable selection and hover events.
+
+        Used for temporary drag edges that should not be interactive.
+        """
         self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable, False)
         self.setAcceptHoverEvents(False)
 
     def changeColor(self, color) -> None:
-        """Change color of the edge.
+        """Update edge color.
 
         Args:
-            color: Color as string hex '#00ff00' or QColor
+            color: QColor instance or hex string like '#00ff00'.
         """
         from PyQt5.QtGui import QColor
 
@@ -145,10 +158,12 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         self._pen.setWidthF(ThemeEngine.current_theme().edge_width)
 
     def setColorFromSockets(self) -> bool:
-        """Change color according to connected sockets.
+        """Set edge color based on connected socket types.
+
+        Uses socket color if both endpoints have matching types.
 
         Returns:
-            True if color was determined
+            True if color was set, False if socket types differ.
         """
         socket_type_start = self.edge.start_socket.socket_type
         socket_type_end = self.edge.end_socket.socket_type
@@ -158,14 +173,14 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         return True
 
     def onSelected(self) -> None:
-        """Event handler when edge was selected."""
+        """Emit selection signal to scene when selected."""
         self.edge.scene.grScene.item_selected.emit()
 
     def doSelect(self, new_state: bool = True) -> None:
-        """Safe version of selecting the graphics edge.
+        """Programmatically select or deselect this edge.
 
         Args:
-            new_state: True to select, False to deselect
+            new_state: True to select, False to deselect.
         """
         self.setSelected(new_state)
         self._last_selected_state = new_state
@@ -173,10 +188,10 @@ class QDMGraphicsEdge(QGraphicsPathItem):
             self.onSelected()
 
     def mouseReleaseEvent(self, event) -> None:
-        """Handle selecting and deselecting edge.
+        """Handle selection changes on mouse release.
 
         Args:
-            event: Qt mouse event
+            event: Qt mouse release event.
         """
         super().mouseReleaseEvent(event)
         if self._last_selected_state != self.isSelected():
@@ -185,54 +200,54 @@ class QDMGraphicsEdge(QGraphicsPathItem):
             self.onSelected()
 
     def hoverEnterEvent(self, _event: "QGraphicsSceneHoverEvent") -> None:
-        """Handle hover enter.
+        """Enable hover highlight when mouse enters.
 
         Args:
-            event: Qt hover event
+            _event: Qt hover event (unused).
         """
         self.hovered = True
         self.update()
 
     def hoverLeaveEvent(self, _event: "QGraphicsSceneHoverEvent") -> None:
-        """Handle hover leave.
+        """Disable hover highlight when mouse leaves.
 
         Args:
-            event: Qt hover event
+            _event: Qt hover event (unused).
         """
         self.hovered = False
         self.update()
 
     def setSource(self, x: float, y: float) -> None:
-        """Set source point.
+        """Set source endpoint position.
 
         Args:
-            x: X position
-            y: Y position
+            x: Horizontal position in scene coordinates.
+            y: Vertical position in scene coordinates.
         """
         self.posSource = [x, y]
 
     def setDestination(self, x: float, y: float) -> None:
-        """Set destination point.
+        """Set destination endpoint position.
 
         Args:
-            x: X position
-            y: Y position
+            x: Horizontal position in scene coordinates.
+            y: Vertical position in scene coordinates.
         """
         self.posDestination = [x, y]
 
     def boundingRect(self) -> QRectF:
-        """Define Qt bounding rectangle.
+        """Calculate bounding rectangle from endpoints.
 
         Returns:
-            QRectF bounding rectangle
+            QRectF enclosing the edge path.
         """
         return self.shape().boundingRect()
 
     def shape(self) -> QPainterPath:
-        """Get QPainterPath representation of edge.
+        """Return selectable shape area.
 
         Returns:
-            Path representation
+            QPainterPath used for hit detection.
         """
         return self.calcPath()
 
@@ -242,12 +257,14 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         _option: "QStyleOptionGraphicsItem",
         _widget=None,
     ) -> None:
-        """Paint the graphics edge.
+        """Render the edge path with appropriate pen.
+
+        Selects pen based on selection and hover state.
 
         Args:
-            painter: QPainter to use
-            QStyleOptionGraphicsItem: Style options
-            widget: Widget being painted on
+            painter: QPainter for rendering.
+            _option: Style options (unused).
+            _widget: Target widget (unused).
         """
         self.setPath(self.calcPath())
 
@@ -267,14 +284,16 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         painter.drawPath(self.path())
 
     def intersectsWith(self, p1: QPointF, p2: QPointF) -> bool:
-        """Check if edge intersects with line between two points.
+        """Test if edge path intersects a line segment.
+
+        Used by cutline to determine if edge should be deleted.
 
         Args:
-            p1: Point A
-            p2: Point B
+            p1: First endpoint of line segment.
+            p2: Second endpoint of line segment.
 
         Returns:
-            True if edge intersects with line
+            True if intersection exists, False otherwise.
         """
         cutpath = QPainterPath(p1)
         cutpath.lineTo(p2)
@@ -282,11 +301,9 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         return cutpath.intersects(path)
 
     def calcPath(self) -> QPainterPath:
-        """Calculate QPainterPath from source to destination.
-
-        Uses pathCalculator instance to compute the path.
+        """Compute edge path using current path calculator.
 
         Returns:
-            QPainterPath connecting source and destination
+            QPainterPath from source to destination.
         """
         return self.pathCalculator.calcPath()

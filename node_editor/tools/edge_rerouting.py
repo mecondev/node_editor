@@ -1,11 +1,20 @@
-"""
-Edge Rerouting - Interactive edge rerouting functionality.
+"""Edge rerouting for reconnecting existing edges.
 
-This module handles the rerouting of existing edges by Ctrl+clicking on a socket
-and dragging to a new destination.
+This module provides EdgeRerouting, which allows users to reconnect
+existing edges by Ctrl+clicking on a socket and dragging to a new
+destination socket.
 
-Author: Michael Economou
-Date: 2025-12-11
+The rerouting workflow:
+    1. User Ctrl+clicks on a socket with existing connections
+    2. Original edges are hidden and dashed preview edges appear
+    3. User drags to target socket
+    4. On release, edges reconnect to new socket or revert if invalid
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 from __future__ import annotations
@@ -24,24 +33,25 @@ DEBUG_REROUTING = False
 
 
 class EdgeRerouting:
-    """Handles edge rerouting interaction.
+    """Manages rerouting of existing edge connections.
 
-    Allows users to reroute existing edges by Ctrl+clicking on a socket
-    that has connections and dragging to a new socket.
+    Allows users to reroute edges by Ctrl+clicking on a connected socket
+    and dragging to a new target socket. Preview edges show the potential
+    new connections during drag.
 
     Attributes:
-        grView: Reference to the QDMGraphicsView
-        start_socket: Socket where rerouting started
-        rerouting_edges: Temporary dashed edges shown during rerouting
-        is_rerouting: Flag indicating if currently rerouting
-        first_mb_release: Flag for first mouse button release detection
+        grView: QDMGraphicsView being used.
+        start_socket: Socket where rerouting started.
+        rerouting_edges: Temporary preview edges during rerouting.
+        is_rerouting: Whether rerouting operation is active.
+        first_mb_release: Flag for first mouse button release detection.
     """
 
     def __init__(self, gr_view: QDMGraphicsView) -> None:
-        """Initialize edge rerouting.
+        """Initialize edge rerouting handler.
 
         Args:
-            gr_view: QDMGraphicsView instance
+            gr_view: QDMGraphicsView to operate on.
         """
         self.grView = gr_view
         self.start_socket: Socket | None = None
@@ -50,20 +60,20 @@ class EdgeRerouting:
         self.first_mb_release: bool = False
 
     def print(self, *args) -> None:
-        """Helper function for debug logging.
+        """Log debug message if DEBUG_REROUTING is enabled.
 
         Args:
-            *args: Arguments to log
+            *args: Values to concatenate and log.
         """
         if DEBUG_REROUTING:
             message = " ".join(str(arg) for arg in args)
             logger.debug(message)
 
     def getEdgeClass(self) -> type[Edge]:
-        """Get the Edge class to use.
+        """Get the Edge class for creating preview edges.
 
         Returns:
-            Edge class from the scene
+            Edge class from the scene.
         """
         return self.grView.grScene.scene.getEdgeClass()
 
@@ -71,17 +81,17 @@ class EdgeRerouting:
         """Get all edges connected to the start socket.
 
         Returns:
-            List of edges affected by rerouting
+            List of edges that will be affected by rerouting.
         """
         if self.start_socket is None:
             return []
         return self.start_socket.edges.copy()
 
     def setAffectedEdgesVisible(self, visibility: bool = True) -> None:
-        """Show or hide all affected edges.
+        """Control visibility of affected edges during rerouting.
 
         Args:
-            visibility: True to show edges, False to hide them
+            visibility: True to show edges, False to hide them.
         """
         for edge in self.getAffectedEdges():
             if visibility:
@@ -90,13 +100,13 @@ class EdgeRerouting:
                 edge.grEdge.hide()
 
     def resetRerouting(self) -> None:
-        """Reset to default state."""
+        """Reset rerouting state to default values."""
         self.is_rerouting = False
         self.start_socket = None
         self.first_mb_release = False
 
     def clearReroutingEdges(self) -> None:
-        """Remove the helping dashed edges from the scene."""
+        """Remove temporary preview edges from the scene."""
         self.print("clean called")
         while self.rerouting_edges:
             edge = self.rerouting_edges.pop()
@@ -104,13 +114,13 @@ class EdgeRerouting:
             edge.remove()
 
     def updateScenePos(self, x: float, y: float) -> None:
-        """Update position of all rerouting edges.
+        """Update preview edge endpoints during drag.
 
-        Called from mouse move event to update to new mouse position.
+        Called from mouse move event to track cursor position.
 
         Args:
-            x: New X position
-            y: New Y position
+            x: Current X position in scene coordinates.
+            y: Current Y position in scene coordinates.
         """
         if self.is_rerouting:
             for edge in self.rerouting_edges:
@@ -119,10 +129,12 @@ class EdgeRerouting:
                     edge.grEdge.update()
 
     def startRerouting(self, socket: Socket) -> None:
-        """Start the rerouting operation.
+        """Begin rerouting operation from a socket.
+
+        Hides original edges and creates preview edges for visual feedback.
 
         Args:
-            socket: Socket where rerouting started
+            socket: Socket to start rerouting from.
         """
         self.print("startRerouting", socket)
         self.is_rerouting = True
@@ -145,10 +157,13 @@ class EdgeRerouting:
             self.rerouting_edges.append(new_edge)
 
     def stopRerouting(self, target: Socket | None = None) -> None:
-        """Stop the rerouting operation.
+        """Complete or cancel the rerouting operation.
+
+        Validates potential connections and reconnects edges to the target
+        socket. Invalid edges remain connected to their original sockets.
 
         Args:
-            target: Target socket where rerouting ended (None to cancel)
+            target: Socket to connect to, or None to cancel rerouting.
         """
         self.print("stopRerouting on:", target, "no change" if target == self.start_socket else "")
 

@@ -1,11 +1,19 @@
-"""
-Edge Dragging - Interactive edge creation by dragging.
+"""Interactive edge creation by dragging from sockets.
 
-This module handles the interactive creation of edges by dragging from
-one socket to another.
+This module provides EdgeDragging, which manages the interactive creation
+of edges by clicking on a socket and dragging to another socket.
 
-Author: Michael Economou
-Date: 2025-12-11
+The dragging workflow:
+    1. User clicks on a socket
+    2. Temporary edge follows mouse cursor
+    3. User releases on target socket
+    4. If valid, permanent edge is created
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 from __future__ import annotations
@@ -22,63 +30,57 @@ if TYPE_CHECKING:
     from node_editor.graphics.socket import QDMGraphicsSocket
     from node_editor.graphics.view import QDMGraphicsView
 
-DEBUG = False
-
 
 class EdgeDragging:
-    """Handles edge dragging interaction for creating new edges.
+    """Manages edge creation through click-and-drag interaction.
 
-    When a user clicks on a socket and drags, this class manages the temporary
-    edge that follows the mouse until the user releases on another socket.
+    Creates temporary edge that follows cursor during drag, then
+    validates and creates permanent edge on release.
 
     Attributes:
-        grView: Reference to the QDMGraphicsView
-        drag_edge: Temporary edge being dragged
-        drag_start_socket: Socket where the drag started
+        grView: QDMGraphicsView for coordinate mapping.
+        drag_edge: Temporary Edge shown during drag.
+        drag_start_socket: Socket where drag originated.
     """
 
     def __init__(self, gr_view: QDMGraphicsView) -> None:
-        """Initialize edge dragging.
+        """Initialize edge dragging helper.
 
         Args:
-            gr_view: QDMGraphicsView instance
+            gr_view: QDMGraphicsView to operate on.
         """
         self.grView = gr_view
         self.drag_edge: Edge | None = None
         self.drag_start_socket = None
 
     def getEdgeClass(self) -> type[Edge]:
-        """Get the Edge class to use for creating edges.
+        """Get Edge class configured for this scene.
 
         Returns:
-            Edge class from the scene
+            Edge class type for creating new edges.
         """
         return self.grView.grScene.scene.getEdgeClass()
 
     def updateDestination(self, x: float, y: float) -> None:
-        """Update the end point of the dragging edge.
+        """Move drag edge endpoint to new position.
 
         Args:
-            x: New X scene position
-            y: New Y scene position
+            x: Scene X coordinate.
+            y: Scene Y coordinate.
         """
         if self.drag_edge is not None and self.drag_edge.grEdge is not None:
             self.drag_edge.grEdge.setDestination(x, y)
             self.drag_edge.grEdge.update()
-        else:
-            if DEBUG:
-                pass
 
     def edgeDragStart(self, item: QDMGraphicsSocket) -> None:
-        """Start dragging an edge from a socket.
+        """Begin edge drag from a socket.
+
+        Creates temporary dashed edge starting from clicked socket.
 
         Args:
-            item: Socket graphics item where dragging started
+            item: QDMGraphicsSocket where drag started.
         """
         try:
-            if DEBUG:
-                pass
-
             self.drag_start_socket = item.socket
             edge_class = self.getEdgeClass()
             self.drag_edge = edge_class(
@@ -89,68 +91,50 @@ class EdgeDragging:
             )
             self.drag_edge.grEdge.makeUnselectable()
 
-            if DEBUG:
-                pass
-
         except Exception as e:
             dump_exception(e)
 
     def edgeDragEnd(self, item: QGraphicsItem | None) -> bool:
-        """End dragging an edge.
+        """Complete edge drag and create permanent edge if valid.
 
-        This method handles the logic for completing or canceling an edge drag.
-        If the user releases on a valid socket, a new edge is created.
+        Validates the connection and creates a permanent edge if
+        the target is a valid socket. Handles edge removal for
+        single-connection sockets.
 
         Args:
-            item: Graphics item where the drag ended (can be None to cancel)
+            item: Target graphics item, or None to cancel.
 
         Returns:
-            True if the event was handled and should not propagate
+            True if edge was created, False otherwise.
         """
         from node_editor.graphics.socket import QDMGraphicsSocket
 
-        # Early out - clicked on something other than a socket
         if not isinstance(item, QDMGraphicsSocket):
             self.grView.resetMode()
-            if DEBUG:
-                pass
             if self.drag_edge:
-                self.drag_edge.remove(silent=True)  # Don't notify sockets
+                self.drag_edge.remove(silent=True)
             self.drag_edge = None
             return False
 
-        # Clicked on a socket
         if isinstance(item, QDMGraphicsSocket):
-            # Check if edge would be valid
             if not self.drag_edge.validateEdge(self.drag_start_socket, item.socket):
-                if DEBUG:
-                    pass
                 return False
 
-            # Regular processing of drag edge
             self.grView.resetMode()
 
-            if DEBUG:
-                pass
-
             if self.drag_edge:
-                self.drag_edge.remove(silent=True)  # Don't notify sockets
+                self.drag_edge.remove(silent=True)
             self.drag_edge = None
 
             try:
                 if item.socket != self.drag_start_socket:
-                    # Released on a different socket
-
-                    # First remove old edges / send notifications
                     for socket in (item.socket, self.drag_start_socket):
                         if not socket.is_multi_edges:
                             if socket.is_input:
-                                # Remove existing edges from input socket
                                 socket.removeAllEdges(silent=True)
                             else:
                                 socket.removeAllEdges(silent=False)
 
-                    # Create new edge
                     edge_class = self.getEdgeClass()
                     new_edge = edge_class(
                         item.socket.node.scene,
@@ -159,10 +143,6 @@ class EdgeDragging:
                         edge_type=EDGE_TYPE_DEFAULT
                     )
 
-                    if DEBUG:
-                        pass
-
-                    # Send notifications for the new edge
                     for socket in [self.drag_start_socket, item.socket]:
                         socket.node.onEdgeConnectionChanged(new_edge)
                         if socket.is_input:
@@ -175,8 +155,5 @@ class EdgeDragging:
 
             except Exception as e:
                 dump_exception(e)
-
-        if DEBUG:
-            pass
 
         return False

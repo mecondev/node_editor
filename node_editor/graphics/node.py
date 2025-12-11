@@ -1,8 +1,21 @@
-"""
-Graphics representation of a Node.
+"""Graphics representation of nodes in the scene.
 
-Author: Michael Economou
-Date: 2025-12-11
+This module defines QDMGraphicsNode, the Qt graphics item that renders
+individual nodes. It handles visual appearance including title bar,
+content area, selection states, and hover effects.
+
+The graphics node:
+    - Draws rounded rectangle with title and content areas
+    - Responds to mouse events for selection and movement
+    - Updates connected edges when moved
+    - Supports hover highlighting
+    - Integrates with theme system for colors
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 from typing import TYPE_CHECKING
@@ -20,30 +33,31 @@ if TYPE_CHECKING:
 
 
 class QDMGraphicsNode(QGraphicsItem):
-    """Class describing graphics representation of Node.
+    """Qt graphics item rendering a node in the scene.
 
-    Handles visual appearance, selection, hover effects, and mouse interaction.
+    Manages the visual representation of a node including its title bar,
+    content widget area, selection highlighting, and hover effects.
+    Handles mouse interactions for selection, movement, and double-click.
 
     Attributes:
-        node: Reference to logical Node
-        hovered: Whether mouse is hovering over node
-        width: Node width in pixels
-        height: Node height in pixels
-        title_item: QGraphicsTextItem for title text
-        grContent: QGraphicsProxyWidget for content widget
+        node: Reference to the logical Node model.
+        hovered: True while mouse is over this item.
+        width: Node width in pixels.
+        height: Node height in pixels.
+        title_item: QGraphicsTextItem displaying the title.
+        grContent: QGraphicsProxyWidget containing content widget.
     """
 
     def __init__(self, node: "Node", parent: QWidget | None = None):
-        """Initialize graphics node.
+        """Initialize graphics node for a logical node.
 
         Args:
-            node: Reference to logical Node
-            parent: Parent widget
+            node: Logical Node this graphics item represents.
+            parent: Optional parent widget.
         """
         super().__init__(parent)
         self.node = node
 
-        # Interaction flags
         self.hovered = False
         self._was_moved = False
         self._last_selected_state = False
@@ -54,46 +68,45 @@ class QDMGraphicsNode(QGraphicsItem):
 
     @property
     def content(self):
-        """Reference to node content widget.
+        """Content widget of the associated node.
 
         Returns:
-            QDMNodeContentWidget or None
+            QDMNodeContentWidget instance or None.
         """
         return self.node.content if self.node else None
 
     @property
     def title(self) -> str:
-        """Title of this node.
+        """Display title of this node.
 
         Returns:
-            Current node title
+            Current title string.
         """
         return self._title
 
     @title.setter
     def title(self, value: str) -> None:
-        """Set node title.
+        """Update displayed title text.
 
         Args:
-            value: New title text
+            value: New title string.
         """
         self._title = value
         self.title_item.setPlainText(self._title)
 
     def initUI(self) -> None:
-        """Set up QGraphicsItem flags and content."""
+        """Configure item flags and initialize visual components."""
         self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable)
         self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable)
         self.setAcceptHoverEvents(True)
 
-        # Initialize title
         self.initTitle()
         self.title = self.node.title
 
         self.initContent()
 
     def initSizes(self) -> None:
-        """Set up internal size attributes."""
+        """Set default dimensions and padding values."""
         self.width = 180
         self.height = 240
         self.edge_roundness = 10.0
@@ -103,20 +116,17 @@ class QDMGraphicsNode(QGraphicsItem):
         self.title_vertical_padding = 4.0
 
     def initAssets(self) -> None:
-        """Initialize Qt objects like QColor, QPen and QBrush using theme."""
+        """Initialize pens, brushes, and fonts from theme."""
         theme = ThemeEngine.current_theme()
 
-        # Title styling
         self._title_color = theme.node_title_color
         self._title_font = QFont(theme.node_title_font)
         self._title_font.setPointSize(theme.node_title_font_size)
 
-        # Node colors from theme
         self._color = theme.node_border_default
         self._color_selected = theme.node_border_selected
         self._color_hovered = theme.node_border_hovered
 
-        # Pens for outlines
         self._pen_default = QPen(self._color)
         self._pen_default.setWidthF(theme.node_border_width)
         self._pen_selected = QPen(self._color_selected)
@@ -124,21 +134,23 @@ class QDMGraphicsNode(QGraphicsItem):
         self._pen_hovered = QPen(self._color_hovered)
         self._pen_hovered.setWidthF(theme.node_border_width_hovered)
 
-        # Brushes for backgrounds
         self._brush_title = QBrush(theme.node_title_background)
         self._brush_background = QBrush(theme.node_background)
 
     def onSelected(self) -> None:
-        """Event handler when node is selected."""
+        """Emit selection signal to scene.
+
+        Called when node becomes selected to notify listeners.
+        """
         self.node.scene.grScene.item_selected.emit()
 
     def doSelect(self, new_state: bool = True) -> None:
-        """Safe version of selecting the graphics node.
+        """Programmatically select or deselect this node.
 
-        Takes care of selection state flag used internally.
+        Updates internal state tracking and emits signal if selecting.
 
         Args:
-            new_state: True to select, False to deselect
+            new_state: True to select, False to deselect.
         """
         self.setSelected(new_state)
         self._last_selected_state = new_state
@@ -146,40 +158,36 @@ class QDMGraphicsNode(QGraphicsItem):
             self.onSelected()
 
     def mouseMoveEvent(self, event) -> None:
-        """Handle mouse move - update connected edges.
+        """Handle mouse drag to move node and update edges.
 
         Args:
-            event: Qt mouse event
+            event: Qt mouse move event.
         """
         super().mouseMoveEvent(event)
 
-        # Update connected edges for all selected nodes
         for node in self.scene().scene.nodes:
             if node.grNode.isSelected():
                 node.updateConnectedEdges()
         self._was_moved = True
 
     def mouseReleaseEvent(self, event) -> None:
-        """Handle mouse release - store history and selection.
+        """Handle mouse release to store history and update selection.
 
         Args:
-            event: Qt mouse event
+            event: Qt mouse release event.
         """
         super().mouseReleaseEvent(event)
 
-        # Handle node movement
         if self._was_moved:
             self._was_moved = False
             self.node.scene.history.storeHistory("Node moved", set_modified=True)
 
             self.node.scene.resetLastSelectedStates()
-            self.doSelect()  # Trigger itemSelected when node moved
+            self.doSelect()
 
-            # Store last selected state
             self.node.scene._last_selected_items = self.node.scene.getSelectedItems()
             return
 
-        # Handle selection change
         if (
             self._last_selected_state != self.isSelected()
             or self.node.scene._last_selected_items != self.node.scene.getSelectedItems()
@@ -189,41 +197,41 @@ class QDMGraphicsNode(QGraphicsItem):
             self.onSelected()
 
     def mouseDoubleClickEvent(self, event) -> None:
-        """Handle double click event.
+        """Forward double-click to logical node handler.
 
         Args:
-            event: Qt mouse event
+            event: Qt mouse double-click event.
         """
         self.node.onDoubleClicked(event)
 
     def hoverEnterEvent(self, _event: "QGraphicsSceneHoverEvent") -> None:
-        """Handle hover enter.
+        """Enable hover highlighting when mouse enters.
 
         Args:
-            event: Qt hover event
+            _event: Qt hover enter event (unused).
         """
         self.hovered = True
         self.update()
 
     def hoverLeaveEvent(self, _event: "QGraphicsSceneHoverEvent") -> None:
-        """Handle hover leave.
+        """Disable hover highlighting when mouse leaves.
 
         Args:
-            event: Qt hover event
+            _event: Qt hover leave event (unused).
         """
         self.hovered = False
         self.update()
 
     def boundingRect(self) -> QRectF:
-        """Define Qt bounding rectangle.
+        """Return bounding rectangle for Qt graphics framework.
 
         Returns:
-            QRectF bounding rectangle
+            QRectF defining item bounds.
         """
         return QRectF(0, 0, self.width, self.height).normalized()
 
     def initTitle(self) -> None:
-        """Set up title graphics representation."""
+        """Create and configure title text item."""
         self.title_item = QGraphicsTextItem(self)
         self.title_item.node = self.node  # type: ignore
         self.title_item.setDefaultTextColor(self._title_color)
@@ -232,7 +240,7 @@ class QDMGraphicsNode(QGraphicsItem):
         self.title_item.setTextWidth(self.width - 2 * self.title_horizontal_padding)
 
     def initContent(self) -> None:
-        """Set up grContent QGraphicsProxyWidget for content widget."""
+        """Embed content widget as graphics proxy within node."""
         if self.content is not None:
             self.content.setGeometry(
                 self.edge_padding,
@@ -241,20 +249,21 @@ class QDMGraphicsNode(QGraphicsItem):
                 self.height - 2 * self.edge_padding - self.title_height,
             )
 
-        # Add widget to scene as QGraphicsProxyWidget
         self.grContent = self.node.scene.grScene.addWidget(self.content)
         self.grContent.node = self.node  # type: ignore
         self.grContent.setParentItem(self)
 
     def paint(self, painter, _option: "QStyleOptionGraphicsItem", _widget=None) -> None:
-        """Paint the rounded rectangular node.
+        """Render node with title bar, content area, and outline.
+
+        Draws rounded rectangles for title and content backgrounds,
+        then draws border with appropriate color for selection/hover state.
 
         Args:
-            painter: QPainter to use
-            QStyleOptionGraphicsItem: Style options
-            widget: Widget being painted on
+            painter: QPainter for drawing operations.
+            _option: Style options (unused).
+            _widget: Target widget (unused).
         """
-        # Draw title background
         path_title = QPainterPath()
         path_title.setFillRule(Qt.FillRule.WindingFill)
         path_title.addRoundedRect(
@@ -273,7 +282,6 @@ class QDMGraphicsNode(QGraphicsItem):
         painter.setBrush(self._brush_title)
         painter.drawPath(path_title.simplified())
 
-        # Draw content background
         path_content = QPainterPath()
         path_content.setFillRule(Qt.FillRule.WindingFill)
         path_content.addRoundedRect(
@@ -295,14 +303,12 @@ class QDMGraphicsNode(QGraphicsItem):
         painter.setBrush(self._brush_background)
         painter.drawPath(path_content.simplified())
 
-        # Draw outline
         path_outline = QPainterPath()
         path_outline.addRoundedRect(
             -1, -1, self.width + 2, self.height + 2, self.edge_roundness, self.edge_roundness
         )
         painter.setBrush(Qt.BrushStyle.NoBrush)
         if self.hovered:
-            # Draw hover outline on top of default
             painter.setPen(self._pen_hovered)
             painter.drawPath(path_outline.simplified())
             painter.setPen(self._pen_default)

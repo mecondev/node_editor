@@ -1,8 +1,17 @@
-"""
-Helper functions (non-Qt utilities).
+"""General helper functions without Qt dependencies.
 
-Author: Michael Economou
-Date: 2025-12-11
+This module provides basic utility functions that do not require Qt,
+suitable for use in any Python context.
+
+Functions:
+    dumpException: Print exception traceback for debugging.
+    pp: Pretty-print data structures.
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 import traceback
@@ -10,15 +19,19 @@ from pprint import PrettyPrinter
 
 
 def dumpException(_e: Exception | None = None) -> None:
-    """Print an exception with traceback to console.
+    """Print the current exception traceback to console.
+
+    Useful for debugging exception handlers. Prints the full
+    traceback of the most recent exception.
 
     Args:
-        e: Exception to print (unused, traceback is always printed)
+        _e: Exception instance (unused, current traceback is printed).
     """
     traceback.print_exc()
 
 
 pp = PrettyPrinter(indent=4).pprint
+"""Pretty-print function with 4-space indentation."""
 
-# Alias for backwards compatibility
 dump_exception = dumpException
+"""Alias for backwards compatibility with snake_case naming."""

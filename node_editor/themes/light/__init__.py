@@ -1,8 +1,16 @@
-"""
-Light theme for node editor.
+"""Light theme for the node editor.
 
-Author: Michael Economou
-Date: 2025-12-11
+This module provides LightTheme, a theme with light backgrounds and
+dark foreground colors suitable for well-lit environments.
+
+Classes:
+    LightTheme: Light color scheme theme inheriting from BaseTheme.
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 from PyQt5.QtGui import QColor, QFont
@@ -11,7 +19,16 @@ from node_editor.themes.base_theme import BaseTheme
 
 
 class LightTheme(BaseTheme):
-    """Light theme with light backgrounds and dark text."""
+    """Light theme with light backgrounds and dark text.
+
+    Provides a light color palette optimized for well-lit
+    environments. Uses bright backgrounds with saturated
+    accent colors for good contrast.
+
+    Attributes:
+        name: Theme identifier ("light").
+        display_name: Human-readable name ("Light Theme").
+    """
 
     # Theme metadata
     name = "light"

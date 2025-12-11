@@ -1,11 +1,21 @@
-"""
-Node Editor Window - Main application window.
+"""Main application window for node editor.
 
-This module provides the NodeEditorWindow class which creates a complete
-QMainWindow with menus, actions, and a NodeEditorWidget.
+This module provides NodeEditorWindow, a complete QMainWindow with
+menus, actions, status bar, and settings persistence. It wraps
+NodeEditorWidget to provide a ready-to-use application.
 
-Author: Michael Economou
-Date: 2025-12-11
+Features:
+    - File menu: New, Open, Save, Save As, Exit
+    - Edit menu: Undo, Redo, Cut, Copy, Paste, Delete
+    - Status bar with mouse position display
+    - Window title with filename and modification indicator
+    - Persistent window geometry settings
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 from __future__ import annotations
@@ -20,26 +30,23 @@ from node_editor.widgets.editor_widget import NodeEditorWidget
 
 
 class NodeEditorWindow(QMainWindow):
-    """Main window for the node editor application.
+    """Complete application window for node editing.
 
-    This window provides a complete application interface with:
-    - File menu (New, Open, Save, Save As, Exit)
-    - Edit menu (Undo, Redo, Cut, Copy, Paste, Delete)
-    - Status bar with mouse position
-    - Window title with filename
-    - Settings persistence
+    Provides full application interface with menus, status bar,
+    and settings persistence. Subclass to customize behavior
+    or add additional menus.
 
     Attributes:
-        NodeEditorWidget_class: Class to use for the central widget
-        nodeeditor: NodeEditorWidget instance
-        name_company: Company name for settings (default: "oncut")
-        name_product: Product name for settings (default: "NodeEditor")
+        NodeEditorWidget_class: Widget class for central editor.
+        nodeeditor: Active NodeEditorWidget instance.
+        name_company: Company name for QSettings storage.
+        name_product: Product name for QSettings storage.
     """
 
     NodeEditorWidget_class = NodeEditorWidget
 
     def __init__(self) -> None:
-        """Initialize the main window."""
+        """Initialize main window with menus and central widget."""
         super().__init__()
 
         self.name_company = 'oncut'
@@ -48,39 +55,36 @@ class NodeEditorWindow(QMainWindow):
         self.initUI()
 
     def initUI(self) -> None:
-        """Set up the main window with widgets, actions, and menus."""
+        """Set up window with actions, menus, and central widget."""
         self.createActions()
         self.createMenus()
 
-        # Create central widget
         self.nodeeditor = self.__class__.NodeEditorWidget_class(self)
         self.nodeeditor.scene.addHasBeenModifiedListener(self.setTitle)
         self.setCentralWidget(self.nodeeditor)
 
         self.createStatusBar()
 
-        # Set window properties
         self.setTitle()
         self.show()
 
     def sizeHint(self) -> QSize:
-        """Get the recommended window size.
+        """Get recommended window size.
 
         Returns:
-            QSize(800, 600)
+            QSize with default dimensions.
         """
         return QSize(800, 600)
 
     def createStatusBar(self) -> None:
-        """Create the status bar with mouse position display."""
+        """Set up status bar with mouse position label."""
         self.statusBar().showMessage("")
         self.status_mouse_pos = QLabel("")
         self.statusBar().addPermanentWidget(self.status_mouse_pos)
         self.nodeeditor.view.scene_pos_changed.connect(self.onScenePosChanged)
 
     def createActions(self) -> None:
-        """Create File and Edit menu actions."""
-        # File actions
+        """Create QAction instances for menus."""
         self.actNew = QAction(
             '&New', self, shortcut='Ctrl+N',
             statusTip="Create new graph", triggered=self.onFileNew
@@ -102,7 +106,6 @@ class NodeEditorWindow(QMainWindow):
             statusTip="Exit application", triggered=self.close
         )
 
-        # Edit actions
         self.actUndo = QAction(
             '&Undo', self, shortcut='Ctrl+Z',
             statusTip="Undo last operation", triggered=self.onEditUndo
@@ -134,7 +137,7 @@ class NodeEditorWindow(QMainWindow):
         self.createEditMenu()
 
     def createFileMenu(self) -> None:
-        """Create the File menu."""
+        """Populate File menu with actions."""
         menubar = self.menuBar()
         self.fileMenu = menubar.addMenu('&File')
         self.fileMenu.addAction(self.actNew)
@@ -146,7 +149,7 @@ class NodeEditorWindow(QMainWindow):
         self.fileMenu.addAction(self.actExit)
 
     def createEditMenu(self) -> None:
-        """Create the Edit menu."""
+        """Populate Edit menu with actions."""
         menubar = self.menuBar()
         self.editMenu = menubar.addMenu('&Edit')
         self.editMenu.addAction(self.actUndo)
@@ -159,46 +162,44 @@ class NodeEditorWindow(QMainWindow):
         self.editMenu.addAction(self.actDelete)
 
     def setTitle(self) -> None:
-        """Update the window title with current filename."""
+        """Update window title with current filename."""
         title = "Node Editor - "
         title += self.getCurrentNodeEditorWidget().getUserFriendlyFilename()
         self.setWindowTitle(title)
 
     def closeEvent(self, event) -> None:
-        """Handle window close event.
+        """Prompt to save before closing.
 
         Args:
-            event: Close event
+            event: Qt close event.
         """
         if self.maybeSave():
             event.accept()
         else:
             event.ignore()
 
-    # State queries
-
     def isModified(self) -> bool:
-        """Check if the current scene has been modified.
+        """Check if current scene has unsaved changes.
 
         Returns:
-            True if modified
+            True if scene is modified.
         """
         nodeeditor = self.getCurrentNodeEditorWidget()
         return nodeeditor.scene.isModified() if nodeeditor else False
 
     def getCurrentNodeEditorWidget(self) -> NodeEditorWidget:
-        """Get the current node editor widget.
+        """Get the active node editor widget.
 
         Returns:
-            NodeEditorWidget instance
+            NodeEditorWidget instance.
         """
         return self.centralWidget()
 
     def maybeSave(self) -> bool:
-        """Ask to save if modified.
+        """Prompt user to save if modified.
 
         Returns:
-            True if we can continue (saved or discarded), False to cancel
+            True to continue, False to cancel operation.
         """
         if not self.isModified():
             return True
@@ -216,45 +217,39 @@ class NodeEditorWindow(QMainWindow):
 
         return True
 
-    # Event handlers
-
     def onScenePosChanged(self, x: int, y: int) -> None:
-        """Handle scene position change event.
+        """Update status bar with mouse position.
 
         Args:
-            x: New X position
-            y: New Y position
+            x: Scene X coordinate.
+            y: Scene Y coordinate.
         """
         self.status_mouse_pos.setText(f"Scene Pos: [{x}, {y}]")
-
-    # File dialog helpers
 
     def getFileDialogDirectory(self) -> str:
         """Get starting directory for file dialogs.
 
         Returns:
-            Directory path (empty for default)
+            Directory path string.
         """
         return ''
 
     def getFileDialogFilter(self) -> str:
-        """Get file filter for file dialogs.
+        """Get file type filter for dialogs.
 
         Returns:
-            Filter string
+            Filter string for QFileDialog.
         """
         return 'Graph (*.json);;All files (*)'
 
-    # File operations
-
     def onFileNew(self) -> None:
-        """Handle File > New action."""
+        """Create new empty graph after save prompt."""
         if self.maybeSave():
             self.getCurrentNodeEditorWidget().fileNew()
             self.setTitle()
 
     def onFileOpen(self) -> None:
-        """Handle File > Open action."""
+        """Open file dialog and load selected graph."""
         if self.maybeSave():
             fname, filter = QFileDialog.getOpenFileName(
                 self, 'Open graph from file',
@@ -266,10 +261,10 @@ class NodeEditorWindow(QMainWindow):
                 self.setTitle()
 
     def onFileSave(self) -> bool:
-        """Handle File > Save action.
+        """Save to current file or prompt for filename.
 
         Returns:
-            True if saved successfully
+            True if save succeeded.
         """
         current_nodeeditor = self.getCurrentNodeEditorWidget()
         if current_nodeeditor is not None:
@@ -281,7 +276,6 @@ class NodeEditorWindow(QMainWindow):
                 f"Successfully saved {current_nodeeditor.filename}", 5000
             )
 
-            # Support for MDI app
             if hasattr(current_nodeeditor, "setTitle"):
                 current_nodeeditor.setTitle()
             else:
@@ -292,10 +286,10 @@ class NodeEditorWindow(QMainWindow):
         return False
 
     def onFileSaveAs(self) -> bool:
-        """Handle File > Save As action.
+        """Prompt for filename and save graph.
 
         Returns:
-            True if saved successfully
+            True if save succeeded.
         """
         current_nodeeditor = self.getCurrentNodeEditorWidget()
         if current_nodeeditor is not None:
@@ -313,7 +307,6 @@ class NodeEditorWindow(QMainWindow):
                 f"Successfully saved as {current_nodeeditor.filename}", 5000
             )
 
-            # Support for MDI app
             if hasattr(current_nodeeditor, "setTitle"):
                 current_nodeeditor.setTitle()
             else:
@@ -324,46 +317,46 @@ class NodeEditorWindow(QMainWindow):
         return False
 
     def onBeforeSaveAs(self, current_nodeeditor: NodeEditorWidget, filename: str) -> None:
-        """Event triggered before saving with a new filename.
+        """Hook called before Save As completes.
+
+        Override to perform actions before saving with new name.
 
         Args:
-            current_nodeeditor: NodeEditorWidget being saved
-            filename: New filename
+            current_nodeeditor: Widget being saved.
+            filename: New filename path.
         """
 
-    # Edit operations
-
     def onEditUndo(self) -> None:
-        """Handle Edit > Undo action."""
+        """Undo last operation."""
         if self.getCurrentNodeEditorWidget():
             self.getCurrentNodeEditorWidget().scene.history.undo()
 
     def onEditRedo(self) -> None:
-        """Handle Edit > Redo action."""
+        """Redo last undone operation."""
         if self.getCurrentNodeEditorWidget():
             self.getCurrentNodeEditorWidget().scene.history.redo()
 
     def onEditDelete(self) -> None:
-        """Handle Edit > Delete action."""
+        """Delete selected items."""
         if self.getCurrentNodeEditorWidget():
             self.getCurrentNodeEditorWidget().scene.getView().deleteSelected()
 
     def onEditCut(self) -> None:
-        """Handle Edit > Cut action."""
+        """Cut selected items to clipboard."""
         if self.getCurrentNodeEditorWidget():
             data = self.getCurrentNodeEditorWidget().scene.clipboard.serializeSelected(delete=True)
             str_data = json.dumps(data, indent=4)
             QApplication.instance().clipboard().setText(str_data)
 
     def onEditCopy(self) -> None:
-        """Handle Edit > Copy action."""
+        """Copy selected items to clipboard."""
         if self.getCurrentNodeEditorWidget():
             data = self.getCurrentNodeEditorWidget().scene.clipboard.serializeSelected(delete=False)
             str_data = json.dumps(data, indent=4)
             QApplication.instance().clipboard().setText(str_data)
 
     def onEditPaste(self) -> None:
-        """Handle Edit > Paste action."""
+        """Paste items from clipboard."""
         if self.getCurrentNodeEditorWidget():
             raw_data = QApplication.instance().clipboard().text()
 
@@ -372,16 +365,13 @@ class NodeEditorWindow(QMainWindow):
             except ValueError:
                 return
 
-            # Check if the json data is correct
             if 'nodes' not in data:
                 return
 
             return self.getCurrentNodeEditorWidget().scene.clipboard.deserializeFromClipboard(data)
 
-    # Settings persistence
-
     def readSettings(self) -> None:
-        """Read persistent window settings."""
+        """Restore window geometry from persistent settings."""
         settings = QSettings(self.name_company, self.name_product)
         pos = settings.value('pos', QPoint(200, 200))
         size = settings.value('size', QSize(400, 400))
@@ -389,7 +379,7 @@ class NodeEditorWindow(QMainWindow):
         self.resize(size)
 
     def writeSettings(self) -> None:
-        """Write persistent window settings."""
+        """Save window geometry to persistent settings."""
         settings = QSettings(self.name_company, self.name_product)
         settings.setValue('pos', self.pos())
         settings.setValue('size', self.size())

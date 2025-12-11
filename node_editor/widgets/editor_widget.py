@@ -1,11 +1,20 @@
-"""
-Node Editor Widget - Main widget containing scene and view.
+"""Node editor widget combining scene and view into embeddable canvas.
 
-This module provides the NodeEditorWidget class which combines the Scene
-and GraphicsView into a single widget that can be embedded in applications.
+This module provides NodeEditorWidget, a complete node editing interface
+that can be embedded in applications. It combines Scene and QDMGraphicsView
+with file operations and state management.
 
-Author: Michael Economou
-Date: 2025-12-11
+The widget handles:
+    - Scene creation and management
+    - File load/save operations
+    - Undo/redo state queries
+    - Selection management
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 from __future__ import annotations
@@ -24,28 +33,28 @@ if TYPE_CHECKING:
 
 
 class NodeEditorWidget(QWidget):
-    """Main widget containing the node editor scene and view.
+    """Embeddable node editor canvas widget.
 
-    This widget provides a complete node editor interface that can be embedded
-    in other applications. It includes file operations, undo/redo support,
-    and scene management.
+    Combines Scene and QDMGraphicsView into a single widget for
+    embedding in applications. Provides file operations and
+    state management.
 
     Attributes:
-        Scene_class: Class to use for creating scenes (default: Scene)
-        GraphicsView_class: Class to use for creating views (default: QDMGraphicsView)
-        scene: Scene instance
-        view: QDMGraphicsView instance
-        filename: Current file path or None
+        Scene_class: Scene class to instantiate.
+        GraphicsView_class: View class to instantiate.
+        scene: Active Scene instance.
+        view: Active QDMGraphicsView instance.
+        filename: Current file path, or None for unsaved.
     """
 
     Scene_class = Scene
-    GraphicsView_class = None  # Will be set after imports
+    GraphicsView_class = None
 
     def __init__(self, parent: QWidget | None = None) -> None:
-        """Initialize the node editor widget.
+        """Initialize node editor widget.
 
         Args:
-            parent: Parent widget
+            parent: Optional parent widget.
         """
         super().__init__(parent)
 
@@ -54,16 +63,13 @@ class NodeEditorWidget(QWidget):
         self.initUI()
 
     def initUI(self) -> None:
-        """Set up the widget with layout, scene, and view."""
-        # Create layout
+        """Set up layout with scene and view."""
         self.layout = QVBoxLayout()
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.layout)
 
-        # Create scene
         self.scene = self.__class__.Scene_class()
 
-        # Create view (late import to avoid circular dependencies)
         from node_editor.graphics.view import QDMGraphicsView
 
         if self.__class__.GraphicsView_class is None:
@@ -72,40 +78,36 @@ class NodeEditorWidget(QWidget):
         self.view = self.__class__.GraphicsView_class(self.scene.grScene, self)
         self.layout.addWidget(self.view)
 
-    # State queries
-
     def isModified(self) -> bool:
-        """Check if the scene has been modified.
+        """Check if scene has unsaved changes.
 
         Returns:
-            True if the scene has been modified
+            True if scene has been modified.
         """
         return self.scene.isModified()
 
     def isFilenameSet(self) -> bool:
-        """Check if a filename is associated with this graph.
+        """Check if file has been saved.
 
         Returns:
-            True if filename is set, False for new unsaved graphs
+            True if filename is set, False for new graphs.
         """
         return self.filename is not None
 
     def getUserFriendlyFilename(self) -> str:
-        """Get user-friendly filename for display.
+        """Get display name with modification indicator.
 
         Returns:
-            Base filename with asterisk if modified, or "New Graph"
+            Filename with asterisk if modified, or 'New Graph'.
         """
         name = os.path.basename(self.filename) if self.isFilenameSet() else "New Graph"
         return name + ("*" if self.isModified() else "")
 
-    # Selection
-
     def getSelectedItems(self) -> list[QGraphicsItem]:
-        """Get currently selected items in the scene.
+        """Get currently selected graphics items.
 
         Returns:
-            List of selected QGraphicsItem instances
+            List of selected QGraphicsItem instances.
         """
         return self.scene.getSelectedItems()
 
@@ -113,45 +115,44 @@ class NodeEditorWidget(QWidget):
         """Check if any items are selected.
 
         Returns:
-            True if something is selected
+            True if selection is non-empty.
         """
         return self.getSelectedItems() != []
 
-    # Undo/Redo
-
     def canUndo(self) -> bool:
-        """Check if undo is available.
+        """Check if undo operation is available.
 
         Returns:
-            True if undo can be performed
+            True if undo stack has entries.
         """
         return self.scene.history.canUndo()
 
     def canRedo(self) -> bool:
-        """Check if redo is available.
+        """Check if redo operation is available.
 
         Returns:
-            True if redo can be performed
+            True if redo stack has entries.
         """
         return self.scene.history.canRedo()
 
-    # File operations
-
     def fileNew(self) -> None:
-        """Create a new empty scene."""
+        """Create new empty scene.
+
+        Clears current content and resets history.
+        """
         self.scene.clear()
         self.filename = None
         self.scene.history.clear()
         self.scene.history.storeInitialHistoryStamp()
 
     def fileLoad(self, filename: str) -> bool:
-        """Load a graph from a JSON file.
+        """Load graph from JSON file.
 
         Args:
-            filename: Path to the file to load
+            filename: Path to file to load.
 
         Returns:
-            True if loading succeeded, False otherwise
+            True if load succeeded, False on error.
         """
         QApplication.setOverrideCursor(Qt.WaitCursor)
         try:
@@ -174,13 +175,13 @@ class NodeEditorWidget(QWidget):
             QApplication.restoreOverrideCursor()
 
     def fileSave(self, filename: str | None = None) -> bool:
-        """Save the graph to a JSON file.
+        """Save graph to JSON file.
 
         Args:
-            filename: Path to save to. If None, uses current filename
+            filename: Path to save to. Uses current filename if None.
 
         Returns:
-            True if saving succeeded
+            True if save succeeded.
         """
         if filename is not None:
             self.filename = filename

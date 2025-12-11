@@ -1,60 +1,77 @@
-"""
-Node Registry - Central registry for all node types.
+"""Central registry for node type management.
+
+This module provides NodeRegistry, which manages registration and
+lookup of node types by their unique operation codes (op_codes).
 
 Usage:
-    from node_editor.nodes import NodeRegistry, BaseNode
+    Register nodes with decorator or manual call::
 
-    # Using decorator
-    @NodeRegistry.register(100)
-    class MyNode(BaseNode):
-        op_title = "My Node"
-        ...
+        from node_editor.nodes import NodeRegistry, BaseNode
 
-    # Manual registration
-    NodeRegistry.register_node(101, AnotherNode)
+        # Using decorator
+        @NodeRegistry.register(100)
+        class MyNode(BaseNode):
+            op_title = "My Node"
 
-    # Get node class
-    node_class = NodeRegistry.get_node_class(100)
+        # Manual registration
+        NodeRegistry.register_node(101, AnotherNode)
 
-Author: Michael Economou
-Date: 2025-12-11
+        # Get node class by op_code
+        node_class = NodeRegistry.get_node_class(100)
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 from collections.abc import Callable
 
 
 class NodeRegistry:
-    """Central registry for all node types."""
+    """Central registry for all node types.
+
+    Maintains a dictionary mapping operation codes to node classes.
+    Use op_codes 1-99 for built-in nodes and 100+ for custom nodes.
+
+    Attributes:
+        _nodes: Dictionary mapping op_codes to node classes.
+    """
 
     _nodes: dict[int, type] = {}
 
     @classmethod
     def register(cls, op_code: int) -> Callable:
-        """Decorator to register a node class.
+        """Decorator to register a node class with an op_code.
 
         Args:
             op_code: Unique identifier for the node type.
-                    Use 1-99 for built-in nodes, 100+ for custom nodes.
 
         Returns:
-            Decorator function
+            Decorator function that registers the class.
+
+        Raises:
+            ValueError: If op_code is already registered.
 
         Example:
-            @NodeRegistry.register(100)
-            class MyNode(BaseNode):
-                ...
+            Register a custom node::
+
+                @NodeRegistry.register(100)
+                class MyNode(BaseNode):
+                    op_title = "My Node"
         """
         def decorator(node_class: type) -> type:
-            """Decorator to register a node class with the given op_code.
+            """Register the node class and set its op_code attribute.
 
             Args:
-                node_class: The node class to register
+                node_class: Node class to register.
 
             Returns:
-                The registered node class (unmodified)
+                The registered node class unchanged.
 
             Raises:
-                ValueError: If op_code is already registered
+                ValueError: If op_code already registered.
             """
             if op_code in cls._nodes:
                 existing = cls._nodes[op_code].__name__
@@ -68,14 +85,14 @@ class NodeRegistry:
 
     @classmethod
     def register_node(cls, op_code: int, node_class: type) -> None:
-        """Manually register a node class.
+        """Register a node class without using decorator.
 
         Args:
-            op_code: Unique identifier for the node type
-            node_class: The node class to register
+            op_code: Unique identifier for the node type.
+            node_class: Node class to register.
 
         Raises:
-            ValueError: If op_code is already registered
+            ValueError: If op_code is already registered.
         """
         if op_code in cls._nodes:
             existing = cls._nodes[op_code].__name__
@@ -87,34 +104,34 @@ class NodeRegistry:
 
     @classmethod
     def get_node_class(cls, op_code: int) -> type | None:
-        """Get node class by op_code.
+        """Look up a node class by its op_code.
 
         Args:
-            op_code: The op_code to look up
+            op_code: Operation code to look up.
 
         Returns:
-            The node class or None if not found
+            Node class, or None if not registered.
         """
         return cls._nodes.get(op_code)
 
     @classmethod
     def get_all_nodes(cls) -> dict[int, type]:
-        """Get all registered nodes.
+        """Get all registered node types.
 
         Returns:
-            Dictionary mapping op_codes to node classes
+            Copy of dictionary mapping op_codes to node classes.
         """
         return cls._nodes.copy()
 
     @classmethod
     def get_nodes_by_category(cls, category: str) -> dict[int, type]:
-        """Get all nodes in a category.
+        """Get all nodes belonging to a category.
 
         Args:
-            category: Category name to filter by
+            category: Category name to filter by.
 
         Returns:
-            Dictionary of nodes in the category
+            Dictionary of matching nodes (op_code -> class).
         """
         return {
             op_code: node_class
@@ -124,7 +141,10 @@ class NodeRegistry:
 
     @classmethod
     def clear(cls) -> None:
-        """Clear all registered nodes (useful for testing)."""
+        """Clear all registered nodes.
+
+        Primarily useful for testing to reset registry state.
+        """
         cls._nodes.clear()
 
     @classmethod

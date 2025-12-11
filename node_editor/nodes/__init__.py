@@ -1,18 +1,27 @@
-"""
-Nodes module - Node system with registry and built-in nodes.
+"""Node system with registry and base classes.
+
+This module provides the node type registration system and base classes
+for creating custom nodes in the node editor.
 
 Classes:
-    - BaseNode: Base class for creating custom nodes
-    - NodeRegistry: Central registry for node types
+    BaseNode: Base class for creating custom node types.
+    NodeRegistry: Central registry for node type management.
 
-Built-in Nodes:
-    - InputNode: Number/text input
-    - OutputNode: Display output
-    - AddNode, SubNode, MulNode, DivNode: Math operations
-    - CompareNode: Comparison operations
+Usage:
+    Create and register a custom node::
 
-Author: Michael Economou
-Date: 2025-12-11
+        from node_editor.nodes import BaseNode, NodeRegistry
+
+        @NodeRegistry.register(100)
+        class MyNode(BaseNode):
+            op_title = "My Custom Node"
+            category = "Custom"
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 from node_editor.nodes.base import BaseNode

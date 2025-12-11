@@ -1,8 +1,17 @@
-"""
-Base class for node content widgets.
+"""Base classes for customizable node content widgets.
 
-Author: Michael Economou
-Date: 2025-12-11
+This module defines QDMNodeContentWidget, the base class for creating
+custom content areas inside nodes. Subclass it to add controls,
+displays, or interactive elements to your nodes.
+
+Also provides QDMTextEdit as an example of a widget that properly
+integrates with the editing state system.
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 from collections import OrderedDict
@@ -19,22 +28,22 @@ if TYPE_CHECKING:
 
 
 class QDMNodeContentWidget(QWidget, Serializable):
-    """Base class for node's graphics content.
+    """Base class for node content area.
 
-    Provides layout and container for widgets inside a Node.
-    Subclass this to create custom node content.
+    Provides layout container for widgets displayed inside a node.
+    Subclass and override initUI() to create custom node interfaces.
 
     Attributes:
-        node: Reference to the parent Node
-        layout: QVBoxLayout container for widgets
+        node: Parent Node containing this content.
+        layout: QVBoxLayout for arranging child widgets.
     """
 
     def __init__(self, node: "Node", parent: QWidget | None = None):
-        """Initialize content widget.
+        """Initialize content widget for a node.
 
         Args:
-            node: Reference to parent Node
-            parent: Parent widget
+            node: Parent Node this content belongs to.
+            parent: Optional parent widget.
         """
         self.node = node
         super().__init__(parent)
@@ -42,10 +51,10 @@ class QDMNodeContentWidget(QWidget, Serializable):
         self.initUI()
 
     def initUI(self) -> None:
-        """Set up layouts and widgets.
+        """Set up layout and child widgets.
 
-        Override this method to customize node content.
-        Default implementation creates a simple label and text edit.
+        Override in subclasses to create custom node content.
+        Default creates a label and text edit as example.
         """
         self.layout = QVBoxLayout()
         self.layout.setContentsMargins(0, 0, 0, 0)
@@ -56,66 +65,65 @@ class QDMNodeContentWidget(QWidget, Serializable):
         self.layout.addWidget(QDMTextEdit("foo"))
 
     def setEditingFlag(self, value: bool) -> None:
-        """Set editing flag in graphics view.
+        """Update editing state in graphics view.
 
-        Helper to handle keyboard events in widgets like QLineEdit or QTextEdit.
-        Call this when starting/ending editing to prevent view shortcuts from
-        triggering while typing.
+        Call when starting/ending text editing to prevent view
+        keyboard shortcuts from triggering while typing.
 
         Args:
-            value: True when starting editing, False when done
+            value: True when editing starts, False when done.
         """
         self.node.scene.getView().editingFlag = value
 
     def serialize(self) -> OrderedDict:
-        """Serialize content widget.
+        """Serialize content widget state.
 
-        Override to save custom widget state.
+        Override to save custom widget data.
 
         Returns:
-            OrderedDict with widget data
+            OrderedDict with serialized state.
         """
         return OrderedDict([])
 
     def deserialize(
         self, _data: dict, _hashmap: dict | None = None, _restore_id: bool = True
     ) -> bool:
-        """Deserialize content widget.
+        """Restore content widget state from data.
 
-        Override to restore custom widget state.
+        Override to restore custom widget data.
 
         Args:
-            data: Dictionary with widget data
-            hashmap: Map of IDs to objects
-            restore_id: Whether to restore the ID
+            _data: Dictionary with serialized state.
+            _hashmap: Map of old IDs to new objects.
+            _restore_id: Whether to restore original ID.
 
         Returns:
-            True if successful
+            True if deserialization succeeded.
         """
         return True
 
 
 class QDMTextEdit(QTextEdit):
-    """QTextEdit that notifies parent about editing state.
+    """Text editor with editing state integration.
 
-    Example of QTextEdit modification that handles editing state
-    by notifying parent QDMNodeContentWidget.
+    Notifies parent QDMNodeContentWidget when editing starts/stops
+    so view shortcuts are properly disabled during text input.
     """
 
     def focusInEvent(self, event: "QFocusEvent") -> None:
-        """Mark start of editing when focused.
+        """Signal editing start when widget gains focus.
 
         Args:
-            event: Qt's focus event
+            event: Qt focus event.
         """
         self.parentWidget().setEditingFlag(True)
         super().focusInEvent(event)
 
     def focusOutEvent(self, event: "QFocusEvent") -> None:
-        """Mark end of editing when focus lost.
+        """Signal editing end when widget loses focus.
 
         Args:
-            event: Qt's focus event
+            event: Qt focus event.
         """
         self.parentWidget().setEditingFlag(False)
         super().focusOutEvent(event)

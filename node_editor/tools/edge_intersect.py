@@ -1,11 +1,20 @@
-"""
-Edge Intersect - Node dropping on edges to insert nodes.
+"""Node insertion into edges by dropping.
 
-This module handles the functionality where a node can be dropped onto
-an existing edge to automatically insert it between the connected nodes.
+This module provides EdgeIntersect, which handles automatic edge splitting
+when a node is dropped onto an existing edge. The dropped node is inserted
+between the previously connected nodes.
 
-Author: Michael Economou
-Date: 2025-12-11
+The insertion workflow:
+    1. User drags a node over an existing edge
+    2. Edge highlights to show valid drop target
+    3. User releases node on edge
+    4. Original edge is split into two edges through the new node
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 from __future__ import annotations
@@ -21,23 +30,23 @@ if TYPE_CHECKING:
 
 
 class EdgeIntersect:
-    """Handles node dropping on edges to create automatic connections.
+    """Manages node insertion into edges by drag-and-drop.
 
-    When a node is dragged and dropped on an existing edge, this class
-    automatically splits the edge and connects the dropped node in between.
+    Detects when a dragged node overlaps an edge and handles the
+    automatic reconnection when dropped.
 
     Attributes:
-        grScene: Reference to the QDMGraphicsScene
-        grView: Reference to the QDMGraphicsView
-        draggedNode: Node currently being dragged
-        hoveredList: List of graphics items being hovered over
+        grScene: QDMGraphicsScene for item queries.
+        grView: QDMGraphicsView for coordinate mapping.
+        draggedNode: Node currently being dragged.
+        hoveredList: Graphics items under the dragged node.
     """
 
     def __init__(self, gr_view: QDMGraphicsView) -> None:
-        """Initialize edge intersect.
+        """Initialize edge intersection handler.
 
         Args:
-            gr_view: QDMGraphicsView instance
+            gr_view: QDMGraphicsView to operate on.
         """
         self.grScene = gr_view.grScene
         self.grView = gr_view
@@ -45,38 +54,40 @@ class EdgeIntersect:
         self.hoveredList: list = []
 
     def enterState(self, node: Node) -> None:
-        """Enter the node dragging state.
+        """Begin tracking node drag for edge intersection.
 
         Args:
-            node: Node that started being dragged
+            node: Node being dragged.
         """
         self.hoveredList = []
         self.draggedNode = node
 
     def leaveState(self, scene_pos_x: float, scene_pos_y: float) -> None:
-        """Leave the node dragging state.
+        """End drag tracking and process any intersection.
 
         Args:
-            scene_pos_x: Final X position in scene
-            scene_pos_y: Final Y position in scene
+            scene_pos_x: Final X position in scene coordinates.
+            scene_pos_y: Final Y position in scene coordinates.
         """
         self.dropNode(self.draggedNode, scene_pos_x, scene_pos_y)
         self.draggedNode = None
         self.hoveredList = []
 
     def dropNode(self, node: Node, _scene_pos_x: float, _scene_pos_y: float) -> None:
-        """Handle dropping a node on an edge.
+        """Handle node drop and create edge split if intersecting.
+
+        If node overlaps an edge, removes that edge and creates
+        two new edges connecting through the dropped node.
 
         Args:
-            node: Node being dropped
-            scene_pos_x: Drop X position
-            scene_pos_y: Drop Y position
+            node: Node being dropped.
+            _scene_pos_x: Drop X position (unused).
+            _scene_pos_y: Drop Y position (unused).
         """
         from node_editor.core.edge import Edge
 
         node_box = self.hotZoneRect(node)
 
-        # Check if the node is dropped on an existing edge
         edge = self.intersect(node_box)
         if edge is None:
             return
@@ -84,7 +95,6 @@ class EdgeIntersect:
         if self.isConnected(node):
             return
 
-        # Determine the order of start and end
         if edge.start_socket.is_output:
             socket_start = edge.start_socket
             socket_end = edge.end_socket
@@ -92,12 +102,10 @@ class EdgeIntersect:
             socket_start = edge.end_socket
             socket_end = edge.start_socket
 
-        # The new edges will have the same edge_type as the intersected edge
         edge_type = edge.edge_type
         edge.remove()
         self.grView.grScene.scene.history.storeHistory("Delete existing edge", set_modified=True)
 
-        # Create new edges
         new_node_socket_in = node.inputs[0]
         Edge(self.grScene.scene, socket_start, new_node_socket_in, edge_type=edge_type)
 
@@ -109,13 +117,13 @@ class EdgeIntersect:
         )
 
     def hotZoneRect(self, node: Node) -> QRectF:
-        """Get a bounding rectangle around a node.
+        """Calculate bounding rectangle for node intersection testing.
 
         Args:
-            node: Node to get rectangle for
+            node: Node to get bounds for.
 
         Returns:
-            QRectF describing node's position and area
+            QRectF covering the node's area.
         """
         node_pos = node.grNode.scenePos()
         x = node_pos.x()
@@ -125,36 +133,33 @@ class EdgeIntersect:
         return QRectF(x, y, w, h)
 
     def update(self, _scene_pos_x: float, _scene_pos_y: float) -> None:
-        """Update during mouse move.
+        """Update edge hover highlighting during drag.
 
         Args:
-            scene_pos_x: Current X position
-            scene_pos_y: Current Y position
+            _scene_pos_x: Current X position (unused).
+            _scene_pos_y: Current Y position (unused).
         """
         rect = self.hotZoneRect(self.draggedNode)
         gr_items = self.grScene.items(rect)
 
-        # Reset hovered state
         for gr_edge in self.hoveredList:
             gr_edge.hovered = False
         self.hoveredList = []
 
-        # Set new hovered items
         for gr_item in gr_items:
             if hasattr(gr_item, "edge") and not self.draggedNode.hasConnectedEdge(gr_item.edge):
                 self.hoveredList.append(gr_item)
                 gr_item.hovered = True
 
     def intersect(self, node_box: QRectF) -> Edge | None:
-        """Check for intersection with edges.
+        """Find first edge intersecting with node bounds.
 
         Args:
-            node_box: Rectangle to check for intersection
+            node_box: Rectangle to test for intersection.
 
         Returns:
-            First intersecting Edge or None
+            First intersecting Edge, or None.
         """
-        # Returns the first edge that intersects with the dropped node
         gr_items = self.grScene.items(node_box)
         for gr_item in gr_items:
             if hasattr(gr_item, "edge") and not self.draggedNode.hasConnectedEdge(gr_item.edge):
@@ -162,17 +167,18 @@ class EdgeIntersect:
         return None
 
     def isConnected(self, node: Node) -> bool:
-        """Check if node has any connections.
+        """Check if node already has edge connections.
+
+        Nodes without both inputs and outputs, or nodes with existing
+        connections, are excluded from edge insertion.
 
         Args:
-            node: Node to check
+            node: Node to check.
 
         Returns:
-            True if node has connections
+            True if node has connections or lacks input/output.
         """
-        # Nodes with only inputs or outputs are excluded
         if node.inputs == [] or node.outputs == []:
             return True
 
-        # Check if the node has edges connected
         return node.getInput() or node.getOutputs()

@@ -1,54 +1,75 @@
-"""
-Serializable base class for saving/loading objects.
+"""Base class providing serialization interface for persistent storage.
 
-Author: Michael Economou
-Date: 2025-12-11
+This module defines the Serializable abstract base class that all persistable
+objects (nodes, edges, sockets, scenes) must inherit from. It provides a
+consistent interface for converting objects to/from dictionary representations.
+
+The serialization system uses a hashmap to track object references by ID,
+enabling proper reconstruction of object graphs with circular references.
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 from collections import OrderedDict
 
 
 class Serializable:
-    """Base class for objects that can be serialized to/from dictionaries.
+    """Abstract base class for objects supporting dictionary serialization.
 
-    All objects that need to be saved to files should inherit from this class.
-    Automatically assigns a unique ID to each instance.
+    Provides the interface for converting objects to dictionaries (for saving)
+    and reconstructing them from dictionaries (for loading). Each instance
+    receives a unique identifier used to maintain object references during
+    serialization.
+
+    Subclasses must implement both serialize() and deserialize() methods.
+
+    Attributes:
+        id: Unique identifier for this instance, used in serialization hashmap.
     """
 
     def __init__(self):
-        """Initialize serializable object with unique ID."""
+        """Initialize with a unique identifier based on object memory address."""
         self.id = id(self)
 
     def serialize(self) -> OrderedDict:
-        """Serialize object to OrderedDict.
+        """Convert this object to an ordered dictionary representation.
 
-        Override this method in subclasses to add object-specific data.
+        Subclasses must override this to serialize their specific attributes.
+        The returned dict should contain all data needed to reconstruct the
+        object, including the object's id for reference tracking.
 
         Returns:
-            OrderedDict containing serialized data
+            Ordered dictionary containing all serializable object state.
 
         Raises:
-            NotImplementedError: If not implemented in subclass
+            NotImplementedError: Always raised if not overridden in subclass.
         """
         raise NotImplementedError(f"{self.__class__.__name__} must implement serialize()")
 
     def deserialize(
         self, _data: dict, _hashmap: dict | None = None, _restore_id: bool = True
     ) -> bool:
-        """Deserialize object from dictionary.
+        """Reconstruct this object's state from a dictionary representation.
 
-        Override this method in subclasses to restore object-specific data.
+        Subclasses must override this to restore their specific attributes.
+        The hashmap parameter allows resolving references to other serialized
+        objects by their original IDs.
 
         Args:
-            data: Dictionary containing serialized data
-            hashmap: Helper dict with references to existing objects by ID
-            restore_id: If True, restore the object's ID from data.
-                       If False, keep the current ID (useful for existing objects)
+            _data: Dictionary containing previously serialized object state.
+            _hashmap: Maps original object IDs to reconstructed instances,
+                enabling proper restoration of object references.
+            _restore_id: If True, restore original ID from data. If False,
+                keep current ID (useful when updating existing objects).
 
         Returns:
-            True if deserialization was successful, False otherwise
+            True if deserialization completed successfully, False otherwise.
 
         Raises:
-            NotImplementedError: If not implemented in subclass
+            NotImplementedError: Always raised if not overridden in subclass.
         """
         raise NotImplementedError(f"{self.__class__.__name__} must implement deserialize()")

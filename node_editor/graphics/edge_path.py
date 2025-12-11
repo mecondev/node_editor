@@ -1,8 +1,22 @@
-"""
-Graphics edge path calculators for different edge styles.
+"""Path calculators for different edge rendering styles.
 
-Author: Michael Economou
-Date: 2025-12-11
+This module defines classes that compute QPainterPath objects for drawing
+edge connections between nodes. Multiple path styles are supported:
+
+- Direct: Straight line connection
+- Bezier: Smooth cubic Bezier curve
+- Square: Right-angle stepped connection
+- ImprovedSharp: Horizontal segments with corners
+- ImprovedBezier: Adaptive Bezier with horizontal ends
+
+Each path calculator takes source and destination positions and produces
+a QPainterPath suitable for rendering by QDMGraphicsEdge.
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 from __future__ import annotations
@@ -25,33 +39,41 @@ EDGE_CURVATURE = 2
 
 
 class GraphicsEdgePathBase:
-    """Base class for calculating graphics path to draw for an edge."""
+    """Base class for edge path calculation.
+
+    Subclasses implement calcPath() to produce specific path styles.
+
+    Attributes:
+        owner: QDMGraphicsEdge this calculator belongs to.
+    """
 
     def __init__(self, owner: QDMGraphicsEdge):
-        """Initialize path calculator.
+        """Initialize path calculator with owner edge.
 
         Args:
-            owner: Reference to owner QDMGraphicsEdge
+            owner: QDMGraphicsEdge that owns this calculator.
         """
         self.owner = owner
 
     def calcPath(self) -> QPainterPath | None:
-        """Calculate the path to draw.
+        """Calculate path from source to destination.
+
+        Override in subclasses to implement specific path styles.
 
         Returns:
-            QPainterPath or None
+            QPainterPath for rendering, or None if not implemented.
         """
         return None
 
 
 class GraphicsEdgePathDirect(GraphicsEdgePathBase):
-    """Direct line connection graphics edge."""
+    """Straight line path between source and destination."""
 
     def calcPath(self) -> QPainterPath:
         """Calculate direct line connection.
 
         Returns:
-            QPainterPath of the direct line
+            QPainterPath with single line segment.
         """
         path = QPainterPath(
             QPointF(self.owner.posSource[0], self.owner.posSource[1])
@@ -61,13 +83,16 @@ class GraphicsEdgePathDirect(GraphicsEdgePathBase):
 
 
 class GraphicsEdgePathBezier(GraphicsEdgePathBase):
-    """Cubic Bezier line connection graphics edge."""
+    """Cubic Bezier curve path with adaptive control points."""
 
     def calcPath(self) -> QPainterPath:
-        """Calculate cubic Bezier line with 2 control points.
+        """Calculate cubic Bezier curve with two control points.
+
+        Adjusts control points based on socket positions and
+        relative locations of start and end points.
 
         Returns:
-            QPainterPath of the cubic Bezier line
+            QPainterPath with smooth Bezier curve.
         """
         s = self.owner.posSource
         d = self.owner.posDestination
@@ -111,23 +136,27 @@ class GraphicsEdgePathBezier(GraphicsEdgePathBase):
 
 
 class GraphicsEdgePathSquare(GraphicsEdgePathBase):
-    """Square line connection graphics edge."""
+    """Square-cornered path with three line segments."""
 
     def __init__(self, *args, handle_weight: float = 0.5, **kwargs):
         """Initialize square path calculator.
 
         Args:
-            handle_weight: Weight for midpoint calculation (0.0 to 1.0)
+            *args: Passed to base class.
+            handle_weight: Position of vertical segment (0.0 to 1.0).
+            **kwargs: Passed to base class.
         """
         super().__init__(*args, **kwargs)
         self.rand = None
         self.handle_weight = handle_weight
 
     def calcPath(self) -> QPainterPath:
-        """Calculate square edge line connection.
+        """Calculate right-angle stepped path.
+
+        Creates path with horizontal-vertical-horizontal segments.
 
         Returns:
-            QPainterPath of the edge square line
+            QPainterPath with three connected line segments.
         """
         s = self.owner.posSource
         d = self.owner.posDestination
@@ -143,13 +172,16 @@ class GraphicsEdgePathSquare(GraphicsEdgePathBase):
 
 
 class GraphicsEdgePathImprovedSharp(GraphicsEdgePathBase):
-    """Improved sharp edge with horizontal segments."""
+    """Sharp-cornered path with horizontal exit segments."""
 
     def calcPath(self) -> QPainterPath:
-        """Calculate improved sharp line connection.
+        """Calculate sharp path with horizontal ends.
+
+        Creates path that exits horizontally from both sockets
+        before connecting with straight line.
 
         Returns:
-            QPainterPath of the painting line
+            QPainterPath with horizontal segments and diagonal.
         """
         sx, sy = self.owner.posSource
         dx, dy = self.owner.posDestination
@@ -180,13 +212,16 @@ class GraphicsEdgePathImprovedSharp(GraphicsEdgePathBase):
 
 
 class GraphicsEdgePathImprovedBezier(GraphicsEdgePathBase):
-    """Improved Bezier curve edge with adaptive curvature."""
+    """Bezier curve path with horizontal exit segments."""
 
     def calcPath(self) -> QPainterPath:
-        """Calculate improved Bezier line connection.
+        """Calculate Bezier path with adaptive curvature.
+
+        Creates path with horizontal segments near sockets and
+        smooth Bezier curve in between. Curvature adapts to distance.
 
         Returns:
-            QPainterPath of the painting line
+            QPainterPath with horizontal ends and curved middle.
         """
         sx, sy = self.owner.posSource
         dx, dy = self.owner.posDestination

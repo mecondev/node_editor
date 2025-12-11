@@ -1,11 +1,24 @@
-"""
-Graphics View - Main view widget for the node editor.
+"""Main graphics view widget for the node editor.
 
-This module provides the QDMGraphicsView class which handles all user interactions
-including zooming, panning, edge dragging, node selection, and edge cutting.
+This module provides QDMGraphicsView, the primary Qt view handling all
+user interactions with the node graph:
 
-Author: Michael Economou
-Date: 2025-12-11
+- Zooming with mouse wheel
+- Panning with middle mouse button
+- Edge dragging and creation from sockets
+- Edge cutting with Ctrl+Left-Click
+- Node selection and dragging
+- Edge rerouting with Ctrl+Click on connected socket
+- Socket snapping during edge operations
+
+The view integrates with EdgeDragging, EdgeRerouting, EdgeIntersect,
+and EdgeSnapping tools to provide full interaction support.
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 from __future__ import annotations
@@ -40,7 +53,6 @@ EDGE_SNAPPING_RADIUS = 24  # Socket snapping distance
 EDGE_SNAPPING = True  # Enable socket snapping
 
 # Debug flags
-DEBUG = False
 DEBUG_MMB_SCENE_ITEMS = False
 DEBUG_MMB_LAST_SELECTIONS = False
 DEBUG_EDGE_INTERSECT = False
@@ -48,172 +60,146 @@ DEBUG_STATE = False
 
 
 class QDMGraphicsView(QGraphicsView):
-    """Graphics view for the node editor with zooming, panning, and interaction support.
+    """Graphics view managing node editor interactions.
 
-    This class manages all user interactions including:
-    - Zooming with mouse wheel
-    - Panning with middle mouse button
-    - Edge dragging and creation
-    - Edge cutting
-    - Node selection and dragging
-    - Edge rerouting
-    - Socket snapping
+    Handles zooming, panning, edge operations, and selection through
+    a state machine with multiple interaction modes.
 
     Attributes:
-        grScene: Reference to QDMGraphicsScene
-        mode: Current interaction mode (MODE_NOOP, MODE_EDGE_DRAG, etc.)
-        zoom: Current zoom level
-        zoomInFactor: Zoom step scaling factor (default: 1.25)
-        zoomClamp: Whether to clamp zooming
-        zoomRange: Min/max zoom range
-        last_scene_mouse_position: Last mouse position in scene coordinates
+        grScene: QDMGraphicsScene being displayed.
+        mode: Current interaction mode constant.
+        zoom: Current zoom level integer.
+        zoomInFactor: Scaling factor per zoom step.
+        zoomClamp: Whether zoom is clamped to range.
+        zoomRange: [min, max] zoom level range.
+        last_scene_mouse_position: Last cursor position in scene coords.
 
     Signals:
-        scene_pos_changed: Emitted when cursor position changes (x, y)
+        scene_pos_changed: Emitted with (x, y) when cursor moves.
     """
 
-    # Signal for scene position changes
     scene_pos_changed = pyqtSignal(int, int)
 
     def __init__(self, gr_scene: QDMGraphicsScene, parent: QWidget | None = None) -> None:
-        """Initialize the graphics view.
+        """Initialize graphics view with a scene.
 
         Args:
-            gr_scene: QDMGraphicsScene to display
-            parent: Parent widget
+            gr_scene: QDMGraphicsScene to display.
+            parent: Optional parent widget.
         """
         super().__init__(parent)
         self.grScene = gr_scene
 
-        # Initialize UI
         self.initUI()
         self.setScene(self.grScene)
 
-        # State management
         self.mode: int = MODE_NOOP
         self.editingFlag: bool = False
         self.rubberBandDraggingRectangle: bool = False
 
-        # Edge dragging (late import to avoid circular dependencies)
         from node_editor.tools.edge_dragging import EdgeDragging
 
         self.dragging = EdgeDragging(self)
 
-        # Edge rerouting
         from node_editor.tools.edge_rerouting import EdgeRerouting
 
         self.rerouting = EdgeRerouting(self)
 
-        # Drop node on edge
         from node_editor.tools.edge_intersect import EdgeIntersect
 
         self.edgeIntersect = EdgeIntersect(self)
 
-        # Socket snapping
         from node_editor.tools.edge_snapping import EdgeSnapping
 
         self.snapping = EdgeSnapping(self, snapping_radius=EDGE_SNAPPING_RADIUS)
 
-        # Cut line
         from node_editor.graphics.cutline import QDMCutLine
 
         self.cutline = QDMCutLine()
         self.grScene.addItem(self.cutline)
 
-        # Mouse tracking
         self.last_scene_mouse_position = QPoint(0, 0)
         self.last_lmb_click_scene_pos: QPointF | None = None
 
-        # Zoom settings
         self.zoomInFactor = 1.25
         self.zoomClamp = True
         self.zoom = 10
         self.zoomStep = 1
         self.zoomRange = [0, 10]
 
-        # Event listeners
         self._drag_enter_listeners: list = []
         self._drop_listeners: list = []
 
     def initUI(self) -> None:
-        """Set up the graphics view."""
-        # Rendering hints
+        """Configure rendering hints and viewport behavior."""
         self.setRenderHints(
             QPainter.Antialiasing | QPainter.TextAntialiasing | QPainter.SmoothPixmapTransform
         )
 
-        # Update mode
         self.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
 
-        # Hide scrollbars
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
-        # Transformation and drag settings
         self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
         self.setDragMode(QGraphicsView.RubberBandDrag)
 
-        # Enable dropping
         self.setAcceptDrops(True)
 
     def isSnappingEnabled(self, event: QMouseEvent | None = None) -> bool:
-        """Check if socket snapping is currently enabled.
+        """Check if socket snapping is active.
 
         Args:
-            event: Mouse event (checks for Ctrl modifier)
+            event: Mouse event to check for Ctrl modifier.
 
         Returns:
-            True if snapping is enabled
+            True if snapping enabled and Ctrl pressed.
         """
         return EDGE_SNAPPING and is_ctrl_pressed(event) if event else True
 
     def resetMode(self) -> None:
-        """Reset the view's state machine to default mode."""
+        """Reset state machine to default NOOP mode."""
         self.mode = MODE_NOOP
 
-    # Event listener management
-
     def addDragEnterListener(self, callback) -> None:
-        """Register callback for drag enter event.
+        """Register callback for drag enter events.
 
         Args:
-            callback: Function to call on drag enter
+            callback: Function called on drag enter.
         """
         self._drag_enter_listeners.append(callback)
 
     def addDropListener(self, callback) -> None:
-        """Register callback for drop event.
+        """Register callback for drop events.
 
         Args:
-            callback: Function to call on drop
+            callback: Function called on drop.
         """
         self._drop_listeners.append(callback)
 
-    # Qt event handlers
-
     def dragEnterEvent(self, event: QDragEnterEvent) -> None:
-        """Handle drag enter events.
+        """Dispatch drag enter to registered listeners.
 
         Args:
-            event: Drag enter event
+            event: Qt drag enter event.
         """
         for callback in self._drag_enter_listeners:
             callback(event)
 
     def dropEvent(self, event: QDropEvent) -> None:
-        """Handle drop events.
+        """Dispatch drop to registered listeners.
 
         Args:
-            event: Drop event
+            event: Qt drop event.
         """
         for callback in self._drop_listeners:
             callback(event)
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
-        """Dispatch mouse press event to corresponding function.
+        """Route mouse press to button-specific handler.
 
         Args:
-            event: Mouse event
+            event: Qt mouse press event.
         """
         if event.button() == Qt.MiddleButton:
             self.middleMouseButtonPress(event)
@@ -225,10 +211,10 @@ class QDMGraphicsView(QGraphicsView):
             super().mousePressEvent(event)
 
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:
-        """Dispatch mouse release event to corresponding function.
+        """Route mouse release to button-specific handler.
 
         Args:
-            event: Mouse event
+            event: Qt mouse release event.
         """
         if event.button() == Qt.MiddleButton:
             self.middleMouseButtonRelease(event)
@@ -239,17 +225,16 @@ class QDMGraphicsView(QGraphicsView):
         else:
             super().mouseReleaseEvent(event)
 
-    # Middle mouse button - panning
-
     def middleMouseButtonPress(self, event: QMouseEvent) -> None:
-        """Handle middle mouse button press for panning and debug info.
+        """Start panning with middle mouse button.
+
+        Enables scroll-hand drag mode by simulating left button events.
 
         Args:
-            event: Mouse event
+            event: Qt mouse press event.
         """
         item = self.getItemAtClick(event)
 
-        # Debug printout
         if DEBUG_MMB_SCENE_ITEMS:
             from node_editor.graphics.edge import QDMGraphicsEdge
             from node_editor.graphics.socket import QDMGraphicsSocket
@@ -276,7 +261,6 @@ class QDMGraphicsView(QGraphicsView):
         if DEBUG_MMB_LAST_SELECTIONS and is_shift_pressed(event):
             return
 
-        # Enable MMB dragging by faking left button events
         release_event = QMouseEvent(
             QEvent.MouseButtonRelease,
             event.localPos(),
@@ -299,10 +283,10 @@ class QDMGraphicsView(QGraphicsView):
         super().mousePressEvent(fake_event)
 
     def middleMouseButtonRelease(self, event: QMouseEvent) -> None:
-        """Handle middle mouse button release to stop panning.
+        """Stop panning and restore rubber band mode.
 
         Args:
-            event: Mouse event
+            event: Qt mouse release event.
         """
         fake_event = QMouseEvent(
             event.type(),
@@ -315,24 +299,25 @@ class QDMGraphicsView(QGraphicsView):
         super().mouseReleaseEvent(fake_event)
         self.setDragMode(QGraphicsView.RubberBandDrag)
 
-    # Left mouse button - main interactions
-
     def leftMouseButtonPress(self, event: QMouseEvent) -> None:
-        """Handle left mouse button press for various interactions.
+        """Handle left click for selection and edge operations.
+
+        Determines action based on clicked item and modifier keys:
+        - Shift+click for multi-select
+        - Socket click to start edge drag
+        - Ctrl+socket click to start rerouting
+        - Ctrl+empty click to start cut line
 
         Args:
-            event: Mouse event
+            event: Qt mouse press event.
         """
         from node_editor.graphics.edge import QDMGraphicsEdge
         from node_editor.graphics.socket import QDMGraphicsSocket
 
-        # Get clicked item
         item = self.getItemAtClick(event)
 
-        # Store click position
         self.last_lmb_click_scene_pos = self.mapToScene(event.pos())
 
-        # Logic: Shift + LMB for multi-select
         if hasattr(item, "node") or isinstance(item, QDMGraphicsEdge) or item is None:
             if is_shift_pressed(event):
                 event.ignore()
@@ -347,7 +332,6 @@ class QDMGraphicsView(QGraphicsView):
                 super().mousePressEvent(fake_event)
                 return
 
-        # Start node dragging
         if hasattr(item, "node"):
             if DEBUG_EDGE_INTERSECT:
                 pass
@@ -357,13 +341,10 @@ class QDMGraphicsView(QGraphicsView):
                 if DEBUG_EDGE_INTERSECT:
                     pass
 
-        # Socket snapping
         if self.isSnappingEnabled(event):
             item = self.snapping.getSnappedSocketItem(event)
 
-        # Socket interactions
         if isinstance(item, QDMGraphicsSocket):
-            # Ctrl+Click on socket with edges = rerouting mode
             if self.mode == MODE_NOOP and is_ctrl_pressed(event):
                 socket = item.socket
                 if socket.hasAnyEdge():
@@ -371,22 +352,18 @@ class QDMGraphicsView(QGraphicsView):
                     self.rerouting.startRerouting(socket)
                     return
 
-            # Normal socket click = start edge drag
             if self.mode == MODE_NOOP:
                 self.mode = MODE_EDGE_DRAG
                 self.dragging.edgeDragStart(item)
                 return
 
-        # Finish edge drag
         if self.mode == MODE_EDGE_DRAG:
             res = self.dragging.edgeDragEnd(item)
             if res:
                 return
 
-        # Empty space click
         if item is None:
             if is_ctrl_pressed(event):
-                # Ctrl+Click = start edge cutting
                 self.mode = MODE_EDGE_CUT
                 fake_event = QMouseEvent(
                     QEvent.MouseButtonRelease,
@@ -405,10 +382,13 @@ class QDMGraphicsView(QGraphicsView):
         super().mousePressEvent(event)
 
     def leftMouseButtonRelease(self, event: QMouseEvent) -> None:
-        """Handle left mouse button release.
+        """Handle left button release to complete operations.
+
+        Finishes edge drag, rerouting, cutting, or selection based
+        on current mode.
 
         Args:
-            event: Mouse event
+            event: Qt mouse release event.
         """
         from node_editor.graphics.edge import QDMGraphicsEdge
         from node_editor.graphics.socket import QDMGraphicsSocket
@@ -416,7 +396,6 @@ class QDMGraphicsView(QGraphicsView):
         item = self.getItemAtClick(event)
 
         try:
-            # Logic: Shift + LMB release
             if hasattr(item, "node") or isinstance(item, QDMGraphicsEdge) or item is None:
                 if is_shift_pressed(event):
                     event.ignore()
@@ -431,7 +410,6 @@ class QDMGraphicsView(QGraphicsView):
                     super().mouseReleaseEvent(fake_event)
                     return
 
-            # Finish edge drag
             if self.mode == MODE_EDGE_DRAG:
                 if self.distanceBetweenClickAndReleaseIsOff(event):
                     if self.isSnappingEnabled(event):
@@ -441,7 +419,6 @@ class QDMGraphicsView(QGraphicsView):
                     if res:
                         return
 
-            # Finish edge rerouting
             if self.mode == MODE_EDGES_REROUTING:
                 if self.isSnappingEnabled(event):
                     item = self.snapping.getSnappedSocketItem(event)
@@ -456,7 +433,6 @@ class QDMGraphicsView(QGraphicsView):
                 )
                 self.mode = MODE_NOOP
 
-            # Finish edge cutting
             if self.mode == MODE_EDGE_CUT:
                 self.cutIntersectingEdges()
                 self.cutline.line_points = []
@@ -465,14 +441,12 @@ class QDMGraphicsView(QGraphicsView):
                 self.mode = MODE_NOOP
                 return
 
-            # Finish node dragging
             if self.mode == MODE_NODE_DRAG:
                 scenepos = self.mapToScene(event.pos())
                 self.edgeIntersect.leaveState(scenepos.x(), scenepos.y())
                 self.mode = MODE_NOOP
                 self.update()
 
-            # Finish rubber band selection
             if self.rubberBandDraggingRectangle:
                 self.rubberBandDraggingRectangle = False
                 current_selected_items = self.grScene.selectedItems()
@@ -487,7 +461,6 @@ class QDMGraphicsView(QGraphicsView):
                 super().mouseReleaseEvent(event)
                 return
 
-            # Deselect on empty space
             if item is None:
                 self.grScene.items_deselected.emit()
 
@@ -496,13 +469,11 @@ class QDMGraphicsView(QGraphicsView):
 
         super().mouseReleaseEvent(event)
 
-    # Right mouse button
-
     def rightMouseButtonPress(self, event: QMouseEvent) -> None:
         """Handle right mouse button press.
 
         Args:
-            event: Mouse event
+            event: Qt mouse press event.
         """
         super().mousePressEvent(event)
 
@@ -510,22 +481,22 @@ class QDMGraphicsView(QGraphicsView):
         """Handle right mouse button release.
 
         Args:
-            event: Mouse event
+            event: Qt mouse release event.
         """
         super().mouseReleaseEvent(event)
 
-    # Mouse move
-
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
-        """Handle mouse move for updating interactions.
+        """Update interactions during mouse movement.
+
+        Updates socket highlights, edge drag position, node drag
+        position, rerouting position, or cut line based on mode.
 
         Args:
-            event: Mouse event
+            event: Qt mouse move event.
         """
         scenepos = self.mapToScene(event.pos())
 
         try:
-            # Update socket highlights
             modified = self.setSocketHighlights(
                 scenepos, highlighted=False, radius=EDGE_SNAPPING_RADIUS + 100
             )
@@ -534,7 +505,6 @@ class QDMGraphicsView(QGraphicsView):
             if modified:
                 self.update()
 
-            # Update based on mode
             if self.mode == MODE_EDGE_DRAG:
                 self.dragging.updateDestination(scenepos.x(), scenepos.y())
 
@@ -557,17 +527,19 @@ class QDMGraphicsView(QGraphicsView):
         super().mouseMoveEvent(event)
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
-        """Handle key press events.
+        """Handle keyboard input.
 
         Args:
-            event: Key event
+            event: Qt key press event.
         """
         super().keyPressEvent(event)
 
-    # Helper methods
-
     def cutIntersectingEdges(self) -> None:
-        """Cut all edges that intersect with the current cut line."""
+        """Remove all edges intersecting the current cut line.
+
+        Iterates through cut line segments and removes any edges
+        that intersect. Stores history after completion.
+        """
         for ix in range(len(self.cutline.line_points) - 1):
             p1 = self.cutline.line_points[ix]
             p2 = self.cutline.line_points[ix + 1]
@@ -581,15 +553,15 @@ class QDMGraphicsView(QGraphicsView):
     def setSocketHighlights(
         self, scenepos: QPointF, highlighted: bool = True, radius: float = 50
     ) -> list:
-        """Set/disable socket highlights in scene area.
+        """Set highlight state for sockets in an area.
 
         Args:
-            scenepos: Scene position to check around
-            highlighted: Whether to highlight or unhighlight
-            radius: Search radius
+            scenepos: Center position for search area.
+            highlighted: Whether to highlight or clear.
+            radius: Search radius in scene coordinates.
 
         Returns:
-            List of affected socket items
+            List of affected QDMGraphicsSocket items.
         """
         from node_editor.graphics.socket import QDMGraphicsSocket
 
@@ -603,7 +575,10 @@ class QDMGraphicsView(QGraphicsView):
         return items
 
     def deleteSelected(self) -> None:
-        """Delete all selected items in the scene."""
+        """Delete all currently selected nodes and edges.
+
+        Removes selected items and stores undo history.
+        """
         from node_editor.graphics.edge import QDMGraphicsEdge
 
         for item in self.grScene.selectedItems():
@@ -615,46 +590,44 @@ class QDMGraphicsView(QGraphicsView):
         self.grScene.scene.history.storeHistory("Delete selected", set_modified=True)
 
     def getItemAtClick(self, event: QEvent):
-        """Get the graphics item at the click position.
+        """Get graphics item at event position.
 
         Args:
-            event: Mouse or key event
+            event: Qt event with position information.
 
         Returns:
-            QGraphicsItem at the position or None
+            QGraphicsItem at position, or None.
         """
         pos = event.pos()
         obj = self.itemAt(pos)
         return obj
 
     def distanceBetweenClickAndReleaseIsOff(self, event: QMouseEvent) -> bool:
-        """Check if release is too far from click position.
+        """Check if release position exceeds drag threshold.
 
-        This is used to detect if we release too far after clicking on a socket.
+        Used to distinguish click from drag on sockets.
 
         Args:
-            event: Mouse event
+            event: Qt mouse release event.
 
         Returns:
-            True if distance exceeds threshold
+            True if distance exceeds EDGE_DRAG_START_THRESHOLD.
         """
         new_lmb_release_scene_pos = self.mapToScene(event.pos())
         dist_scene = new_lmb_release_scene_pos - self.last_lmb_click_scene_pos
         edge_drag_threshold_sq = EDGE_DRAG_START_THRESHOLD * EDGE_DRAG_START_THRESHOLD
         return (dist_scene.x() ** 2 + dist_scene.y() ** 2) > edge_drag_threshold_sq
 
-    # Zooming
-
     def wheelEvent(self, event: QWheelEvent) -> None:
         """Handle mouse wheel for zooming.
 
+        Scales view centered on cursor position.
+
         Args:
-            event: Wheel event
+            event: Qt wheel event.
         """
-        # Calculate zoom factor
         zoom_out_factor = 1 / self.zoomInFactor
 
-        # Calculate zoom direction
         if event.angleDelta().y() > 0:
             zoom_factor = self.zoomInFactor
             self.zoom += self.zoomStep
@@ -662,13 +635,11 @@ class QDMGraphicsView(QGraphicsView):
             zoom_factor = zoom_out_factor
             self.zoom -= self.zoomStep
 
-        # Clamp zoom
         clamped = False
         if self.zoom < self.zoomRange[0]:
             self.zoom, clamped = self.zoomRange[0], True
         if self.zoom > self.zoomRange[1]:
             self.zoom, clamped = self.zoomRange[1], True
 
-        # Apply zoom
         if not clamped or self.zoomClamp is False:
             self.scale(zoom_factor, zoom_factor)

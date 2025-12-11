@@ -1,20 +1,23 @@
 #!/usr/bin/env python
+"""Basic import tests for the node_editor package.
 
-"""
-Tests for `nodeeditor` package.
+Verifies that core module imports work correctly.
 
-Author: Michael Economou
-Date: 2025-12-11
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 
 import unittest
 
-from nodeeditor.node_scene import Scene
+from node_editor.core.scene import Scene
 
 
 class TestTemplate(unittest.TestCase):
-    """Tests for `nodeeditor` package."""
+    """Basic tests for node_editor package imports."""
 
     def setUp(self):
         """Set up test fixtures, if any."""
@@ -23,5 +26,5 @@ class TestTemplate(unittest.TestCase):
         """Tear down test fixtures, if any."""
 
     def test_000_something(self):
-        """Test if Scene got has_been_modified property."""
-        assert(hasattr(Scene, 'has_been_modified'))
+        """Test if Scene has has_been_modified property."""
+        assert hasattr(Scene, "has_been_modified")

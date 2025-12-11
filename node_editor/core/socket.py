@@ -1,8 +1,20 @@
-"""
-Socket class for node connection points.
+"""Socket connection points for node inputs and outputs.
 
-Author: Michael Economou
-Date: 2025-12-11
+This module defines the Socket class representing connection endpoints on nodes.
+Sockets serve as anchors for edges, enabling visual connections between nodes
+in the graph. Each socket has a type (affecting visual appearance and
+connection compatibility) and can be configured for single or multiple
+simultaneous connections.
+
+Position Constants:
+    LEFT_TOP, LEFT_CENTER, LEFT_BOTTOM: Input socket positions.
+    RIGHT_TOP, RIGHT_CENTER, RIGHT_BOTTOM: Output socket positions.
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 from collections import OrderedDict
@@ -15,7 +27,7 @@ if TYPE_CHECKING:
     from node_editor.core.node import Node
     from node_editor.graphics.socket import QDMGraphicsSocket
 
-# Socket position constants
+# Socket position constants for node layout
 LEFT_TOP = 1
 LEFT_CENTER = 2
 LEFT_BOTTOM = 3
@@ -23,29 +35,39 @@ RIGHT_TOP = 4
 RIGHT_CENTER = 5
 RIGHT_BOTTOM = 6
 
-DEBUG = False
 DEBUG_REMOVE_WARNINGS = False
 
 
 class Socket(Serializable):
-    """Socket for connecting nodes with edges.
+    """Connection point on a node for attaching edges.
 
-    Represents a connection point on a node. Can be input or output,
-    and can support single or multiple edge connections.
+    Sockets are the interface between nodes and edges. Input sockets receive
+    data from connected output sockets, while output sockets send data out.
+    Each socket maintains a list of connected edges and manages connection
+    lifecycle (add/remove edges).
+
+    The socket type determines visual appearance (color) and can be used for
+    type-checking connections. Multi-edge sockets allow multiple simultaneous
+    connections; single-edge sockets disconnect existing edges when a new
+    connection is made.
 
     Attributes:
-        node: Parent node containing this socket
-        index: Socket index on its side of the node
-        position: Socket position (LEFT_TOP, RIGHT_CENTER, etc.)
-        socket_type: Type/color identifier for the socket
-        is_multi_edges: Whether multiple edges can connect
-        is_input: True if input socket, False if output
-        is_output: True if output socket, False if input
-        edges: List of connected edges
-        grSocket: Graphics representation
+        node: Parent node that owns this socket.
+        index: Zero-based index among sockets on the same side.
+        position: Position constant (LEFT_TOP, RIGHT_CENTER, etc.).
+        socket_type: Integer type identifier affecting visual color.
+        is_multi_edges: True if multiple edges can connect simultaneously.
+        is_input: True for input sockets (left side).
+        is_output: True for output sockets (right side).
+        edges: List of currently connected Edge instances.
+        grSocket: Associated QDMGraphicsSocket for visual representation.
+        count_on_this_node_side: Total socket count on this side for layout.
+
+    Class Attributes:
+        Socket_GR_Class: Graphics class for socket visualization (set at init).
     """
 
-    Socket_GR_Class: type["QDMGraphicsSocket"] | None = None  # Set at module load
+    Socket_GR_Class: type["QDMGraphicsSocket"] | None = None
 
     def __init__(
         self,
@@ -57,16 +79,16 @@ class Socket(Serializable):
         count_on_this_node_side: int = 1,
         is_input: bool = False
     ):
-        """Initialize socket.
+        """Create a socket attached to a node.
 
         Args:
-            node: Parent node
-            index: Socket index on this side
-            position: Socket position constant
-            socket_type: Type identifier (affects color)
-            multi_edges: Allow multiple edge connections
-            count_on_this_node_side: Total sockets on this side
-            is_input: True for input socket
+            node: Parent node that will contain this socket.
+            index: Socket index on this side of the node (0-based).
+            position: Position constant determining socket placement.
+            socket_type: Type identifier for visual styling and compatibility.
+            multi_edges: Allow multiple simultaneous edge connections.
+            count_on_this_node_side: Total sockets on this side for layout calc.
+            is_input: True for input socket, False for output socket.
         """
         super().__init__()
 
@@ -79,38 +101,38 @@ class Socket(Serializable):
         self.is_input = is_input
         self.is_output = not self.is_input
 
-        if DEBUG:
-            pass
-
-        # Create graphics socket
         self.grSocket: QDMGraphicsSocket = self.__class__.Socket_GR_Class(self)
         self.setSocketPosition()
 
         self.edges: list[Edge] = []
 
     def __str__(self) -> str:
-        """Return string representation of socket.
+        """Return human-readable socket representation.
 
         Returns:
-            String in format: <Socket #index ME/SE ID> (ME=multi-edge, SE=single-edge)
+            Format: <Socket #index ME|SE ID> where ME=multi-edge, SE=single-edge.
         """
         edge_type = "ME" if self.is_multi_edges else "SE"
         return f"<Socket #{self.index} {edge_type} {hex(id(self))[2:5]}..{hex(id(self))[-3:]}>"
 
     def delete(self) -> None:
-        """Delete socket and remove from graphics scene."""
+        """Remove socket from scene and clean up graphics resources.
+
+        Detaches the graphics socket from its parent and removes it from
+        the graphics scene. Should be called before discarding the socket.
+        """
         self.grSocket.setParentItem(None)
         self.node.scene.grScene.removeItem(self.grSocket)
         del self.grSocket
 
     def changeSocketType(self, new_socket_type: int) -> bool:
-        """Change socket type/color.
+        """Update socket type and refresh visual appearance.
 
         Args:
-            new_socket_type: New type identifier
+            new_socket_type: New type identifier for the socket.
 
         Returns:
-            True if type was changed
+            True if type changed, False if already set to this type.
         """
         if self.socket_type != new_socket_type:
             self.socket_type = new_socket_type
@@ -119,59 +141,62 @@ class Socket(Serializable):
         return False
 
     def setSocketPosition(self) -> None:
-        """Update graphics socket position based on node layout."""
+        """Update graphics socket position based on current node layout.
+
+        Queries the parent node for this socket's position and updates
+        the graphics socket accordingly.
+        """
         pos = self.node.getSocketPosition(
             self.index, self.position, self.count_on_this_node_side
         )
         self.grSocket.setPos(*pos)
 
     def getSocketPosition(self) -> tuple[float, float]:
-        """Get socket position from node.
+        """Calculate socket position in node-local coordinates.
 
         Returns:
-            (x, y) position tuple
+            Tuple of (x, y) position relative to parent node.
         """
-        if DEBUG:
-            pass
         result = self.node.getSocketPosition(
             self.index, self.position, self.count_on_this_node_side
         )
-        if DEBUG:
-            pass
         return result
 
     def hasAnyEdge(self) -> bool:
-        """Check if any edge is connected.
+        """Check if socket has any connected edges.
 
         Returns:
-            True if at least one edge is connected
+            True if at least one edge is connected to this socket.
         """
         return len(self.edges) > 0
 
     def isConnected(self, edge: "Edge") -> bool:
-        """Check if specific edge is connected.
+        """Check if a specific edge is connected to this socket.
 
         Args:
-            edge: Edge to check
+            edge: Edge instance to check for connection.
 
         Returns:
-            True if edge is connected to this socket
+            True if the edge is in this socket's edge list.
         """
         return edge in self.edges
 
     def addEdge(self, edge: "Edge") -> None:
-        """Add edge to connected edges list.
+        """Register an edge as connected to this socket.
 
         Args:
-            edge: Edge to add
+            edge: Edge to add to the connection list.
         """
         self.edges.append(edge)
 
     def removeEdge(self, edge: "Edge") -> None:
-        """Remove edge from connected edges list.
+        """Unregister an edge from this socket.
 
         Args:
-            edge: Edge to remove
+            edge: Edge to remove from the connection list.
+
+        Note:
+            Silently ignores if edge is not connected.
         """
         if edge in self.edges:
             self.edges.remove(edge)
@@ -179,10 +204,13 @@ class Socket(Serializable):
             pass
 
     def removeAllEdges(self, silent: bool = False) -> None:
-        """Disconnect all edges from this socket.
+        """Disconnect and remove all edges from this socket.
+
+        Iterates through all connected edges and removes them. Each edge
+        is properly cleaned up through its remove() method.
 
         Args:
-            silent: If True, don't notify about removals
+            silent: If True, suppress removal notifications to this socket.
         """
         while self.edges:
             edge = self.edges.pop(0)
@@ -192,24 +220,27 @@ class Socket(Serializable):
                 edge.remove()
 
     def determineMultiEdges(self, data: dict) -> bool:
-        """Determine if socket should support multi-edges (for old file format).
+        """Determine multi-edge capability from serialized data.
+
+        Handles backward compatibility with older file formats that didn't
+        explicitly store multi_edges flag.
 
         Args:
-            data: Deserialized socket data
+            data: Deserialized socket data dictionary.
 
         Returns:
-            True if socket should support multiple edges
+            True if socket should allow multiple edge connections.
         """
         if "multi_edges" in data:
             return data["multi_edges"]
-        # Older format: RIGHT sockets were multi-edge by default
+        # Legacy format: output sockets (RIGHT_*) were multi-edge by default
         return data["position"] in (RIGHT_BOTTOM, RIGHT_TOP)
 
     def serialize(self) -> OrderedDict:
-        """Serialize socket to dictionary.
+        """Convert socket state to ordered dictionary for persistence.
 
         Returns:
-            OrderedDict with socket data
+            OrderedDict containing socket configuration and ID.
         """
         return OrderedDict([
             ("id", self.id),
@@ -225,15 +256,15 @@ class Socket(Serializable):
         hashmap: dict | None = None,
         restore_id: bool = True
     ) -> bool:
-        """Deserialize socket from dictionary.
+        """Restore socket state from serialized dictionary.
 
         Args:
-            data: Dictionary with socket data
-            hashmap: Map of IDs to objects
-            restore_id: Whether to restore the ID
+            data: Dictionary containing serialized socket data.
+            hashmap: Maps original IDs to restored objects for references.
+            restore_id: If True, restore original ID from data.
 
         Returns:
-            True if successful
+            True on successful deserialization.
         """
         if hashmap is None:
             hashmap = {}

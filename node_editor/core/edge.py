@@ -1,8 +1,26 @@
-"""
-Edge class for connecting nodes and edge type constants.
+"""Edge connections between node sockets.
 
-Author: Michael Economou
-Date: 2025-12-11
+This module defines the Edge class representing visual connections between
+node sockets in the graph. Edges support multiple path styles (direct,
+bezier, square) and include a validation system for controlling which
+connections are allowed.
+
+Edge Type Constants:
+    EDGE_TYPE_DIRECT: Straight line connection.
+    EDGE_TYPE_BEZIER: Classic bezier curve.
+    EDGE_TYPE_SQUARE: Right-angle stepped path.
+    EDGE_TYPE_IMPROVED_SHARP: Improved sharp-corner path.
+    EDGE_TYPE_IMPROVED_BEZIER: Smooth bezier with optimized control points.
+
+The validation system allows registering callbacks that approve or reject
+connections before they are established, enabling type-checking or custom
+connection rules.
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 import contextlib
@@ -17,7 +35,7 @@ if TYPE_CHECKING:
     from node_editor.core.socket import Socket
     from node_editor.graphics.edge import QDMGraphicsEdge
 
-# Edge type constants
+# Edge path style constants
 EDGE_TYPE_DIRECT = 1
 EDGE_TYPE_BEZIER = 2
 EDGE_TYPE_SQUARE = 3
@@ -25,25 +43,32 @@ EDGE_TYPE_IMPROVED_SHARP = 4
 EDGE_TYPE_IMPROVED_BEZIER = 5
 EDGE_TYPE_DEFAULT = EDGE_TYPE_IMPROVED_BEZIER
 
-DEBUG = False
-
 
 class Edge(Serializable):
-    """Class for representing edge in node editor.
+    """Visual connection between two sockets in the node graph.
 
-    An edge connects two sockets (start and end) and has a visual
-    representation determined by edge_type.
+    An edge links an output socket to an input socket, representing data
+    flow between nodes. The edge manages its own lifecycle, registering
+    with connected sockets and updating its visual path when nodes move.
+
+    Edges support validation through class-level callbacks that can approve
+    or reject connections based on socket types, node states, or custom
+    logic. This enables features like type-safe connections.
 
     Attributes:
-        scene: Reference to parent Scene
-        start_socket: Starting socket
-        end_socket: Ending socket or None if dragging
-        edge_type: Type constant determining visual style
-        grEdge: Graphics representation (QDMGraphicsEdge)
+        scene: Parent Scene containing this edge.
+        start_socket: Source socket (typically an output).
+        end_socket: Target socket (typically an input), or None while dragging.
+        edge_type: Path style constant (EDGE_TYPE_DIRECT, etc.).
+        grEdge: QDMGraphicsEdge instance for visual representation.
+
+    Class Attributes:
+        edge_validators: List of validation callback functions.
+        GraphicsEdge_class: Graphics class for edge visualization (set at init).
     """
 
-    edge_validators: list = []  # Class variable for edge validators
-    GraphicsEdge_class: type["QDMGraphicsEdge"] | None = None  # Set at module load
+    edge_validators: list = []
+    GraphicsEdge_class: type["QDMGraphicsEdge"] | None = None
 
     def __init__(
         self,
@@ -52,18 +77,21 @@ class Edge(Serializable):
         end_socket: "Socket | None" = None,
         edge_type: int = EDGE_TYPE_DEFAULT,
     ):
-        """Initialize edge.
+        """Create an edge between two sockets.
+
+        The edge registers itself with the scene and both sockets. If start
+        socket is provided, initial positions are calculated and the graphics
+        edge is updated.
 
         Args:
-            scene: Reference to parent Scene
-            start_socket: Reference to starting socket
-            end_socket: Reference to end socket or None
-            edge_type: Constant determining edge type
+            scene: Parent scene that will contain this edge.
+            start_socket: Source socket to connect from (typically output).
+            end_socket: Target socket to connect to (typically input).
+            edge_type: Visual path style constant.
         """
         super().__init__()
         self.scene = scene
 
-        # Initialize sockets
         self._start_socket: Socket | None = None
         self._end_socket: Socket | None = None
 
@@ -71,16 +99,15 @@ class Edge(Serializable):
         self.end_socket = end_socket
         self._edge_type = edge_type
 
-        # Create graphics edge instance
         self.grEdge = self.createEdgeClassInstance()
 
         self.scene.addEdge(self)
 
     def __str__(self) -> str:
-        """Return string representation of edge.
+        """Return human-readable edge representation.
 
         Returns:
-            String in format: <Edge ID -- S:socket E:socket>
+            Format: <Edge ID -- S:socket E:socket> showing both endpoints.
         """
         return (
             f"<Edge {hex(id(self))[2:5]}..{hex(id(self))[-3:]} -- "
@@ -89,73 +116,76 @@ class Edge(Serializable):
 
     @property
     def start_socket(self) -> "Socket | None":
-        """Start socket.
+        """Source socket for this edge.
 
         Returns:
-            Start socket or None
+            Socket instance or None if not connected.
         """
         return self._start_socket
 
     @start_socket.setter
     def start_socket(self, value: "Socket | None") -> None:
-        """Set start socket safely.
+        """Set source socket with automatic registration.
+
+        Removes edge from previous socket edge list and registers
+        with new socket.
 
         Args:
-            value: New start socket
+            value: New source socket, or None to disconnect.
         """
-        # Remove from previous socket
         if self._start_socket is not None:
             self._start_socket.removeEdge(self)
 
-        # Assign new start socket
         self._start_socket = value
         if self.start_socket is not None:
             self.start_socket.addEdge(self)
 
     @property
     def end_socket(self) -> "Socket | None":
-        """End socket.
+        """Target socket for this edge.
 
         Returns:
-            End socket or None if not connected
+            Socket instance or None if edge is being dragged.
         """
         return self._end_socket
 
     @end_socket.setter
     def end_socket(self, value: "Socket | None") -> None:
-        """Set end socket safely.
+        """Set target socket with automatic registration.
+
+        Removes edge from previous socket edge list and registers
+        with new socket.
 
         Args:
-            value: New end socket
+            value: New target socket, or None to disconnect.
         """
-        # Remove from previous socket
         if self._end_socket is not None:
             self._end_socket.removeEdge(self)
 
-        # Assign new end socket
         self._end_socket = value
         if self.end_socket is not None:
             self.end_socket.addEdge(self)
 
     @property
     def edge_type(self) -> int:
-        """Edge type constant.
+        """Visual path style constant.
 
         Returns:
-            Edge type constant
+            One of EDGE_TYPE_* constants.
         """
         return self._edge_type
 
     @edge_type.setter
     def edge_type(self, value: int) -> None:
-        """Set edge type and update graphics.
+        """Change edge path style and refresh graphics.
+
+        Updates the path calculator and recalculates positions.
 
         Args:
-            value: New edge type constant
+            value: New path style constant.
         """
         self._edge_type = value
 
-        # Update graphics edge path calculator
         self.grEdge.createEdgePathCalculator()
 
         if self.start_socket is not None:
@@ -163,41 +193,44 @@ class Edge(Serializable):
 
     @classmethod
     def getEdgeValidators(cls) -> list:
-        """Get list of edge validator callbacks.
+        """Retrieve registered edge validator callbacks.
 
         Returns:
-            List of validator functions
+            List of validator functions.
         """
         return cls.edge_validators
 
     @classmethod
     def registerEdgeValidator(cls, validator_callback) -> None:
-        """Register edge validator callback.
+        """Register a callback to validate edge connections.
+
+        Validators receive (start_socket, end_socket) and return True
+        if the connection should be allowed.
 
         Args:
-            validator_callback: Function to validate edge
+            validator_callback: Function(start_socket, end_socket) -> bool.
         """
         cls.edge_validators.append(validator_callback)
 
     @classmethod
     def validateEdge(cls, start_socket: "Socket", end_socket: "Socket") -> bool:
-        """Validate edge against all registered validators.
+        """Check if connection is allowed by all validators.
 
         Args:
-            start_socket: Starting socket to check
-            end_socket: Target/end socket to check
+            start_socket: Proposed source socket.
+            end_socket: Proposed target socket.
 
         Returns:
-            True if edge is valid
+            True if all validators approve the connection.
         """
         return all(validator(start_socket, end_socket) for validator in cls.getEdgeValidators())
 
     def reconnect(self, from_socket: "Socket", to_socket: "Socket") -> None:
-        """Reconnect edge from one socket to another.
+        """Move one endpoint to a different socket.
 
         Args:
-            from_socket: Socket to disconnect from
-            to_socket: Socket to connect to
+            from_socket: Current socket to disconnect from.
+            to_socket: New socket to connect to.
         """
         if self.start_socket == from_socket:
             self.start_socket = to_socket
@@ -205,18 +238,21 @@ class Edge(Serializable):
             self.end_socket = to_socket
 
     def getGraphicsEdgeClass(self) -> type["QDMGraphicsEdge"]:
-        """Get class representing graphics edge.
+        """Get graphics class for edge visualization.
 
         Returns:
-            Graphics edge class
+            QDMGraphicsEdge class or subclass.
         """
         return self.__class__.GraphicsEdge_class
 
     def createEdgeClassInstance(self) -> "QDMGraphicsEdge":
-        """Create instance of graphics edge.
+        """Instantiate and configure graphics edge.
+
+        Creates the visual representation, adds it to the scene,
+        and calculates initial path if start socket exists.
 
         Returns:
-            Instance of graphics edge
+            Configured QDMGraphicsEdge instance.
         """
         self.grEdge = self.getGraphicsEdgeClass()(self)
         self.scene.grScene.addItem(self.grEdge)
@@ -225,26 +261,33 @@ class Edge(Serializable):
         return self.grEdge
 
     def getOtherSocket(self, known_socket: "Socket") -> "Socket | None":
-        """Get opposite socket on this edge.
+        """Get the opposite socket on this edge.
+
+        Given one endpoint, returns the other. Useful for traversing
+        the graph through edges.
 
         Args:
-            known_socket: Known socket to determine opposite
+            known_socket: One of the two connected sockets.
 
         Returns:
-            Opposite socket or None
+            The other socket, or None if known_socket is not connected.
         """
         return self.start_socket if known_socket == self.end_socket else self.end_socket
 
     def doSelect(self, new_state: bool = True) -> None:
-        """Safe selecting/deselecting operation.
+        """Programmatically select or deselect this edge.
 
         Args:
-            new_state: True to select, False to deselect
+            new_state: True to select, False to deselect.
         """
         self.grEdge.doSelect(new_state)
 
     def updatePositions(self) -> None:
-        """Update graphics edge positions from sockets."""
+        """Recalculate edge path based on current socket positions.
+
+        Queries both sockets for their scene positions and updates
+        the graphics edge endpoints. Called automatically when nodes move.
+        """
         source_pos = list(self.start_socket.getSocketPosition())
         source_pos[0] += self.start_socket.node.grNode.pos().x()
         source_pos[1] += self.start_socket.node.grNode.pos().y()
@@ -261,57 +304,45 @@ class Edge(Serializable):
         self.grEdge.update()
 
     def remove_from_sockets(self) -> None:
-        """Remove edge from both sockets."""
+        """Unregister edge from both connected sockets.
+
+        Sets both socket references to None, which triggers the property
+        setters to remove this edge from socket edge lists.
+        """
         self.end_socket = None
         self.start_socket = None
 
     def remove(self, silent_for_socket: "Socket | None" = None, silent: bool = False) -> None:
-        """Safely remove this edge.
+        """Delete edge and clean up all references.
 
-        Removes graphics edge and notifies connected nodes.
+        Removes graphics item, unregisters from sockets and scene,
+        and notifies connected nodes of the disconnection.
 
         Args:
-            silent_for_socket: Socket that won't be notified
-            silent: True if no events should be triggered
+            silent_for_socket: Skip notification to this socket node.
+            silent: If True, suppress all node notifications.
         """
         old_sockets = [self.start_socket, self.end_socket]
 
-        # Hide graphics edge
-        if DEBUG:
-            pass
         self.grEdge.hide()
 
-        if DEBUG:
-            pass
         self.scene.grScene.removeItem(self.grEdge)
 
         self.scene.grScene.update()
 
-        if DEBUG:
-            pass
-        if DEBUG:
-            pass
         self.remove_from_sockets()
 
-        if DEBUG:
-            pass
         with contextlib.suppress(ValueError):
             self.scene.removeEdge(self)
 
-        if DEBUG:
-            pass
-
         try:
-            # Notify nodes from old sockets
             for socket in old_sockets:
                 if socket and socket.node:
                     if silent:
                         continue
                     if silent_for_socket is not None and socket == silent_for_socket:
-                        # Skip notifications for requested socket
                         continue
 
-                    # Notify socket's node
                     socket.node.onEdgeConnectionChanged(self)
                     if socket.is_input:
                         socket.node.onInputChanged(socket)
@@ -320,10 +351,10 @@ class Edge(Serializable):
             dumpException(e)
 
     def serialize(self) -> OrderedDict:
-        """Serialize edge to dictionary.
+        """Convert edge state to ordered dictionary for persistence.
 
         Returns:
-            OrderedDict with edge data
+            OrderedDict with edge ID, type, and socket references.
         """
         return OrderedDict(
             [
@@ -345,15 +376,17 @@ class Edge(Serializable):
         *_args,
         **_kwargs,
     ) -> bool:
-        """Deserialize edge from dictionary.
+        """Restore edge state from serialized dictionary.
+
+        Reconnects to sockets using hashmap to resolve IDs to objects.
 
         Args:
-            data: Dictionary with edge data
-            hashmap: Map of IDs to objects
-            restore_id: Whether to restore the ID
+            data: Dictionary containing serialized edge data.
+            hashmap: Maps original IDs to restored objects.
+            restore_id: If True, restore original ID from data.
 
         Returns:
-            True if successful
+            True on successful deserialization.
         """
         if hashmap is None:
             hashmap = {}

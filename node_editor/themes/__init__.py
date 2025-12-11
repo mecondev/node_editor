@@ -1,18 +1,29 @@
-"""
-Themes module - Theme engine for customizing node editor appearance.
+"""Theme system for customizing node editor appearance.
+
+This module provides a theme engine that allows switching between
+different visual themes for the node editor. Built-in themes include
+dark and light variants.
 
 Usage:
-    from node_editor.themes import ThemeEngine
+    Switch themes and access theme properties::
 
-    # Set theme
-    ThemeEngine.set_theme("dark")
+        from node_editor.themes import ThemeEngine
 
-    # Get current theme colors
-    theme = ThemeEngine.get_theme()
-    color = theme.node_background
+        ThemeEngine.set_theme("dark")
+        theme = ThemeEngine.get_theme()
+        bg_color = theme.node_background
 
-Author: Michael Economou
-Date: 2025-12-11
+Classes:
+    ThemeEngine: Theme manager for loading and switching themes.
+    BaseTheme: Abstract base class for theme definitions.
+    DarkTheme: Dark color scheme theme.
+    LightTheme: Light color scheme theme.
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 from node_editor.themes.base_theme import BaseTheme

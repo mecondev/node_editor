@@ -1,32 +1,47 @@
-"""
-Node Editor - A portable PyQt5 node-based visual programming framework.
+"""Node Editor - A PyQt5 framework for building node-based visual editors.
 
-Usage:
-    from node_editor import NodeEditorWidget, NodeEditorWindow
-    from node_editor.nodes import BaseNode, NodeRegistry
-    from node_editor.themes import ThemeEngine
+This package provides a complete, extensible node editor framework for creating
+visual programming interfaces, data flow graphs, and node-based tools.
+
+Core Components:
+    Node: Base class for graph nodes with input/output sockets.
+    Edge: Connections between node sockets.
+    Socket: Connection points on nodes (inputs/outputs).
+    Scene: Container managing nodes, edges, and their interactions.
+
+Widget Components:
+    NodeEditorWidget: Embeddable widget containing scene and view.
+    NodeEditorWindow: Complete standalone window with menus and toolbar.
+
+Extension Points:
+    BaseNode: Subclass to create custom node types.
+    NodeRegistry: Register custom nodes with operation codes.
+    ThemeEngine: Customize visual appearance.
 
 Example:
-    # Embed in your application
-    from node_editor import NodeEditorWidget
+    Embedding in an application::
 
-    widget = NodeEditorWidget(parent)
-    layout.addWidget(widget)
+        from node_editor import NodeEditorWidget
+        widget = NodeEditorWidget(parent)
+        layout.addWidget(widget)
 
-    # Create custom nodes
-    from node_editor.nodes import BaseNode, NodeRegistry
+    Creating custom nodes::
 
-    @NodeRegistry.register(100)
-    class MyNode(BaseNode):
-        op_title = "My Custom Node"
-        ...
+        from node_editor.nodes import BaseNode, NodeRegistry
 
-Author: Michael Economou
-Date: 2025-12-11
+        @NodeRegistry.register(100)
+        class MyNode(BaseNode):
+            op_title = "My Custom Node"
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 __version__ = "1.0.0"
-__author__ = ""
+__author__ = "Michael Economou"
 
 # Initialize graphics class bindings (must be done before using widgets)
 from node_editor.core import _init_graphics_classes

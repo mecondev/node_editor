@@ -1,8 +1,19 @@
-"""
-Graphics representation of a Socket.
+"""Graphics representation of socket connection points.
 
-Author: Michael Economou
-Date: 2025-12-11
+This module defines QDMGraphicsSocket, the Qt graphics item that renders
+socket circles on nodes. Sockets are connection points where edges can
+attach to transfer data between nodes.
+
+The graphics socket:
+    - Renders as a colored circle indicating socket type
+    - Supports highlight state for connection feedback
+    - Integrates with theme system for customization
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 from typing import TYPE_CHECKING
@@ -18,22 +29,24 @@ if TYPE_CHECKING:
 
 
 class QDMGraphicsSocket(QGraphicsItem):
-    """Class representing graphic Socket in QGraphicsScene.
+    """Qt graphics item rendering socket connection points.
 
-    Visual representation of a socket with theme support.
+    Displays colored circle representing a socket, with visual feedback
+    for connection highlighting. Color indicates socket type for
+    compatibility checking.
 
     Attributes:
-        socket: Reference to logical socket
-        isHighlighted: Whether socket is highlighted for connection
-        radius: Socket circle radius in pixels
-        outline_width: Width of socket outline
+        socket: Reference to logical Socket model.
+        isHighlighted: True when highlighted during connection drag.
+        radius: Socket circle radius in pixels.
+        outline_width: Width of socket outline stroke.
     """
 
     def __init__(self, socket: "Socket"):
-        """Initialize graphics socket.
+        """Initialize graphics socket for a logical socket.
 
         Args:
-            socket: Reference to logical socket
+            socket: Logical Socket this graphics item represents.
         """
         super().__init__(socket.node.grNode)
 
@@ -50,47 +63,51 @@ class QDMGraphicsSocket(QGraphicsItem):
         """Get socket type from logical socket.
 
         Returns:
-            Socket type identifier
+            Socket type identifier integer.
         """
         return self.socket.socket_type
 
     def getSocketColor(self, key: int | str) -> QColor:
-        """Get color for socket type.
+        """Resolve color for a socket type.
 
-        Uses theme engine for socket colors.
+        Looks up socket type in theme color list. Falls back to
+        first color if type index is out of range.
 
         Args:
-            key: Socket type (int) or color string
+            key: Socket type integer or hex color string.
 
         Returns:
-            QColor for this socket type
+            QColor for the specified socket type.
         """
         theme = ThemeEngine.current_theme()
         if isinstance(key, int):
-            # Get socket color from theme
             if 0 <= key < len(theme.socket_colors):
                 return theme.socket_colors[key]
-            return theme.socket_colors[0]  # Default to first color
+            return theme.socket_colors[0]
         elif isinstance(key, str):
             return QColor(key)
         return Qt.GlobalColor.transparent
 
     def changeSocketType(self) -> None:
-        """Change socket type and update colors."""
+        """Update visual appearance after socket type change.
+
+        Refreshes background color and brush from current type.
+        """
         self._color_background = self.getSocketColor(self.socket_type)
         self._brush = QBrush(self._color_background)
         self.update()
 
     def initAssets(self) -> None:
-        """Initialize Qt objects like QColor, QPen and QBrush."""
+        """Initialize pens and brushes from theme.
+
+        Creates Qt drawing objects for normal and highlighted states.
+        """
         theme = ThemeEngine.current_theme()
 
-        # Socket colors from theme
         self._color_background = self.getSocketColor(self.socket_type)
         self._color_outline = theme.socket_outline_color
         self._color_highlight = theme.socket_highlight_color
 
-        # Pens and brushes
         self._pen = QPen(self._color_outline)
         self._pen.setWidthF(self.outline_width)
         self._pen_highlight = QPen(self._color_highlight)
@@ -98,22 +115,26 @@ class QDMGraphicsSocket(QGraphicsItem):
         self._brush = QBrush(self._color_background)
 
     def paint(self, painter, _option, _widget=None) -> None:
-        """Paint socket as a circle.
+        """Render socket as filled circle with outline.
+
+        Uses highlight pen when socket is highlighted during edge drag.
 
         Args:
-            painter: QPainter to use
-            option: QStyleOptionGraphicsItem (style options)
-            widget: Widget being painted on
+            painter: QPainter for rendering.
+            _option: Style options (unused).
+            _widget: Target widget (unused).
         """
         painter.setBrush(self._brush)
         painter.setPen(self._pen if not self.isHighlighted else self._pen_highlight)
         painter.drawEllipse(-self.radius, -self.radius, 2 * self.radius, 2 * self.radius)
 
     def boundingRect(self) -> QRectF:
-        """Define Qt bounding rectangle for drawing.
+        """Calculate bounding rectangle for socket circle.
+
+        Includes outline width for proper hit detection.
 
         Returns:
-            QRectF bounding rectangle
+            QRectF enclosing the socket circle with outline.
         """
         return QRectF(
             -self.radius - self.outline_width,

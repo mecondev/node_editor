@@ -1,17 +1,39 @@
-"""
-Base Theme - Abstract base class for themes.
+"""Abstract base class for theme definitions.
 
-All themes should inherit from this class and define their colors.
+This module provides BaseTheme, which defines all color and style
+properties that themes must provide. Subclass this to create
+custom themes.
 
-Author: Michael Economou
-Date: 2025-12-11
+Theme properties are organized by component:
+    - Scene: Background and grid colors
+    - Node: Background, borders, title colors
+    - Edge: Connection line colors and widths
+    - Socket: Type colors and highlighting
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 from PyQt5.QtGui import QColor
 
 
 class BaseTheme:
-    """Base class for all themes. Subclass this to create new themes."""
+    """Base class defining all theme properties.
+
+    Subclass this and override the class attributes to create
+    custom themes. All properties have default dark theme values.
+
+    Attributes:
+        name: Internal theme identifier.
+        display_name: Human-readable theme name.
+        scene_background: Scene background color.
+        node_background: Node body background color.
+        edge_color: Default edge connection color.
+        socket_colors: List of colors for socket types.
+    """
 
     # Theme metadata
     name = "base"
@@ -78,13 +100,13 @@ class BaseTheme:
 
     @classmethod
     def get_socket_color(cls, socket_type: int) -> QColor:
-        """Get color for a socket type.
+        """Get the color for a socket type.
 
         Args:
-            socket_type: Socket type index
+            socket_type: Socket type index (0-6 for built-in types).
 
         Returns:
-            QColor for the socket type
+            QColor for the socket type, defaults to type 0 if invalid.
         """
         if 0 <= socket_type < len(cls.socket_colors):
             return cls.socket_colors[socket_type]

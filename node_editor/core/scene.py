@@ -1,11 +1,26 @@
-"""
-Scene - Central container for nodes and edges.
+"""Scene container for nodes, edges, and graph state.
 
-This module contains the Scene class which manages all nodes, edges, history,
-and clipboard in a node-based visual programming graph.
+This module defines the Scene class, the central manager for all elements
+in a node graph. The scene maintains collections of nodes and edges,
+handles selection, provides undo/redo through history, and manages
+serialization for save/load operations.
 
-Author: Michael Economou
-Date: 2025-12-11
+Key Responsibilities:
+    - Node and edge lifecycle management (add, remove, clear)
+    - Selection state tracking with event callbacks
+    - History system for undo/redo operations
+    - Clipboard operations for copy/paste
+    - File I/O with JSON serialization
+    - Modified state tracking
+
+The scene coordinates between the logical graph model and the graphics
+scene (QDMGraphicsScene) that handles visual representation.
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-11
 """
 
 from __future__ import annotations
@@ -28,105 +43,110 @@ if TYPE_CHECKING:
     from node_editor.graphics.scene import QDMGraphicsScene
 
 
-# Debug flag for warnings
 DEBUG_REMOVE_WARNINGS = False
 
 
 class InvalidFileError(Exception):
-    """Exception raised when a file cannot be loaded."""
+    """Raised when file loading fails due to invalid format or content."""
 
 
 class Scene(Serializable):
-    """Class representing NodeEditor's Scene.
+    """Central container managing nodes, edges, and graph state.
 
-    The Scene is the central container that manages all nodes and edges in the graph.
-    It provides serialization, history management, clipboard support, and event handling.
+    The Scene is the top-level manager for the node graph. It owns all nodes
+    and edges, tracks selection state, maintains modification history for
+    undo/redo, and handles serialization for persistence.
+
+    The scene uses an event callback system to notify interested parties
+    about selection changes and modifications. Register callbacks via the
+    add*Listener methods.
 
     Attributes:
-        nodes: List of Node instances in this scene
-        edges: List of Edge instances in this scene
-        history: SceneHistory instance for undo/redo
-        clipboard: SceneClipboard instance for copy/paste
-        scene_width: Width of the scene in pixels (default: 64000)
-        scene_height: Height of the scene in pixels (default: 64000)
-        filename: Current filename associated with this scene
-        grScene: QDMGraphicsScene instance for visual representation
+        nodes: List of all Node instances in the graph.
+        edges: List of all Edge instances connecting nodes.
+        history: SceneHistory instance managing undo/redo stack.
+        clipboard: SceneClipboard instance for copy/paste operations.
+        scene_width: Horizontal extent of scene in pixels.
+        scene_height: Vertical extent of scene in pixels.
+        filename: Path to associated file, or None if unsaved.
+        grScene: QDMGraphicsScene for visual representation.
+
+    Class Attributes:
+        history_class: Factory class for history (set at runtime).
+        clipboard_class: Factory class for clipboard (set at runtime).
     """
 
-    # Class attributes for dependency injection
-    history_class = None  # Set after imports
-    clipboard_class = None  # Set after imports
+    history_class = None
+    clipboard_class = None
 
     def __init__(self) -> None:
-        """Initialize a new Scene."""
+        """Initialize empty scene with default dimensions.
+
+        Creates graphics scene, history system, and clipboard. Connects
+        selection signals for event handling.
+        """
         super().__init__()
 
-        # Node and edge containers
         self.nodes: list[Node] = []
         self.edges: list[Edge] = []
 
-        # File association
         self.filename: str | None = None
 
-        # Scene dimensions
         self.scene_width: int = 64000
         self.scene_height: int = 64000
 
-        # Internal state flags
         self._silent_selection_events: bool = False
         self._has_been_modified: bool = False
         self._last_selected_items: list | None = None
 
-        # Event listeners
         self._has_been_modified_listeners: list[Callable] = []
         self._item_selected_listeners: list[Callable] = []
         self._items_deselected_listeners: list[Callable] = []
 
-        # Node class selector for deserialization
         self.node_class_selector: Callable[[dict], type[Node]] | None = None
 
-        # Initialize UI and components
         self.initUI()
 
-        # Late import to avoid circular dependencies
         from node_editor.core.clipboard import SceneClipboard
         from node_editor.core.history import SceneHistory
 
         self.history = SceneHistory(self)
         self.clipboard = SceneClipboard(self)
 
-        # Connect graphics scene signals
         self.grScene.item_selected.connect(self.onItemSelected)
         self.grScene.items_deselected.connect(self.onItemsDeselected)
 
     @property
     def has_been_modified(self) -> bool:
-        """Check if the scene has been modified.
+        """Check if scene has unsaved changes.
 
         Returns:
-            True if the scene has been modified since last save
+            True if modified since last save.
         """
         return self._has_been_modified
 
     @has_been_modified.setter
     def has_been_modified(self, value: bool) -> None:
-        """Set the modified state and trigger listeners.
+        """Update modification state and notify listeners.
+
+        Triggers callbacks only on transition from unmodified to modified.
 
         Args:
-            value: New modified state
+            value: New modification state.
         """
         if not self._has_been_modified and value:
-            # Set it now, because we will be reading it soon
             self._has_been_modified = value
 
-            # Call all registered listeners
             for callback in self._has_been_modified_listeners:
                 callback()
 
         self._has_been_modified = value
 
     def initUI(self) -> None:
-        """Initialize the graphics scene."""
+        """Create and configure the graphics scene.
+
+        Instantiates QDMGraphicsScene and sets its dimensions.
+        """
         from node_editor.graphics.scene import QDMGraphicsScene
 
         self.grScene: QDMGraphicsScene = QDMGraphicsScene(self)
@@ -135,26 +155,33 @@ class Scene(Serializable):
     # Node and edge management
 
     def addNode(self, node: Node) -> None:
-        """Add a node to this scene.
+        """Register a node with this scene.
+
+        Called automatically by Node.__init__. Manual calls are rarely needed.
 
         Args:
-            node: Node instance to add
+            node: Node instance to add.
         """
         self.nodes.append(node)
 
     def addEdge(self, edge: Edge) -> None:
-        """Add an edge to this scene.
+        """Register an edge with this scene.
+
+        Called automatically by Edge.__init__. Manual calls are rarely needed.
 
         Args:
-            edge: Edge instance to add
+            edge: Edge instance to add.
         """
         self.edges.append(edge)
 
     def removeNode(self, node: Node) -> None:
-        """Remove a node from this scene.
+        """Unregister a node from this scene.
+
+        Does not delete the node object or its edges. Use node.remove()
+        for complete cleanup.
 
         Args:
-            node: Node instance to remove
+            node: Node instance to remove from registry.
         """
         if node in self.nodes:
             self.nodes.remove(node)
@@ -162,10 +189,12 @@ class Scene(Serializable):
             pass
 
     def removeEdge(self, edge: Edge) -> None:
-        """Remove an edge from this scene.
+        """Unregister an edge from this scene.
+
+        Does not delete the edge object. Use edge.remove() for complete cleanup.
 
         Args:
-            edge: Edge instance to remove
+            edge: Edge instance to remove from registry.
         """
         if edge in self.edges:
             self.edges.remove(edge)
@@ -173,20 +202,24 @@ class Scene(Serializable):
             pass
 
     def clear(self) -> None:
-        """Remove all nodes from this scene. This also removes all edges."""
+        """Remove all nodes and edges from the scene.
+
+        Properly cleans up each node which cascades to remove all edges.
+        Resets modification state to unmodified.
+        """
         while len(self.nodes) > 0:
             self.nodes[0].remove()
 
         self.has_been_modified = False
 
     def getNodeByID(self, node_id: int) -> Node | None:
-        """Find a node in the scene by its ID.
+        """Find a node by its unique identifier.
 
         Args:
-            node_id: ID of the node to find
+            node_id: Unique ID assigned during node creation.
 
         Returns:
-            Found Node instance or None
+            Matching Node instance or None if not found.
         """
         for node in self.nodes:
             if node.id == node_id:
@@ -196,29 +229,29 @@ class Scene(Serializable):
     # Selection management
 
     def setSilentSelectionEvents(self, value: bool = True) -> None:
-        """Suppress onItemSelected events.
+        """Enable or disable selection event callbacks.
 
-        This is useful when working with the clipboard to avoid triggering
-        unwanted selection events.
+        Useful during batch operations like clipboard paste to avoid
+        triggering unwanted selection events.
 
         Args:
-            value: True to suppress events, False to enable them
+            value: True to suppress events, False to enable.
         """
         self._silent_selection_events = value
 
     def getSelectedItems(self) -> list:
-        """Get currently selected graphics items.
+        """Get all currently selected graphics items.
 
         Returns:
-            List of selected QGraphicsItem instances
+            List of selected QGraphicsItem instances (nodes and edges).
         """
         return self.grScene.selectedItems()
 
     def doDeselectItems(self, silent: bool = False) -> None:
-        """Deselect all items in the scene.
+        """Clear selection from all items.
 
         Args:
-            silent: If True, onItemsDeselected won't be called
+            silent: If True, skip onItemsDeselected callback.
         """
         for item in self.getSelectedItems():
             item.setSelected(False)
@@ -226,17 +259,23 @@ class Scene(Serializable):
             self.onItemsDeselected()
 
     def resetLastSelectedStates(self) -> None:
-        """Reset internal selected flags in all nodes and edges."""
+        """Clear internal selection state flags on all graphics items.
+
+        Ensures proper detection of selection changes on next interaction.
+        """
         for node in self.nodes:
             node.grNode._last_selected_state = False
         for edge in self.edges:
             edge.grEdge._last_selected_state = False
 
     def onItemSelected(self, silent: bool = False) -> None:
-        """Handle item selection and trigger event listeners.
+        """Handle selection change events.
+
+        Compares current selection with previous state and triggers
+        registered callbacks if changed. Stores history entry.
 
         Args:
-            silent: If True, callbacks won't be called and history won't be stored
+            silent: If True, skip callbacks and history storage.
         """
         if self._silent_selection_events:
             return
@@ -245,19 +284,19 @@ class Scene(Serializable):
         if current_selected_items != self._last_selected_items:
             self._last_selected_items = current_selected_items
             if not silent:
-                # Run all callbacks first
                 for callback in self._item_selected_listeners:
                     callback()
-                # Store history as the last step
                 self.history.storeHistory("Selection Changed")
 
     def onItemsDeselected(self, silent: bool = False) -> None:
-        """Handle items deselection and trigger event listeners.
+        """Handle complete deselection events.
+
+        Called when selection becomes empty. Triggers registered callbacks
+        and stores history entry.
 
         Args:
-            silent: If True, callbacks won't be called and history won't be stored
+            silent: If True, skip callbacks and history storage.
         """
-        # Check if selection actually changed
         current_selected_items = self.getSelectedItems()
         if current_selected_items == self._last_selected_items:
             return
@@ -273,83 +312,94 @@ class Scene(Serializable):
     # Modification state
 
     def isModified(self) -> bool:
-        """Check if the scene has been modified.
+        """Check if scene has unsaved changes.
+
+        Alias for has_been_modified property for compatibility.
 
         Returns:
-            True if the scene has been modified
+            True if modified since last save.
         """
         return self.has_been_modified
 
     # Event listener management
 
     def addHasBeenModifiedListener(self, callback: Callable) -> None:
-        """Register a callback for the 'Has Been Modified' event.
+        """Register callback for modification state changes.
+
+        Callback receives no arguments, triggered on first modification.
 
         Args:
-            callback: Function to call when the scene is modified
+            callback: Function to call when scene becomes modified.
         """
         self._has_been_modified_listeners.append(callback)
 
     def addItemSelectedListener(self, callback: Callable) -> None:
-        """Register a callback for the 'Item Selected' event.
+        """Register callback for selection events.
+
+        Callback receives no arguments, triggered when selection changes.
 
         Args:
-            callback: Function to call when an item is selected
+            callback: Function to call on item selection.
         """
         self._item_selected_listeners.append(callback)
 
     def addItemsDeselectedListener(self, callback: Callable) -> None:
-        """Register a callback for the 'Items Deselected' event.
+        """Register callback for deselection events.
+
+        Callback receives no arguments, triggered when selection clears.
 
         Args:
-            callback: Function to call when items are deselected
+            callback: Function to call on complete deselection.
         """
         self._items_deselected_listeners.append(callback)
 
     def addDragEnterListener(self, callback: Callable) -> None:
-        """Register a callback for the 'Drag Enter' event.
+        """Register callback for drag-enter events on the view.
 
         Args:
-            callback: Function to call when a drag enters the view
+            callback: Function to call when drag enters the view.
         """
         self.getView().addDragEnterListener(callback)
 
     def addDropListener(self, callback: Callable) -> None:
-        """Register a callback for the 'Drop' event.
+        """Register callback for drop events on the view.
 
         Args:
-            callback: Function to call when a drop occurs
+            callback: Function to call when drop occurs.
         """
         self.getView().addDropListener(callback)
 
     # View access
 
     def getView(self) -> QGraphicsView:
-        """Get the QGraphicsView attached to this scene.
+        """Get the graphics view displaying this scene.
 
         Returns:
-            QGraphicsView instance
+            First QGraphicsView attached to the graphics scene.
         """
         return self.grScene.views()[0]
 
     def getItemAt(self, pos: QPointF):
-        """Get the graphics item at the given scene position.
+        """Find graphics item at scene position.
 
         Args:
-            pos: Scene position
+            pos: Position in scene coordinates.
 
         Returns:
-            QGraphicsItem at the position or None
+            QGraphicsItem at position or None.
         """
         return self.getView().itemAt(pos)
 
     # File operations
 
     def saveToFile(self, filename: str) -> None:
-        """Save this scene to a file on disk.
+        """Persist scene to JSON file.
+
+        Serializes all nodes and edges and writes to disk. Updates
+        filename association and clears modified flag.
 
         Args:
-            filename: Path where to save the scene
+            filename: Target file path.
         """
         with open(filename, "w") as file:
             file.write(json.dumps(self.serialize(), indent=4))
@@ -358,13 +408,16 @@ class Scene(Serializable):
         self.filename = filename
 
     def loadFromFile(self, filename: str) -> None:
-        """Load this scene from a file on disk.
+        """Load scene from JSON file.
+
+        Clears existing content and deserializes from file. Updates
+        filename association and clears modified flag.
 
         Args:
-            filename: Path from where to load the scene
+            filename: Source file path.
 
         Raises:
-            InvalidFile: If the file cannot be decoded as JSON
+            InvalidFileError: If file is not valid JSON or format is wrong.
         """
         with open(filename) as file:
             raw_data = file.read()
@@ -383,35 +436,40 @@ class Scene(Serializable):
     # Node/Edge class selection
 
     def getEdgeClass(self) -> type[Edge]:
-        """Get the Edge class to use for this scene.
+        """Get factory class for creating edges.
 
-        Override this method to use a custom Edge class.
+        Override to use custom Edge subclass for this scene.
 
         Returns:
-            Edge class type
+            Edge class type to instantiate.
         """
         from node_editor.core.edge import Edge
 
         return Edge
 
     def setNodeClassSelector(self, class_selecting_function: Callable[[dict], type[Node]]) -> None:
-        """Set the function that determines which Node class to instantiate during deserialization.
+        """Set callback for dynamic node class selection.
 
-        If not set, the base Node class will always be used.
+        During deserialization, the callback receives serialized node data
+        and returns the appropriate Node subclass to instantiate. Enables
+        polymorphic node restoration.
 
         Args:
-            class_selecting_function: Function that returns a Node class type based on serialized data
+            class_selecting_function: Receives dict, returns Node class type.
         """
         self.node_class_selector = class_selecting_function
 
     def getNodeClassFromData(self, data: dict) -> type[Node]:
-        """Determine which Node class to instantiate based on serialized data.
+        """Determine Node class from serialized data.
+
+        Uses registered selector callback if available, otherwise
+        returns base Node class.
 
         Args:
-            data: Serialized node data
+            data: Serialized node data dictionary.
 
         Returns:
-            Node class type to instantiate
+            Node class type to instantiate.
         """
         from node_editor.core.node import Node
 
@@ -422,21 +480,21 @@ class Scene(Serializable):
     # Serialization
 
     def serialize(self) -> OrderedDict:
-        """Serialize the scene to a dictionary.
+        """Convert scene state to ordered dictionary.
+
+        Serializes all nodes and edges, avoiding duplicates.
 
         Returns:
-            OrderedDict with scene data including all nodes and edges
+            OrderedDict containing complete scene state.
         """
         nodes = []
         edges = []
 
-        # Serialize all nodes (avoiding duplicates)
         for node in self.nodes:
             newnode = node.serialize()
             if not any(newnode["id"] == a["id"] for a in nodes):
                 nodes.append(newnode)
 
-        # Serialize all edges (avoiding duplicates)
         for edge in self.edges:
             newedge = edge.serialize()
             if not any(newedge["id"] == a["id"] for a in edges):
@@ -455,20 +513,21 @@ class Scene(Serializable):
     def deserialize(
         self, data: dict, hashmap: dict | None = None, restore_id: bool = True, *args, **kwargs
     ) -> bool:
-        """Deserialize the scene from a dictionary.
+        """Restore scene state from serialized dictionary.
 
-        This method reuses existing nodes and edges when possible instead of
-        recreating everything from scratch.
+        Intelligently reuses existing nodes and edges when IDs match,
+        creating new instances only as needed. Removes items not present
+        in the data.
 
         Args:
-            data: Dictionary with scene data
-            hashmap: Hashmap for tracking deserialized objects
-            restore_id: Whether to restore the scene ID
-            *args: Additional arguments
-            **kwargs: Additional keyword arguments
+            data: Dictionary containing serialized scene data.
+            hashmap: Maps original IDs to restored objects for references.
+            restore_id: If True, restore original scene ID.
+            *args: Additional arguments passed to item deserialize methods.
+            **kwargs: Additional keyword arguments.
 
         Returns:
-            True if deserialization succeeded
+            True on successful deserialization.
         """
         if hashmap is None:
             hashmap = {}
@@ -476,12 +535,9 @@ class Scene(Serializable):
         if restore_id:
             self.id = data["id"]
 
-        # Deserialize NODES
-        # Reuse existing nodes when possible
         all_nodes = self.nodes.copy()
 
         for node_data in data["nodes"]:
-            # Try to find this node in the scene
             found = None
             for node in all_nodes:
                 if node.id == node_data["id"]:
@@ -489,7 +545,6 @@ class Scene(Serializable):
                     break
 
             if not found:
-                # Create new node
                 try:
                     node_class = self.getNodeClassFromData(node_data)
                     new_node = node_class(self)
@@ -498,7 +553,6 @@ class Scene(Serializable):
                 except Exception as e:
                     dump_exception(e)
             else:
-                # Reuse existing node
                 try:
                     found.deserialize(node_data, hashmap, restore_id, *args, **kwargs)
                     found.onDeserialized(node_data)
@@ -506,17 +560,13 @@ class Scene(Serializable):
                 except Exception as e:
                     dump_exception(e)
 
-        # Remove nodes that are left in the scene but were not in the serialized data
         while all_nodes:
             node = all_nodes.pop()
             node.remove()
 
-        # Deserialize EDGES
-        # Reuse existing edges when possible
         all_edges = self.edges.copy()
 
         for edge_data in data["edges"]:
-            # Try to find this edge in the scene
             found = None
             for edge in all_edges:
                 if edge.id == edge_data["id"]:
@@ -524,16 +574,13 @@ class Scene(Serializable):
                     break
 
             if not found:
-                # Create new edge
                 edge_class = self.getEdgeClass()
                 new_edge = edge_class(self)
                 new_edge.deserialize(edge_data, hashmap, restore_id, *args, **kwargs)
             else:
-                # Reuse existing edge
                 found.deserialize(edge_data, hashmap, restore_id, *args, **kwargs)
                 all_edges.remove(found)
 
-        # Remove edges that are left in the scene but were not in the serialized data
         while all_edges:
             edge = all_edges.pop()
             edge.remove()
