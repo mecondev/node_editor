@@ -1,12 +1,17 @@
+"""
+Module description.
+Author: Michael Economou
+Date: 2025-12-11
+"""
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtCore import QDataStream, QIODevice, Qt
 from PyQt5.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
 
 from examples.example_calculator.calc_conf import CALC_NODES, get_class_from_opcode, LISTBOX_MIMETYPE
-from nodeeditor.node_editor_widget import NodeEditorWidget
-from nodeeditor.node_edge import EDGE_TYPE_DIRECT, EDGE_TYPE_BEZIER, EDGE_TYPE_SQUARE
-from nodeeditor.node_graphics_view import MODE_EDGE_DRAG
-from nodeeditor.utils import dumpException
+from node_editor.widgets.editor_widget import NodeEditorWidget
+from node_editor.core.edge import EDGE_TYPE_DIRECT, EDGE_TYPE_BEZIER, EDGE_TYPE_SQUARE
+from node_editor.graphics.view import MODE_EDGE_DRAG
+from node_editor.utils.helpers import dumpException
 
 DEBUG = False
 DEBUG_CONTEXT = False

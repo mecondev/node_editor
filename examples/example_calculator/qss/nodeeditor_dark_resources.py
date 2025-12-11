@@ -1,3 +1,8 @@
+"""
+Module description.
+Author: Michael Economou
+Date: 2025-12-11
+"""
 # -*- coding: utf-8 -*-
 
 # Resource object code

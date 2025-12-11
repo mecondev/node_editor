@@ -1,0 +1,2 @@
+# ruff: noqa: ARG002
+# Qt method overrides with unused arguments (required by Qt interface)

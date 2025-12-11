@@ -20,6 +20,9 @@ Usage:
             # Set output
             self._value = result
             return result
+
+Author: Michael Economou
+Date: 2025-12-11
 """
 
 
@@ -79,9 +82,7 @@ class BaseNode:
         Raises:
             NotImplementedError: If not overridden in subclass
         """
-        raise NotImplementedError(
-            f"{self.__class__.__name__} must implement eval()"
-        )
+        raise NotImplementedError(f"{self.__class__.__name__} must implement eval()")
 
     def get_input_value(self, index: int):
         """Get the value from an input socket.
@@ -94,7 +95,7 @@ class BaseNode:
         """
         # This will be implemented after core migration
 
-    def on_input_changed(self, socket=None):
+    def on_input_changed(self, _socket=None):
         """Called when an input connection changes.
 
         Override to add custom behavior.
@@ -131,7 +132,7 @@ class BaseNode:
             "op_code": self.__class__.op_code,
         }
 
-    def deserialize(self, data: dict, hashmap: dict | None = None) -> bool:
+    def deserialize(self, _data: dict, _hashmap: dict | None = None) -> bool:
         """Deserialize node from dictionary.
 
         Args:
@@ -175,6 +176,4 @@ class EvaluableNode(BaseNode):
         Returns:
             The computed value
         """
-        raise NotImplementedError(
-            f"{self.__class__.__name__} must implement eval_implementation()"
-        )
+        raise NotImplementedError(f"{self.__class__.__name__} must implement eval_implementation()")

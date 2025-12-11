@@ -7,6 +7,9 @@ Classes:
     - Node: Base node class
     - Edge: Connection between sockets
     - Scene: Container for nodes and edges (to be migrated)
+
+Author: Michael Economou
+Date: 2025-12-11
 """
 
 from node_editor.core.edge import (
@@ -44,7 +47,10 @@ def _init_graphics_classes():
     Node.NodeContent_class = QDMNodeContentWidget
     Edge.GraphicsEdge_class = QDMGraphicsEdge
 
-_init_graphics_classes()
+
+# NOTE: Graphics classes are initialized lazily on first use
+# to avoid circular import issues at module initialization time
+# _init_graphics_classes()
 
 __all__ = [
     "Serializable",

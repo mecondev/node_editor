@@ -3,6 +3,9 @@ Scene - Central container for nodes and edges.
 
 This module contains the Scene class which manages all nodes, edges, history,
 and clipboard in a node-based visual programming graph.
+
+Author: Michael Economou
+Date: 2025-12-11
 """
 
 from __future__ import annotations
@@ -29,7 +32,7 @@ if TYPE_CHECKING:
 DEBUG_REMOVE_WARNINGS = False
 
 
-class InvalidFile(Exception):
+class InvalidFileError(Exception):
     """Exception raised when a file cannot be loaded."""
 
 
@@ -93,8 +96,8 @@ class Scene(Serializable):
         self.clipboard = SceneClipboard(self)
 
         # Connect graphics scene signals
-        self.grScene.itemSelected.connect(self.onItemSelected)
-        self.grScene.itemsDeselected.connect(self.onItemsDeselected)
+        self.grScene.item_selected.connect(self.onItemSelected)
+        self.grScene.items_deselected.connect(self.onItemsDeselected)
 
     @property
     def has_been_modified(self) -> bool:
@@ -371,7 +374,9 @@ class Scene(Serializable):
                 self.deserialize(data)
                 self.has_been_modified = False
             except json.JSONDecodeError:
-                raise InvalidFile(f"{os.path.basename(filename)} is not a valid JSON file")
+                raise InvalidFileError(
+                    f"{os.path.basename(filename)} is not a valid JSON file"
+                ) from None
             except Exception as e:
                 dump_exception(e)
 
@@ -386,6 +391,7 @@ class Scene(Serializable):
             Edge class type
         """
         from node_editor.core.edge import Edge
+
         return Edge
 
     def setNodeClassSelector(self, class_selecting_function: Callable[[dict], type[Node]]) -> None:
@@ -427,30 +433,27 @@ class Scene(Serializable):
         # Serialize all nodes (avoiding duplicates)
         for node in self.nodes:
             newnode = node.serialize()
-            if not any(newnode['id'] == a['id'] for a in nodes):
+            if not any(newnode["id"] == a["id"] for a in nodes):
                 nodes.append(newnode)
 
         # Serialize all edges (avoiding duplicates)
         for edge in self.edges:
             newedge = edge.serialize()
-            if not any(newedge['id'] == a['id'] for a in edges):
+            if not any(newedge["id"] == a["id"] for a in edges):
                 edges.append(newedge)
 
-        return OrderedDict([
-            ('id', self.id),
-            ('scene_width', self.scene_width),
-            ('scene_height', self.scene_height),
-            ('nodes', nodes),
-            ('edges', edges),
-        ])
+        return OrderedDict(
+            [
+                ("id", self.id),
+                ("scene_width", self.scene_width),
+                ("scene_height", self.scene_height),
+                ("nodes", nodes),
+                ("edges", edges),
+            ]
+        )
 
     def deserialize(
-        self,
-        data: dict,
-        hashmap: dict | None = None,
-        restore_id: bool = True,
-        *args,
-        **kwargs
+        self, data: dict, hashmap: dict | None = None, restore_id: bool = True, *args, **kwargs
     ) -> bool:
         """Deserialize the scene from a dictionary.
 
@@ -471,17 +474,17 @@ class Scene(Serializable):
             hashmap = {}
 
         if restore_id:
-            self.id = data['id']
+            self.id = data["id"]
 
         # Deserialize NODES
         # Reuse existing nodes when possible
         all_nodes = self.nodes.copy()
 
-        for node_data in data['nodes']:
+        for node_data in data["nodes"]:
             # Try to find this node in the scene
             found = None
             for node in all_nodes:
-                if node.id == node_data['id']:
+                if node.id == node_data["id"]:
                     found = node
                     break
 
@@ -512,11 +515,11 @@ class Scene(Serializable):
         # Reuse existing edges when possible
         all_edges = self.edges.copy()
 
-        for edge_data in data['edges']:
+        for edge_data in data["edges"]:
             # Try to find this edge in the scene
             found = None
             for edge in all_edges:
-                if edge.id == edge_data['id']:
+                if edge.id == edge_data["id"]:
                     found = edge
                     break
 

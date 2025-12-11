@@ -1,3 +1,8 @@
+"""
+Module description.
+Author: Michael Economou
+Date: 2025-12-11
+"""
 from examples.example_calculator.calc_conf import register_node, OP_NODE_ADD, OP_NODE_SUB, OP_NODE_MUL, OP_NODE_DIV
 from examples.example_calculator.calc_node_base import CalcNode
 

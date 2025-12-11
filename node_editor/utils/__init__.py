@@ -6,6 +6,9 @@ Functions:
     - loadStylesheets: Load multiple stylesheets
     - dumpException: Debug helper for exceptions
     - pp: Pretty print
+
+Author: Michael Economou
+Date: 2025-12-11
 """
 
 from node_editor.utils.helpers import dumpException, pp

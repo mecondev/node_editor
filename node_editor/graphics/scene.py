@@ -1,4 +1,9 @@
-"""Graphics representation of Scene."""
+"""
+Graphics representation of Scene.
+
+Author: Michael Economou
+Date: 2025-12-11
+"""
 
 import math
 from typing import TYPE_CHECKING
@@ -56,7 +61,7 @@ class QDMGraphicsScene(QGraphicsScene):
 
     def initAssets(self) -> None:
         """Initialize Qt objects using theme."""
-        theme = ThemeEngine.current_theme
+        theme = ThemeEngine.current_theme()
 
         # Scene colors from theme
         self._color_background = theme.scene_background

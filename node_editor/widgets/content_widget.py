@@ -1,4 +1,9 @@
-"""Base class for node content widgets."""
+"""
+Base class for node content widgets.
+
+Author: Michael Economou
+Date: 2025-12-11
+"""
 
 from collections import OrderedDict
 from typing import TYPE_CHECKING
@@ -73,7 +78,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         return OrderedDict([])
 
     def deserialize(
-        self, data: dict, hashmap: dict | None = None, restore_id: bool = True
+        self, _data: dict, _hashmap: dict | None = None, _restore_id: bool = True
     ) -> bool:
         """Deserialize content widget.
 

@@ -1,4 +1,9 @@
-"""Serializable base class for saving/loading objects."""
+"""
+Serializable base class for saving/loading objects.
+
+Author: Michael Economou
+Date: 2025-12-11
+"""
 
 from collections import OrderedDict
 
@@ -25,15 +30,10 @@ class Serializable:
         Raises:
             NotImplementedError: If not implemented in subclass
         """
-        raise NotImplementedError(
-            f"{self.__class__.__name__} must implement serialize()"
-        )
+        raise NotImplementedError(f"{self.__class__.__name__} must implement serialize()")
 
     def deserialize(
-        self,
-        data: dict,
-        hashmap: dict | None = None,
-        restore_id: bool = True
+        self, _data: dict, _hashmap: dict | None = None, _restore_id: bool = True
     ) -> bool:
         """Deserialize object from dictionary.
 
@@ -51,9 +51,4 @@ class Serializable:
         Raises:
             NotImplementedError: If not implemented in subclass
         """
-        if hashmap is None:
-            hashmap = {}
-
-        raise NotImplementedError(
-            f"{self.__class__.__name__} must implement deserialize()"
-        )
+        raise NotImplementedError(f"{self.__class__.__name__} must implement deserialize()")

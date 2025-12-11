@@ -10,6 +10,9 @@ Built-in Nodes:
     - OutputNode: Display output
     - AddNode, SubNode, MulNode, DivNode: Math operations
     - CompareNode: Comparison operations
+
+Author: Michael Economou
+Date: 2025-12-11
 """
 
 from node_editor.nodes.base import BaseNode

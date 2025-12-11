@@ -1,4 +1,9 @@
-"""Graphics edge path calculators for different edge styles."""
+"""
+Graphics edge path calculators for different edge styles.
+
+Author: Michael Economou
+Date: 2025-12-11
+"""
 
 from __future__ import annotations
 

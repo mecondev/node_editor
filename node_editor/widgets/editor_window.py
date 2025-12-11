@@ -3,6 +3,9 @@ Node Editor Window - Main application window.
 
 This module provides the NodeEditorWindow class which creates a complete
 QMainWindow with menus, actions, and a NodeEditorWidget.
+
+Author: Michael Economou
+Date: 2025-12-11
 """
 
 from __future__ import annotations
@@ -73,7 +76,7 @@ class NodeEditorWindow(QMainWindow):
         self.statusBar().showMessage("")
         self.status_mouse_pos = QLabel("")
         self.statusBar().addPermanentWidget(self.status_mouse_pos)
-        self.nodeeditor.view.scenePosChanged.connect(self.onScenePosChanged)
+        self.nodeeditor.view.scene_pos_changed.connect(self.onScenePosChanged)
 
     def createActions(self) -> None:
         """Create File and Edit menu actions."""

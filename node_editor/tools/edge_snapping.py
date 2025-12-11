@@ -3,6 +3,9 @@ Edge Snapping - Socket snapping functionality.
 
 This module provides socket snapping to help users connect edges more easily
 by automatically snapping to nearby sockets.
+
+Author: Michael Economou
+Date: 2025-12-11
 """
 
 from __future__ import annotations

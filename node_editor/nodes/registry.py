@@ -15,6 +15,9 @@ Usage:
 
     # Get node class
     node_class = NodeRegistry.get_node_class(100)
+
+Author: Michael Economou
+Date: 2025-12-11
 """
 
 from collections.abc import Callable

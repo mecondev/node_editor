@@ -4,15 +4,19 @@ Main entry point for Node Editor application.
 
 This demonstrates a basic node editor window.
 For a full implementation with custom nodes, see examples/example_calculator/
+
+Author: Michael Economou
+Date: 2025-12-11
 """
+
 import os
 import sys
 
 from PyQt5.QtWidgets import QApplication
 
 from config import APP_NAME, STYLESHEET_PATH, WINDOW_TITLE
-from nodeeditor.node_editor_window import NodeEditorWindow
-from nodeeditor.utils import loadStylesheet
+from node_editor.utils.qt_helpers import loadStylesheet
+from node_editor.widgets.editor_window import NodeEditorWindow
 
 
 class SimpleNodeEditorWindow(NodeEditorWindow):
@@ -20,7 +24,7 @@ class SimpleNodeEditorWindow(NodeEditorWindow):
 
     def initUI(self):
         """Initialize the user interface."""
-        self.name_company = ''
+        self.name_company = ""
         self.name_product = APP_NAME
 
         # Call parent to create basic UI with nodeeditor widget
@@ -35,7 +39,8 @@ class SimpleNodeEditorWindow(NodeEditorWindow):
         self.statusBar().showMessage("Ready")
 
         # Add some demo nodes
-        self.nodeeditor.addNodes()
+        # TODO: Implement demo nodes for the refactored structure
+        # self.node_editor.addNodes()
 
 
 def main():
@@ -43,7 +48,7 @@ def main():
     app = QApplication(sys.argv)
 
     # Set application style
-    app.setStyle('Fusion')
+    app.setStyle("Fusion")
 
     # Create and show main window
     print(f"Starting {APP_NAME}...")  # noqa: T201
@@ -54,5 +59,5 @@ def main():
     sys.exit(app.exec_())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

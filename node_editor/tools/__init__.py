@@ -3,6 +3,9 @@ Tools - Helper tools for edge manipulation.
 
 This module contains various tools for interactive edge manipulation including
 dragging, rerouting, snapping, and validation.
+
+Author: Michael Economou
+Date: 2025-12-11
 """
 
 from node_editor.tools.edge_dragging import EdgeDragging

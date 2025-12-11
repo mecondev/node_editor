@@ -3,6 +3,9 @@ Edge Intersect - Node dropping on edges to insert nodes.
 
 This module handles the functionality where a node can be dropped onto
 an existing edge to automatically insert it between the connected nodes.
+
+Author: Michael Economou
+Date: 2025-12-11
 """
 
 from __future__ import annotations
@@ -61,7 +64,7 @@ class EdgeIntersect:
         self.draggedNode = None
         self.hoveredList = []
 
-    def dropNode(self, node: Node, scene_pos_x: float, scene_pos_y: float) -> None:
+    def dropNode(self, node: Node, _scene_pos_x: float, _scene_pos_y: float) -> None:
         """Handle dropping a node on an edge.
 
         Args:
@@ -92,7 +95,7 @@ class EdgeIntersect:
         # The new edges will have the same edge_type as the intersected edge
         edge_type = edge.edge_type
         edge.remove()
-        self.grView.grScene.scene.history.storeHistory('Delete existing edge', setModified=True)
+        self.grView.grScene.scene.history.storeHistory("Delete existing edge", set_modified=True)
 
         # Create new edges
         new_node_socket_in = node.inputs[0]
@@ -101,7 +104,9 @@ class EdgeIntersect:
         new_node_socket_out = node.outputs[0]
         Edge(self.grScene.scene, new_node_socket_out, socket_end, edge_type=edge_type)
 
-        self.grView.grScene.scene.history.storeHistory('Created new edges by dropping node', setModified=True)
+        self.grView.grScene.scene.history.storeHistory(
+            "Created new edges by dropping node", set_modified=True
+        )
 
     def hotZoneRect(self, node: Node) -> QRectF:
         """Get a bounding rectangle around a node.
@@ -119,7 +124,7 @@ class EdgeIntersect:
         h = node.grNode.height
         return QRectF(x, y, w, h)
 
-    def update(self, scene_pos_x: float, scene_pos_y: float) -> None:
+    def update(self, _scene_pos_x: float, _scene_pos_y: float) -> None:
         """Update during mouse move.
 
         Args:
@@ -136,7 +141,7 @@ class EdgeIntersect:
 
         # Set new hovered items
         for gr_item in gr_items:
-            if hasattr(gr_item, 'edge') and not self.draggedNode.hasConnectedEdge(gr_item.edge):
+            if hasattr(gr_item, "edge") and not self.draggedNode.hasConnectedEdge(gr_item.edge):
                 self.hoveredList.append(gr_item)
                 gr_item.hovered = True
 
@@ -152,7 +157,7 @@ class EdgeIntersect:
         # Returns the first edge that intersects with the dropped node
         gr_items = self.grScene.items(node_box)
         for gr_item in gr_items:
-            if hasattr(gr_item, 'edge') and not self.draggedNode.hasConnectedEdge(gr_item.edge):
+            if hasattr(gr_item, "edge") and not self.draggedNode.hasConnectedEdge(gr_item.edge):
                 return gr_item.edge
         return None
 

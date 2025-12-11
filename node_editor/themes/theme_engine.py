@@ -6,6 +6,9 @@ Usage:
 
     ThemeEngine.set_theme("dark")
     theme = ThemeEngine.get_theme()
+
+Author: Michael Economou
+Date: 2025-12-11
 """
 
 from __future__ import annotations
@@ -34,6 +37,23 @@ class ThemeEngine:
             theme_class: A theme class that inherits from BaseTheme
         """
         cls._themes[theme_class.name] = theme_class
+
+    @classmethod
+    def current_theme(cls) -> BaseTheme:
+        """Get the current theme instance.
+
+        Auto-initializes with dark theme if none is set.
+
+        Returns:
+            Current theme instance
+        """
+        if cls._current_theme is None:
+            # Auto-initialize with dark theme
+            from node_editor.themes.dark.theme import DarkTheme
+
+            cls.register_theme(DarkTheme)
+            cls.set_theme("dark")
+        return cls._current_theme
 
     @classmethod
     def get_theme(cls, name: str | None = None) -> BaseTheme | None:

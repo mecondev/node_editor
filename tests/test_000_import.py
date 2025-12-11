@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 
-"""Tests for `nodeeditor` package."""
+"""
+Tests for `nodeeditor` package.
+
+Author: Michael Economou
+Date: 2025-12-11
+"""
 
 
 import unittest

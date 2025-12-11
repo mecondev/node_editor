@@ -1,4 +1,9 @@
 """
+Module description.
+Author: Michael Economou
+Date: 2025-12-11
+"""
+"""
 Configuration file for Node Editor project.
 """
 

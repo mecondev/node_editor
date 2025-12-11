@@ -3,6 +3,9 @@ Cut Line - Visual line for cutting edges.
 
 This module provides the QDMCutLine class which represents a cutting line
 that users can draw to cut through multiple edges at once.
+
+Author: Michael Economou
+Date: 2025-12-11
 """
 
 from __future__ import annotations
@@ -67,7 +70,7 @@ class QDMCutLine(QGraphicsItem):
 
         return path
 
-    def paint(self, painter: QPainter, option, widget=None) -> None:
+    def paint(self, painter: QPainter, _option, _widget=None) -> None:
         """Paint the cutting line.
 
         Args:

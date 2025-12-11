@@ -7,6 +7,9 @@ Classes:
     - EdgeSnapping: Snap edges to sockets
     - EdgeRerouting: Reroute edges through points
     - EdgeIntersect: Detect edge intersections
+
+Author: Michael Economou
+Date: 2025-12-11
 """
 
 # Will be populated after migration

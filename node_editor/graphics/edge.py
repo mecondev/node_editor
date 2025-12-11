@@ -1,4 +1,9 @@
-"""Graphics representation of an Edge."""
+"""
+Graphics representation of an Edge.
+
+Author: Michael Economou
+Date: 2025-12-11
+"""
 
 from typing import TYPE_CHECKING
 
@@ -67,7 +72,7 @@ class QDMGraphicsEdge(QGraphicsPathItem):
 
     def initAssets(self) -> None:
         """Initialize Qt objects like QColor, QPen using theme."""
-        theme = ThemeEngine.current_theme
+        theme = ThemeEngine.current_theme()
 
         # Edge colors from theme
         self._color = self._default_color = theme.edge_color
@@ -137,7 +142,7 @@ class QDMGraphicsEdge(QGraphicsPathItem):
 
         self._color = QColor(color) if isinstance(color, str) else color
         self._pen = QPen(self._color)
-        self._pen.setWidthF(ThemeEngine.current_theme.edge_width)
+        self._pen.setWidthF(ThemeEngine.current_theme().edge_width)
 
     def setColorFromSockets(self) -> bool:
         """Change color according to connected sockets.
@@ -149,14 +154,12 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         socket_type_end = self.edge.end_socket.socket_type
         if socket_type_start != socket_type_end:
             return False
-        self.changeColor(
-            self.edge.start_socket.grSocket.getSocketColor(socket_type_start)
-        )
+        self.changeColor(self.edge.start_socket.grSocket.getSocketColor(socket_type_start))
         return True
 
     def onSelected(self) -> None:
         """Event handler when edge was selected."""
-        self.edge.scene.grScene.itemSelected.emit()
+        self.edge.scene.grScene.item_selected.emit()
 
     def doSelect(self, new_state: bool = True) -> None:
         """Safe version of selecting the graphics edge.
@@ -181,7 +184,7 @@ class QDMGraphicsEdge(QGraphicsPathItem):
             self._last_selected_state = self.isSelected()
             self.onSelected()
 
-    def hoverEnterEvent(self, event: "QGraphicsSceneHoverEvent") -> None:
+    def hoverEnterEvent(self, _event: "QGraphicsSceneHoverEvent") -> None:
         """Handle hover enter.
 
         Args:
@@ -190,7 +193,7 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         self.hovered = True
         self.update()
 
-    def hoverLeaveEvent(self, event: "QGraphicsSceneHoverEvent") -> None:
+    def hoverLeaveEvent(self, _event: "QGraphicsSceneHoverEvent") -> None:
         """Handle hover leave.
 
         Args:
@@ -236,8 +239,8 @@ class QDMGraphicsEdge(QGraphicsPathItem):
     def paint(
         self,
         painter,
-        option: "QStyleOptionGraphicsItem",
-        widget=None,
+        _option: "QStyleOptionGraphicsItem",
+        _widget=None,
     ) -> None:
         """Paint the graphics edge.
 
@@ -259,9 +262,7 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         if self.edge.end_socket is None:
             painter.setPen(self._pen_dragging)
         else:
-            painter.setPen(
-                self._pen if not self.isSelected() else self._pen_selected
-            )
+            painter.setPen(self._pen if not self.isSelected() else self._pen_selected)
 
         painter.drawPath(self.path())
 

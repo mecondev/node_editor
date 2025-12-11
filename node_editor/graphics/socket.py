@@ -1,4 +1,9 @@
-"""Graphics representation of a Socket."""
+"""
+Graphics representation of a Socket.
+
+Author: Michael Economou
+Date: 2025-12-11
+"""
 
 from typing import TYPE_CHECKING
 
@@ -60,7 +65,7 @@ class QDMGraphicsSocket(QGraphicsItem):
         Returns:
             QColor for this socket type
         """
-        theme = ThemeEngine.current_theme
+        theme = ThemeEngine.current_theme()
         if isinstance(key, int):
             # Get socket color from theme
             if 0 <= key < len(theme.socket_colors):
@@ -78,7 +83,7 @@ class QDMGraphicsSocket(QGraphicsItem):
 
     def initAssets(self) -> None:
         """Initialize Qt objects like QColor, QPen and QBrush."""
-        theme = ThemeEngine.current_theme
+        theme = ThemeEngine.current_theme()
 
         # Socket colors from theme
         self._color_background = self.getSocketColor(self.socket_type)
@@ -92,7 +97,7 @@ class QDMGraphicsSocket(QGraphicsItem):
         self._pen_highlight.setWidthF(2.0)
         self._brush = QBrush(self._color_background)
 
-    def paint(self, painter, option, widget=None) -> None:
+    def paint(self, painter, _option, _widget=None) -> None:
         """Paint socket as a circle.
 
         Args:

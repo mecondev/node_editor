@@ -1,4 +1,9 @@
-"""Qt-specific helper functions."""
+"""
+Qt-specific helper functions.
+
+Author: Michael Economou
+Date: 2025-12-11
+"""
 
 from PyQt5.QtCore import QFile, Qt
 from PyQt5.QtWidgets import QApplication
@@ -73,3 +78,9 @@ def isALTPressed(event) -> bool:
         True if Alt modifier is pressed
     """
     return bool(event.modifiers() & Qt.AltModifier)
+
+
+# Snake_case aliases for consistency
+is_ctrl_pressed = isCTRLPressed
+is_shift_pressed = isSHIFTPressed
+is_alt_pressed = isALTPressed

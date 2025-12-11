@@ -3,6 +3,9 @@ Scene History - Undo/Redo functionality.
 
 This module provides history management for the node editor, allowing
 users to undo and redo operations.
+
+Author: Michael Economou
+Date: 2025-12-11
 """
 
 from __future__ import annotations
@@ -170,7 +173,7 @@ class SceneHistory:
 
         # If pointer is not at the end, truncate future history
         if self.history_current_step + 1 < len(self.history_stack):
-            self.history_stack = self.history_stack[0:self.history_current_step + 1]
+            self.history_stack = self.history_stack[0 : self.history_current_step + 1]
 
         # If history exceeds limit, remove oldest entry
         if self.history_current_step + 1 >= self.history_limit:
@@ -217,15 +220,15 @@ class SceneHistory:
             Dictionary with 'nodes' and 'edges' lists containing IDs
         """
         sel_obj = {
-            'nodes': [],
-            'edges': [],
+            "nodes": [],
+            "edges": [],
         }
 
         for item in self.scene.grScene.selectedItems():
-            if hasattr(item, 'node'):
-                sel_obj['nodes'].append(item.node.id)
-            elif hasattr(item, 'edge'):
-                sel_obj['edges'].append(item.edge.id)
+            if hasattr(item, "node"):
+                sel_obj["nodes"].append(item.node.id)
+            elif hasattr(item, "edge"):
+                sel_obj["edges"].append(item.edge.id)
 
         return sel_obj
 
@@ -241,9 +244,9 @@ class SceneHistory:
             Dictionary with scene snapshot and selection
         """
         history_stamp = {
-            'desc': desc,
-            'snapshot': self.scene.serialize(),
-            'selection': self.captureCurrentSelection(),
+            "desc": desc,
+            "snapshot": self.scene.serialize(),
+            "selection": self.captureCurrentSelection(),
         }
 
         return history_stamp
@@ -265,13 +268,13 @@ class SceneHistory:
                 pass
 
             # Deserialize scene
-            self.scene.deserialize(history_stamp['snapshot'])
+            self.scene.deserialize(history_stamp["snapshot"])
 
             # Restore edge selection
             for edge in self.scene.edges:
                 edge.grEdge.setSelected(False)
 
-            for edge_id in history_stamp['selection']['edges']:
+            for edge_id in history_stamp["selection"]["edges"]:
                 for edge in self.scene.edges:
                     if edge.id == edge_id:
                         edge.grEdge.setSelected(True)
@@ -281,7 +284,7 @@ class SceneHistory:
             for node in self.scene.nodes:
                 node.grNode.setSelected(False)
 
-            for node_id in history_stamp['selection']['nodes']:
+            for node_id in history_stamp["selection"]["nodes"]:
                 for node in self.scene.nodes:
                     if node.id == node_id:
                         node.grNode.setSelected(True)
@@ -296,12 +299,15 @@ class SceneHistory:
             self.scene._last_selected_items = self.scene.getSelectedItems()
 
             # Check if selection has changed
-            if (current_selection['nodes'] != previous_selection['nodes'] or
-                current_selection['edges'] != previous_selection['edges']):
+            if (
+                current_selection["nodes"] != previous_selection["nodes"]
+                or current_selection["edges"] != previous_selection["edges"]
+            ):
                 if DEBUG_SELECTION:
                     pass
                 self.undo_selection_has_changed = True
 
         except Exception as e:
             from node_editor.utils.helpers import dump_exception
+
             dump_exception(e)

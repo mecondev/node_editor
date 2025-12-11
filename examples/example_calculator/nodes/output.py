@@ -1,8 +1,13 @@
+"""
+Module description.
+Author: Michael Economou
+Date: 2025-12-11
+"""
 from PyQt5.QtWidgets import QLabel
 from PyQt5.QtCore import Qt
 from examples.example_calculator.calc_conf import register_node, OP_NODE_OUTPUT
 from examples.example_calculator.calc_node_base import CalcNode, CalcGraphicsNode
-from nodeeditor.node_content_widget import QDMNodeContentWidget
+from node_editor.widgets.content_widget import QDMNodeContentWidget
 
 
 class CalcOutputContent(QDMNodeContentWidget):

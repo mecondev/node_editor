@@ -1,9 +1,14 @@
+"""
+Module description.
+Author: Michael Economou
+Date: 2025-12-11
+"""
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtCore import Qt
 from examples.example_calculator.calc_conf import register_node, OP_NODE_INPUT
 from examples.example_calculator.calc_node_base import CalcNode, CalcGraphicsNode
-from nodeeditor.node_content_widget import QDMNodeContentWidget
-from nodeeditor.utils import dumpException
+from node_editor.widgets.content_widget import QDMNodeContentWidget
+from node_editor.utils.helpers import dumpException
 
 
 class CalcInputContent(QDMNodeContentWidget):

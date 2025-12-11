@@ -1,10 +1,15 @@
-"""Helper functions (non-Qt utilities)."""
+"""
+Helper functions (non-Qt utilities).
+
+Author: Michael Economou
+Date: 2025-12-11
+"""
 
 import traceback
 from pprint import PrettyPrinter
 
 
-def dumpException(e: Exception | None = None) -> None:
+def dumpException(_e: Exception | None = None) -> None:
     """Print an exception with traceback to console.
 
     Args:
@@ -14,3 +19,6 @@ def dumpException(e: Exception | None = None) -> None:
 
 
 pp = PrettyPrinter(indent=4).pprint
+
+# Alias for backwards compatibility
+dump_exception = dumpException

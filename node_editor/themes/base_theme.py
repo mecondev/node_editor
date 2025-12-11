@@ -2,6 +2,9 @@
 Base Theme - Abstract base class for themes.
 
 All themes should inherit from this class and define their colors.
+
+Author: Michael Economou
+Date: 2025-12-11
 """
 
 from PyQt5.QtGui import QColor

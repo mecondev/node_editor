@@ -1,12 +1,17 @@
+"""
+Module description.
+Author: Michael Economou
+Date: 2025-12-11
+"""
 from PyQt5.QtGui import QImage
 from PyQt5.QtCore import QRectF
 from PyQt5.QtWidgets import QLabel
 
-from nodeeditor.node_node import Node
-from nodeeditor.node_content_widget import QDMNodeContentWidget
-from nodeeditor.node_graphics_node import QDMGraphicsNode
-from nodeeditor.node_socket import LEFT_CENTER, RIGHT_CENTER
-from nodeeditor.utils import dumpException
+from node_editor.core.node import Node
+from node_editor.widgets.content_widget import QDMNodeContentWidget
+from node_editor.graphics.node import QDMGraphicsNode
+from node_editor.core.socket import LEFT_CENTER, RIGHT_CENTER
+from node_editor.utils.helpers import dumpException
 
 
 class CalcGraphicsNode(QDMGraphicsNode):

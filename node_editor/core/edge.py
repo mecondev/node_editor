@@ -1,4 +1,9 @@
-"""Edge class for connecting nodes and edge type constants."""
+"""
+Edge class for connecting nodes and edge type constants.
+
+Author: Michael Economou
+Date: 2025-12-11
+"""
 
 import contextlib
 from collections import OrderedDict
@@ -223,11 +228,7 @@ class Edge(Serializable):
         Returns:
             Opposite socket or None
         """
-        return (
-            self.start_socket
-            if known_socket == self.end_socket
-            else self.end_socket
-        )
+        return self.start_socket if known_socket == self.end_socket else self.end_socket
 
     def doSelect(self, new_state: bool = True) -> None:
         """Safe selecting/deselecting operation.
@@ -239,13 +240,13 @@ class Edge(Serializable):
 
     def updatePositions(self) -> None:
         """Update graphics edge positions from sockets."""
-        source_pos = self.start_socket.getSocketPosition()
+        source_pos = list(self.start_socket.getSocketPosition())
         source_pos[0] += self.start_socket.node.grNode.pos().x()
         source_pos[1] += self.start_socket.node.grNode.pos().y()
         self.grEdge.setSource(*source_pos)
 
         if self.end_socket is not None:
-            end_pos = self.end_socket.getSocketPosition()
+            end_pos = list(self.end_socket.getSocketPosition())
             end_pos[0] += self.end_socket.node.grNode.pos().x()
             end_pos[1] += self.end_socket.node.grNode.pos().y()
             self.grEdge.setDestination(*end_pos)
@@ -259,9 +260,7 @@ class Edge(Serializable):
         self.end_socket = None
         self.start_socket = None
 
-    def remove(
-        self, silent_for_socket: "Socket | None" = None, silent: bool = False
-    ) -> None:
+    def remove(self, silent_for_socket: "Socket | None" = None, silent: bool = False) -> None:
         """Safely remove this edge.
 
         Removes graphics edge and notifies connected nodes.
@@ -338,8 +337,8 @@ class Edge(Serializable):
         data: dict,
         hashmap: dict | None = None,
         restore_id: bool = True,
-        *args,
-        **kwargs,
+        *_args,
+        **_kwargs,
     ) -> bool:
         """Deserialize edge from dictionary.
 

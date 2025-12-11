@@ -3,6 +3,9 @@ Edge Dragging - Interactive edge creation by dragging.
 
 This module handles the interactive creation of edges by dragging from
 one socket to another.
+
+Author: Michael Economou
+Date: 2025-12-11
 """
 
 from __future__ import annotations
@@ -166,7 +169,7 @@ class EdgeDragging:
                             socket.node.onInputChanged(socket)
 
                     self.grView.grScene.scene.history.storeHistory(
-                        "Created new edge by dragging", setModified=True
+                        "Created new edge by dragging", set_modified=True
                     )
                     return True
 

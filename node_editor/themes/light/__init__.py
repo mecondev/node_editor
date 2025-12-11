@@ -1,4 +1,9 @@
-"""Light theme for node editor."""
+"""
+Light theme for node editor.
+
+Author: Michael Economou
+Date: 2025-12-11
+"""
 
 from PyQt5.QtGui import QColor, QFont
 

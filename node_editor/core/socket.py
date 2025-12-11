@@ -1,4 +1,9 @@
-"""Socket class for node connection points."""
+"""
+Socket class for node connection points.
+
+Author: Michael Economou
+Date: 2025-12-11
+"""
 
 from collections import OrderedDict
 from typing import TYPE_CHECKING

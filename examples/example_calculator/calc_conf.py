@@ -1,3 +1,8 @@
+"""
+Module description.
+Author: Michael Economou
+Date: 2025-12-11
+"""
 LISTBOX_MIMETYPE = "application/x-item"
 
 OP_NODE_INPUT = 1

@@ -1,4 +1,9 @@
-"""Node class - logical representation of a node."""
+"""
+Node class - logical representation of a node.
+
+Author: Michael Economou
+Date: 2025-12-11
+"""
 
 from collections import OrderedDict
 from typing import TYPE_CHECKING
@@ -86,7 +91,9 @@ class Node(Serializable):
         self._is_invalid = False
 
     def __str__(self) -> str:
-        return f"<{self.title}:{self.__class__.__name__} {hex(id(self))[2:5]}..{hex(id(self))[-3:]}>"
+        return (
+            f"<{self.title}:{self.__class__.__name__} {hex(id(self))[2:5]}..{hex(id(self))[-3:]}>"
+        )
 
     @property
     def title(self) -> str:
@@ -176,9 +183,7 @@ class Node(Serializable):
             RIGHT_TOP: 1,
         }
 
-    def initSockets(
-        self, inputs: list[int], outputs: list[int], reset: bool = True
-    ) -> None:
+    def initSockets(self, inputs: list[int], outputs: list[int], reset: bool = True) -> None:
         """Create sockets for inputs and outputs.
 
         Args:
@@ -230,7 +235,7 @@ class Node(Serializable):
             new_edge: Reference to the changed Edge
         """
 
-    def onInputChanged(self, socket: Socket) -> None:
+    def onInputChanged(self, _socket: Socket) -> None:
         """Event handler when node's input edge has changed.
 
         Auto-marks this node and descendants as dirty.
@@ -325,11 +330,7 @@ class Node(Serializable):
             )
             available_height = node_height - top_offset
 
-            y = (
-                top_offset
-                + available_height / 2.0
-                + (index - 0.5) * self.socket_spacing
-            )
+            y = top_offset + available_height / 2.0 + (index - 0.5) * self.socket_spacing
             if num_out_of > 1:
                 y -= self.socket_spacing * (num_out_of - 1) / 2
 
@@ -477,7 +478,7 @@ class Node(Serializable):
             other_node.markInvalid(new_value)
             other_node.markDescendantsInvalid(new_value)
 
-    def eval(self, index: int = 0):
+    def eval(self, _index: int = 0):
         """Evaluate this node.
 
         Override this method to implement node evaluation logic.
@@ -534,9 +535,7 @@ class Node(Serializable):
             dumpException(e)
             return None
 
-    def getInputWithSocket(
-        self, index: int = 0
-    ) -> tuple["Node | None", "Socket | None"]:
+    def getInputWithSocket(self, index: int = 0) -> tuple["Node | None", "Socket | None"]:
         """Get first node and socket connected to input at index.
 
         Args:
@@ -618,11 +617,7 @@ class Node(Serializable):
             inputs.append(socket.serialize())
         for socket in self.outputs:
             outputs.append(socket.serialize())
-        ser_content = (
-            self.content.serialize()
-            if isinstance(self.content, Serializable)
-            else {}
-        )
+        ser_content = self.content.serialize() if isinstance(self.content, Serializable) else {}
         return OrderedDict(
             [
                 ("id", self.id),
@@ -640,8 +635,8 @@ class Node(Serializable):
         data: dict,
         hashmap: dict | None = None,
         restore_id: bool = True,
-        *args,
-        **kwargs,
+        *_args,
+        **_kwargs,
     ) -> bool:
         """Deserialize node from dictionary.
 
@@ -665,12 +660,8 @@ class Node(Serializable):
             self.title = data["title"]
 
             # Sort sockets by index and position
-            data["inputs"].sort(
-                key=lambda socket: socket["index"] + socket["position"] * 10000
-            )
-            data["outputs"].sort(
-                key=lambda socket: socket["index"] + socket["position"] * 10000
-            )
+            data["inputs"].sort(key=lambda socket: socket["index"] + socket["position"] * 10000)
+            data["outputs"].sort(key=lambda socket: socket["index"] + socket["position"] * 10000)
             num_inputs = len(data["inputs"])
             num_outputs = len(data["outputs"])
 

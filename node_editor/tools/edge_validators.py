@@ -9,6 +9,9 @@ Example usage:
 
     Edge.registerEdgeValidator(edge_cannot_connect_two_outputs_or_two_inputs)
     Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_same_node)
+
+Author: Michael Economou
+Date: 2025-12-11
 """
 
 from __future__ import annotations
@@ -21,7 +24,7 @@ if TYPE_CHECKING:
 DEBUG = False
 
 
-def print_error(*args) -> None:
+def print_error(*_args) -> None:
     """Helper function for printing validation errors.
 
     Args:

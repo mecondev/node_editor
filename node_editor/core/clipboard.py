@@ -3,6 +3,9 @@ Scene Clipboard - Copy/Paste functionality.
 
 This module provides clipboard support for the node editor, allowing
 users to copy, cut, and paste nodes and edges.
+
+Author: Michael Economou
+Date: 2025-12-11
 """
 
 from __future__ import annotations
@@ -53,13 +56,14 @@ class SceneClipboard:
 
         # Sort items into nodes and edges
         for item in self.scene.grScene.selectedItems():
-            if hasattr(item, 'node'):
+            if hasattr(item, "node"):
                 sel_nodes.append(item.node.serialize())
-                for socket in (item.node.inputs + item.node.outputs):
+                for socket in item.node.inputs + item.node.outputs:
                     sel_sockets[socket.id] = socket
-            elif hasattr(item, 'edge'):
+            elif hasattr(item, "edge"):
                 # Import here to avoid circular dependency
                 from node_editor.graphics.edge import QDMGraphicsEdge
+
                 if isinstance(item, QDMGraphicsEdge):
                     sel_edges.append(item.edge)
 
@@ -69,8 +73,7 @@ class SceneClipboard:
         # Remove edges not fully connected to selected nodes
         edges_to_remove = []
         for edge in sel_edges:
-            if (edge.start_socket.id in sel_sockets and
-                edge.end_socket.id in sel_sockets):
+            if edge.start_socket.id in sel_sockets and edge.end_socket.id in sel_sockets:
                 # Edge is connected on both sides
                 pass
             else:
@@ -89,15 +92,17 @@ class SceneClipboard:
         if DEBUG:
             pass
 
-        data = OrderedDict([
-            ('nodes', sel_nodes),
-            ('edges', edges_final),
-        ])
+        data = OrderedDict(
+            [
+                ("nodes", sel_nodes),
+                ("edges", edges_final),
+            ]
+        )
 
         # If cut operation, delete selected items
         if delete:
             self.scene.getView().deleteSelected()
-            self.scene.history.storeHistory("Cut out elements from scene", setModified=True)
+            self.scene.history.storeHistory("Cut out elements from scene", set_modified=True)
 
         return data
 
@@ -118,12 +123,12 @@ class SceneClipboard:
         # Calculate bounding box of copied nodes
         minx = maxx = miny = maxy = None
 
-        for node_data in data['nodes']:
+        for node_data in data["nodes"]:
             # Handle both pos_x/pos_y and pos formats
-            if 'pos_x' in node_data and 'pos_y' in node_data:
-                x, y = node_data['pos_x'], node_data['pos_y']
+            if "pos_x" in node_data and "pos_y" in node_data:
+                x, y = node_data["pos_x"], node_data["pos_y"]
             else:
-                x, y = node_data['pos']
+                x, y = node_data["pos"]
 
             if minx is None or x < minx:
                 minx = x
@@ -159,10 +164,10 @@ class SceneClipboard:
         # Create each node
         created_nodes = []
 
-        for node_data in data['nodes']:
+        for node_data in data["nodes"]:
             node_class = self.scene.getNodeClassFromData(node_data)
             new_node = node_class(self.scene)
-            new_node.deserialize(node_data, hashmap, restore_id=False, *args, **kwargs)
+            new_node.deserialize(node_data, hashmap, *args, restore_id=False, **kwargs)
             created_nodes.append(new_node)
 
             # Adjust node position relative to mouse
@@ -183,15 +188,15 @@ class SceneClipboard:
                 pass
 
         # Create each edge
-        if 'edges' in data:
+        if "edges" in data:
             from node_editor.core.edge import Edge
 
-            for edge_data in data['edges']:
+            for edge_data in data["edges"]:
                 new_edge = Edge(self.scene)
-                new_edge.deserialize(edge_data, hashmap, restore_id=False, *args, **kwargs)
+                new_edge.deserialize(edge_data, hashmap, *args, restore_id=False, **kwargs)
 
         # Re-enable selection events
         self.scene.setSilentSelectionEvents(False)
 
         # Store history
-        self.scene.history.storeHistory("Pasted elements in scene", setModified=True)
+        self.scene.history.storeHistory("Pasted elements in scene", set_modified=True)

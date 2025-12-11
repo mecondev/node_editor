@@ -8,6 +8,9 @@ Classes:
     - QDMGraphicsScene: Custom QGraphicsScene with grid (to be migrated)
     - QDMGraphicsEdge: Visual representation of edges (to be migrated)
     - QDMGraphicsCutLine: Line for cutting edges (to be migrated)
+
+Author: Michael Economou
+Date: 2025-12-11
 """
 
 from node_editor.graphics.node import QDMGraphicsNode

@@ -3,6 +3,9 @@ Edge Rerouting - Interactive edge rerouting functionality.
 
 This module handles the rerouting of existing edges by Ctrl+clicking on a socket
 and dragging to a new destination.
+
+Author: Michael Economou
+Date: 2025-12-11
 """
 
 from __future__ import annotations
@@ -43,7 +46,7 @@ class EdgeRerouting:
         self.is_rerouting: bool = False
         self.first_mb_release: bool = False
 
-    def print(self, *args) -> None:
+    def print(self, *_args) -> None:
         """Helper function for debug printing.
 
         Args:
@@ -204,7 +207,7 @@ class EdgeRerouting:
 
         # Store history stamp
         if self.start_socket:
-            self.start_socket.node.scene.history.storeHistory("Rerouted edges", setModified=True)
+            self.start_socket.node.scene.history.storeHistory("Rerouted edges", set_modified=True)
 
         # Reset variables
         self.resetRerouting()

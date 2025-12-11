@@ -1,9 +1,14 @@
-"""Graphics representation of a Node."""
+"""
+Graphics representation of a Node.
+
+Author: Michael Economou
+Date: 2025-12-11
+"""
 
 from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import QRectF, Qt
-from PyQt5.QtGui import QBrush, QColor, QFont, QPainterPath, QPen
+from PyQt5.QtGui import QBrush, QFont, QPainterPath, QPen
 from PyQt5.QtWidgets import QGraphicsItem, QGraphicsTextItem, QWidget
 
 from node_editor.themes.theme_engine import ThemeEngine
@@ -99,24 +104,25 @@ class QDMGraphicsNode(QGraphicsItem):
 
     def initAssets(self) -> None:
         """Initialize Qt objects like QColor, QPen and QBrush using theme."""
-        theme = ThemeEngine.current_theme
+        theme = ThemeEngine.current_theme()
 
         # Title styling
         self._title_color = theme.node_title_color
-        self._title_font = QFont(theme.node_title_font, theme.node_title_font_size)
+        self._title_font = QFont(theme.node_title_font)
+        self._title_font.setPointSize(theme.node_title_font_size)
 
         # Node colors from theme
-        self._color = theme.node_outline_color
-        self._color_selected = theme.node_selected_color
-        self._color_hovered = QColor("#FF37A6FF")  # Keep this bright blue for hover
+        self._color = theme.node_border_default
+        self._color_selected = theme.node_border_selected
+        self._color_hovered = theme.node_border_hovered
 
         # Pens for outlines
         self._pen_default = QPen(self._color)
-        self._pen_default.setWidthF(2.0)
+        self._pen_default.setWidthF(theme.node_border_width)
         self._pen_selected = QPen(self._color_selected)
-        self._pen_selected.setWidthF(2.0)
+        self._pen_selected.setWidthF(theme.node_border_width)
         self._pen_hovered = QPen(self._color_hovered)
-        self._pen_hovered.setWidthF(3.0)
+        self._pen_hovered.setWidthF(theme.node_border_width_hovered)
 
         # Brushes for backgrounds
         self._brush_title = QBrush(theme.node_title_background)
@@ -124,7 +130,7 @@ class QDMGraphicsNode(QGraphicsItem):
 
     def onSelected(self) -> None:
         """Event handler when node is selected."""
-        self.node.scene.grScene.itemSelected.emit()
+        self.node.scene.grScene.item_selected.emit()
 
     def doSelect(self, new_state: bool = True) -> None:
         """Safe version of selecting the graphics node.
@@ -164,7 +170,7 @@ class QDMGraphicsNode(QGraphicsItem):
         # Handle node movement
         if self._was_moved:
             self._was_moved = False
-            self.node.scene.history.storeHistory("Node moved", setModified=True)
+            self.node.scene.history.storeHistory("Node moved", set_modified=True)
 
             self.node.scene.resetLastSelectedStates()
             self.doSelect()  # Trigger itemSelected when node moved
@@ -190,7 +196,7 @@ class QDMGraphicsNode(QGraphicsItem):
         """
         self.node.onDoubleClicked(event)
 
-    def hoverEnterEvent(self, event: "QGraphicsSceneHoverEvent") -> None:
+    def hoverEnterEvent(self, _event: "QGraphicsSceneHoverEvent") -> None:
         """Handle hover enter.
 
         Args:
@@ -199,7 +205,7 @@ class QDMGraphicsNode(QGraphicsItem):
         self.hovered = True
         self.update()
 
-    def hoverLeaveEvent(self, event: "QGraphicsSceneHoverEvent") -> None:
+    def hoverLeaveEvent(self, _event: "QGraphicsSceneHoverEvent") -> None:
         """Handle hover leave.
 
         Args:
@@ -240,7 +246,7 @@ class QDMGraphicsNode(QGraphicsItem):
         self.grContent.node = self.node  # type: ignore
         self.grContent.setParentItem(self)
 
-    def paint(self, painter, option: "QStyleOptionGraphicsItem", widget=None) -> None:
+    def paint(self, painter, _option: "QStyleOptionGraphicsItem", _widget=None) -> None:
         """Paint the rounded rectangular node.
 
         Args:
@@ -254,7 +260,9 @@ class QDMGraphicsNode(QGraphicsItem):
         path_title.addRoundedRect(
             0, 0, self.width, self.title_height, self.edge_roundness, self.edge_roundness
         )
-        path_title.addRect(0, self.title_height - self.edge_roundness, self.edge_roundness, self.edge_roundness)
+        path_title.addRect(
+            0, self.title_height - self.edge_roundness, self.edge_roundness, self.edge_roundness
+        )
         path_title.addRect(
             self.width - self.edge_roundness,
             self.title_height - self.edge_roundness,
@@ -278,7 +286,10 @@ class QDMGraphicsNode(QGraphicsItem):
         )
         path_content.addRect(0, self.title_height, self.edge_roundness, self.edge_roundness)
         path_content.addRect(
-            self.width - self.edge_roundness, self.title_height, self.edge_roundness, self.edge_roundness
+            self.width - self.edge_roundness,
+            self.title_height,
+            self.edge_roundness,
+            self.edge_roundness,
         )
         painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(self._brush_background)

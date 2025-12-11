@@ -3,6 +3,9 @@ Graphics View - Main view widget for the node editor.
 
 This module provides the QDMGraphicsView class which handles all user interactions
 including zooming, panning, edge dragging, node selection, and edge cutting.
+
+Author: Michael Economou
+Date: 2025-12-11
 """
 
 from __future__ import annotations
@@ -22,19 +25,19 @@ if TYPE_CHECKING:
     from node_editor.graphics.scene import QDMGraphicsScene
 
 # View mode constants
-MODE_NOOP = 1               # Ready state
-MODE_EDGE_DRAG = 2          # Dragging an edge
-MODE_EDGE_CUT = 3           # Drawing cutting line
-MODE_EDGES_REROUTING = 4    # Rerouting existing edges
-MODE_NODE_DRAG = 5          # Dragging a node
+MODE_NOOP = 1  # Ready state
+MODE_EDGE_DRAG = 2  # Dragging an edge
+MODE_EDGE_CUT = 3  # Drawing cutting line
+MODE_EDGES_REROUTING = 4  # Rerouting existing edges
+MODE_NODE_DRAG = 5  # Dragging a node
 
-STATE_STRING = ['', 'Noop', 'Edge Drag', 'Edge Cut', 'Edge Rerouting', 'Node Drag']
+STATE_STRING = ["", "Noop", "Edge Drag", "Edge Cut", "Edge Rerouting", "Node Drag"]
 
 # Configuration constants
 EDGE_DRAG_START_THRESHOLD = 50  # Distance threshold for edge drag
-EDGE_REROUTING_UE = True        # Enable UnrealEngine style rerouting
-EDGE_SNAPPING_RADIUS = 24       # Socket snapping distance
-EDGE_SNAPPING = True            # Enable socket snapping
+EDGE_REROUTING_UE = True  # Enable UnrealEngine style rerouting
+EDGE_SNAPPING_RADIUS = 24  # Socket snapping distance
+EDGE_SNAPPING = True  # Enable socket snapping
 
 # Debug flags
 DEBUG = False
@@ -93,22 +96,27 @@ class QDMGraphicsView(QGraphicsView):
 
         # Edge dragging (late import to avoid circular dependencies)
         from node_editor.tools.edge_dragging import EdgeDragging
+
         self.dragging = EdgeDragging(self)
 
         # Edge rerouting
         from node_editor.tools.edge_rerouting import EdgeRerouting
+
         self.rerouting = EdgeRerouting(self)
 
         # Drop node on edge
         from node_editor.tools.edge_intersect import EdgeIntersect
+
         self.edgeIntersect = EdgeIntersect(self)
 
         # Socket snapping
         from node_editor.tools.edge_snapping import EdgeSnapping
+
         self.snapping = EdgeSnapping(self, snapping_radius=EDGE_SNAPPING_RADIUS)
 
         # Cut line
         from node_editor.graphics.cutline import QDMCutLine
+
         self.cutline = QDMCutLine()
         self.grScene.addItem(self.cutline)
 
@@ -131,9 +139,7 @@ class QDMGraphicsView(QGraphicsView):
         """Set up the graphics view."""
         # Rendering hints
         self.setRenderHints(
-            QPainter.Antialiasing |
-            QPainter.TextAntialiasing |
-            QPainter.SmoothPixmapTransform
+            QPainter.Antialiasing | QPainter.TextAntialiasing | QPainter.SmoothPixmapTransform
         )
 
         # Update mode
@@ -264,7 +270,7 @@ class QDMGraphicsView(QGraphicsView):
                 pass
 
             if is_ctrl_pressed(event):
-                for item in self.grScene.items():
+                for _item in self.grScene.items():
                     pass
 
         if DEBUG_MMB_LAST_SELECTIONS and is_shift_pressed(event):
@@ -272,15 +278,23 @@ class QDMGraphicsView(QGraphicsView):
 
         # Enable MMB dragging by faking left button events
         release_event = QMouseEvent(
-            QEvent.MouseButtonRelease, event.localPos(), event.screenPos(),
-            Qt.LeftButton, Qt.NoButton, event.modifiers()
+            QEvent.MouseButtonRelease,
+            event.localPos(),
+            event.screenPos(),
+            Qt.LeftButton,
+            Qt.NoButton,
+            event.modifiers(),
         )
         super().mouseReleaseEvent(release_event)
         self.setDragMode(QGraphicsView.ScrollHandDrag)
 
         fake_event = QMouseEvent(
-            event.type(), event.localPos(), event.screenPos(),
-            Qt.LeftButton, event.buttons() | Qt.LeftButton, event.modifiers()
+            event.type(),
+            event.localPos(),
+            event.screenPos(),
+            Qt.LeftButton,
+            event.buttons() | Qt.LeftButton,
+            event.modifiers(),
         )
         super().mousePressEvent(fake_event)
 
@@ -291,8 +305,12 @@ class QDMGraphicsView(QGraphicsView):
             event: Mouse event
         """
         fake_event = QMouseEvent(
-            event.type(), event.localPos(), event.screenPos(),
-            Qt.LeftButton, event.buttons() & ~Qt.LeftButton, event.modifiers()
+            event.type(),
+            event.localPos(),
+            event.screenPos(),
+            Qt.LeftButton,
+            event.buttons() & ~Qt.LeftButton,
+            event.modifiers(),
         )
         super().mouseReleaseEvent(fake_event)
         self.setDragMode(QGraphicsView.RubberBandDrag)
@@ -319,9 +337,12 @@ class QDMGraphicsView(QGraphicsView):
             if is_shift_pressed(event):
                 event.ignore()
                 fake_event = QMouseEvent(
-                    QEvent.MouseButtonPress, event.localPos(), event.screenPos(),
-                    Qt.LeftButton, event.buttons() | Qt.LeftButton,
-                    event.modifiers() | Qt.ControlModifier
+                    QEvent.MouseButtonPress,
+                    event.localPos(),
+                    event.screenPos(),
+                    Qt.LeftButton,
+                    event.buttons() | Qt.LeftButton,
+                    event.modifiers() | Qt.ControlModifier,
                 )
                 super().mousePressEvent(fake_event)
                 return
@@ -368,8 +389,12 @@ class QDMGraphicsView(QGraphicsView):
                 # Ctrl+Click = start edge cutting
                 self.mode = MODE_EDGE_CUT
                 fake_event = QMouseEvent(
-                    QEvent.MouseButtonRelease, event.localPos(), event.screenPos(),
-                    Qt.LeftButton, Qt.NoButton, event.modifiers()
+                    QEvent.MouseButtonRelease,
+                    event.localPos(),
+                    event.screenPos(),
+                    Qt.LeftButton,
+                    Qt.NoButton,
+                    event.modifiers(),
                 )
                 super().mouseReleaseEvent(fake_event)
                 QApplication.setOverrideCursor(Qt.CrossCursor)
@@ -396,9 +421,12 @@ class QDMGraphicsView(QGraphicsView):
                 if is_shift_pressed(event):
                     event.ignore()
                     fake_event = QMouseEvent(
-                        event.type(), event.localPos(), event.screenPos(),
-                        Qt.LeftButton, Qt.NoButton,
-                        event.modifiers() | Qt.ControlModifier
+                        event.type(),
+                        event.localPos(),
+                        event.screenPos(),
+                        Qt.LeftButton,
+                        Qt.NoButton,
+                        event.modifiers() | Qt.ControlModifier,
                     )
                     super().mouseReleaseEvent(fake_event)
                     return
@@ -451,9 +479,9 @@ class QDMGraphicsView(QGraphicsView):
 
                 if current_selected_items != self.grScene.scene._last_selected_items:
                     if current_selected_items == []:
-                        self.grScene.itemsDeselected.emit()
+                        self.grScene.items_deselected.emit()
                     else:
-                        self.grScene.itemSelected.emit()
+                        self.grScene.item_selected.emit()
                     self.grScene.scene._last_selected_items = current_selected_items
 
                 super().mouseReleaseEvent(event)
@@ -461,7 +489,7 @@ class QDMGraphicsView(QGraphicsView):
 
             # Deselect on empty space
             if item is None:
-                self.grScene.itemsDeselected.emit()
+                self.grScene.items_deselected.emit()
 
         except Exception as e:
             dump_exception(e)
@@ -548,7 +576,7 @@ class QDMGraphicsView(QGraphicsView):
                 if edge.grEdge.intersectsWith(p1, p2):
                     edge.remove()
 
-        self.grScene.scene.history.storeHistory("Delete cutted edges", setModified=True)
+        self.grScene.scene.history.storeHistory("Delete cutted edges", set_modified=True)
 
     def setSocketHighlights(
         self, scenepos: QPointF, highlighted: bool = True, radius: float = 50
@@ -565,10 +593,7 @@ class QDMGraphicsView(QGraphicsView):
         """
         from node_editor.graphics.socket import QDMGraphicsSocket
 
-        scanrect = QRectF(
-            scenepos.x() - radius, scenepos.y() - radius,
-            radius * 2, radius * 2
-        )
+        scanrect = QRectF(scenepos.x() - radius, scenepos.y() - radius, radius * 2, radius * 2)
         items = self.grScene.items(scanrect)
         items = list(filter(lambda x: isinstance(x, QDMGraphicsSocket), items))
 
@@ -584,10 +609,10 @@ class QDMGraphicsView(QGraphicsView):
         for item in self.grScene.selectedItems():
             if isinstance(item, QDMGraphicsEdge):
                 item.edge.remove()
-            elif hasattr(item, 'node'):
+            elif hasattr(item, "node"):
                 item.node.remove()
 
-        self.grScene.scene.history.storeHistory("Delete selected", setModified=True)
+        self.grScene.scene.history.storeHistory("Delete selected", set_modified=True)
 
     def getItemAtClick(self, event: QEvent):
         """Get the graphics item at the click position.

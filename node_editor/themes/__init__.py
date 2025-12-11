@@ -10,6 +10,9 @@ Usage:
     # Get current theme colors
     theme = ThemeEngine.get_theme()
     color = theme.node_background
+
+Author: Michael Economou
+Date: 2025-12-11
 """
 
 from node_editor.themes.base_theme import BaseTheme

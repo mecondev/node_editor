@@ -3,6 +3,9 @@ Node Editor Widget - Main widget containing scene and view.
 
 This module provides the NodeEditorWidget class which combines the Scene
 and GraphicsView into a single widget that can be embedded in applications.
+
+Author: Michael Economou
+Date: 2025-12-11
 """
 
 from __future__ import annotations
@@ -13,7 +16,7 @@ from typing import TYPE_CHECKING
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMessageBox, QVBoxLayout, QWidget
 
-from node_editor.core.scene import InvalidFile, Scene
+from node_editor.core.scene import InvalidFileError, Scene
 from node_editor.utils.helpers import dump_exception
 
 if TYPE_CHECKING:
@@ -62,6 +65,7 @@ class NodeEditorWidget(QWidget):
 
         # Create view (late import to avoid circular dependencies)
         from node_editor.graphics.view import QDMGraphicsView
+
         if self.__class__.GraphicsView_class is None:
             self.__class__.GraphicsView_class = QDMGraphicsView
 
@@ -159,18 +163,12 @@ class NodeEditorWidget(QWidget):
         except FileNotFoundError as e:
             dump_exception(e)
             QMessageBox.warning(
-                self,
-                f"Error loading {os.path.basename(filename)}",
-                str(e).replace('[Errno 2]', '')
+                self, f"Error loading {os.path.basename(filename)}", str(e).replace("[Errno 2]", "")
             )
             return False
-        except InvalidFile as e:
+        except InvalidFileError as e:
             dump_exception(e)
-            QMessageBox.warning(
-                self,
-                f"Error loading {os.path.basename(filename)}",
-                str(e)
-            )
+            QMessageBox.warning(self, f"Error loading {os.path.basename(filename)}", str(e))
             return False
         finally:
             QApplication.restoreOverrideCursor()
