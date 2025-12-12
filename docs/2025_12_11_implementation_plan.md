@@ -127,7 +127,7 @@ Decision: Keep `tools/` naming - it's more generic and intuitive.
 - [x] `NotNode` - Logical NOT (!a) ✅
 - [x] `XorNode` - Exclusive OR (a XOR b) ✅
 
-**Total Implemented Nodes: 44** (Op Codes 1-63, 70-73, 80-84, 90-94)
+**Total Implemented Nodes: 49** (Op Codes 1-63, 70-73, 80-84, 90-94, 100-104)
 
 **Implementation Details:**
 - All math operations (basic + extended) consolidated in `math_nodes.py`
@@ -146,11 +146,12 @@ Decision: Keep `tools/` naming - it's more generic and intuitive.
 - [x] `tests/test_nodes_conversion.py` - 12 tests ✅
 - [x] `tests/test_nodes_utility.py` - 25 tests ✅
 - [x] `tests/test_nodes_list.py` - 16 tests ✅
+- [x] `tests/test_nodes_time.py` - 19 tests ✅
 
-**Total Tests: 230** (all passing in 5.06s)
+**Total Tests: 249** (all passing in 5.01s)
 
 **File Organization:**
-- 6 main node modules: `math_nodes.py`, `logic_nodes.py`, `string_nodes.py`, `conversion_nodes.py`, `utility_nodes.py`, `list_nodes.py`
+- 7 main node modules: `math_nodes.py`, `logic_nodes.py`, `string_nodes.py`, `conversion_nodes.py`, `utility_nodes.py`, `list_nodes.py`, `time_nodes.py`
 - All tests consolidated for better maintainability
 - Simplified imports in `__init__.py`
 
@@ -235,6 +236,35 @@ Decision: Keep `tools/` naming - it's more generic and intuitive.
   - Edge cases (empty lists, negative indices)
   - Type handling (tuples, strings, mixed types)
 
+---
+
+### ✅ Phase 11: Time/Date Nodes (100% Complete) ✅
+
+**Date Completed:** 2025-12-12
+
+#### ✅ Time/Date Nodes (Op Codes 100-104):
+- [x] `CurrentTimeNode` - Returns current system time as Unix timestamp ✅
+- [x] `FormatDateNode` - Format timestamp to human-readable string (with strftime) ✅
+- [x] `ParseDateNode` - Parse date string to Unix timestamp (with strptime) ✅
+- [x] `TimeDeltaNode` - Add/subtract time offset from timestamp ✅
+- [x] `CompareTimeNode` - Calculate time difference between two timestamps ✅
+
+**Implementation Details:**
+- All timestamps are Unix timestamps (seconds since epoch, UTC)
+- FormatDateNode supports all Python strftime format codes
+- ParseDateNode requires format string matching the input
+- TimeDeltaNode accepts positive (future) or negative (past) offsets
+- CompareTimeNode returns positive if first timestamp is later
+- Full error handling for invalid timestamps and format strings
+
+#### ✅ Test Coverage:
+- [x] `tests/test_nodes_time.py` - 19 tests covering all 5 nodes ✅
+  - Node creation and validation
+  - Time operation logic testing
+  - Format/parse round-trip verification
+  - Edge cases (negative offsets, zero differences)
+  - Common time offsets (minutes, hours, days, weeks)
+
 #### 🔜 Future Node Ideas (Not Yet Implemented):
 
 **Conversion Nodes (Op Codes 70-79):**
@@ -250,10 +280,12 @@ Decision: Keep `tools/` naming - it's more generic and intuitive.
 - [x] `AppendNode` - Append element
 - [x] `JoinNode` - Join list → string
 
-**Time/Date Nodes (Op Codes 100-109):**
-- [ ] `CurrentTimeNode` - Current time/date
-- [ ] `FormatDateNode` - Format timestamp
-- [ ] `TimerNode` - Timer/delay
+**Time/Date Nodes (Op Codes 100-109):** ✅ **Done** (2025-12-12)
+- [x] `CurrentTimeNode` - Current time/date
+- [x] `FormatDateNode` - Format timestamp
+- [x] `ParseDateNode` - Parse date string
+- [x] `TimeDeltaNode` - Add/subtract time offset
+- [x] `CompareTimeNode` - Compare timestamps
 
 **Advanced Nodes (Op Codes 110+):**
 - [ ] `RegexMatchNode` - Regular expressions
@@ -268,6 +300,7 @@ Decision: Keep `tools/` naming - it's more generic and intuitive.
 4. ~~Utility Nodes (80-89)~~ ✅ **Done** (2025-12-12)
 5. ~~Conversion Nodes (70-79)~~ ✅ **Done** (2025-12-12)
 6. ~~List Nodes (90-99)~~ ✅ **Done** (2025-12-12)
+7. ~~Time/Date Nodes (100-109)~~ ✅ **Done** (2025-12-12)
 
 **Note:** Core generic nodes (Op Codes 1-30) + Extended nodes (Op Codes 40-63) provide a comprehensive foundation with 30 node types. Additional nodes can be implemented based on project needs.
 

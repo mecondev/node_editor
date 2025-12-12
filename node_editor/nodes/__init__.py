@@ -21,6 +21,7 @@ Extended Nodes (Op Codes 40+):
     Conversion Nodes (70-79): ToString, ToNumber, ToBool, ToInt.
     Utility Nodes (80-89): Constant, Print, Comment, Clamp, Random.
     List Operations (90-99): CreateList, GetItem, ListLength, Append, Join.
+    Time/Date Operations (100-109): CurrentTime, FormatDate, ParseDate, TimeDelta, CompareTime.
 
 Usage:
     Create and register a custom node::
@@ -100,6 +101,13 @@ from node_editor.nodes.utility_nodes import (
     PrintNode,
     RandomNode,
 )
+from node_editor.nodes.time_nodes import (
+    CompareTimeNode,
+    CurrentTimeNode,
+    FormatDateNode,
+    ParseDateNode,
+    TimeDeltaNode,
+)
 
 __all__ = [
     "NodeRegistry",
@@ -158,4 +166,10 @@ __all__ = [
     "ListLengthNode",
     "AppendNode",
     "JoinNode",
+    # Time/Date operations
+    "CurrentTimeNode",
+    "FormatDateNode",
+    "ParseDateNode",
+    "TimeDeltaNode",
+    "CompareTimeNode",
 ]
