@@ -94,19 +94,19 @@ from node_editor.nodes.string_nodes import (
     SplitNode,
     SubstringNode,
 )
-from node_editor.nodes.utility_nodes import (
-    ClampNode,
-    CommentNode,
-    ConstantNode,
-    PrintNode,
-    RandomNode,
-)
 from node_editor.nodes.time_nodes import (
     CompareTimeNode,
     CurrentTimeNode,
     FormatDateNode,
     ParseDateNode,
     TimeDeltaNode,
+)
+from node_editor.nodes.utility_nodes import (
+    ClampNode,
+    CommentNode,
+    ConstantNode,
+    PrintNode,
+    RandomNode,
 )
 
 __all__ = [

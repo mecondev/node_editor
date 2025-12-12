@@ -51,7 +51,7 @@ class TestFormatDateNode:
         # Test Python strftime
         test_timestamp = 1702376400.0  # 2023-12-12 12:00:00 UTC
         dt = datetime.fromtimestamp(test_timestamp)
-        
+
         # Test various formats
         assert dt.strftime("%Y-%m-%d") == "2023-12-12"
         assert dt.strftime("%Y") == "2023"
@@ -62,7 +62,7 @@ class TestFormatDateNode:
         _ = FormatDateNode(scene)
         test_timestamp = 1702395045.0  # 2023-12-12 17:30:45 UTC
         dt = datetime.fromtimestamp(test_timestamp)
-        
+
         # Full format
         formatted = dt.strftime("%Y-%m-%d %H:%M:%S")
         assert "2023-12-12" in formatted
@@ -88,7 +88,7 @@ class TestParseDateNode:
         format_str = "%Y-%m-%d"
         dt = datetime.strptime(date_string, format_str)
         timestamp = dt.timestamp()
-        
+
         assert isinstance(timestamp, float)
         assert timestamp > 0
 
@@ -98,7 +98,7 @@ class TestParseDateNode:
         date_string = "2023-12-12 15:30:45"
         format_str = "%Y-%m-%d %H:%M:%S"
         dt = datetime.strptime(date_string, format_str)
-        
+
         assert dt.year == 2023
         assert dt.month == 12
         assert dt.day == 12
@@ -110,19 +110,19 @@ class TestParseDateNode:
         """Test parsing and formatting round trip."""
         _ = ParseDateNode(scene)
         _ = FormatDateNode(scene)
-        
+
         # Original string
         original = "2023-12-12 15:30:45"
         format_str = "%Y-%m-%d %H:%M:%S"
-        
+
         # Parse to timestamp
         dt = datetime.strptime(original, format_str)
         timestamp = dt.timestamp()
-        
+
         # Format back to string
         dt2 = datetime.fromtimestamp(timestamp)
         result = dt2.strftime(format_str)
-        
+
         assert result == original
 
 
@@ -142,7 +142,7 @@ class TestTimeDeltaNode:
         _ = TimeDeltaNode(scene)
         base_timestamp = 1702376400.0  # Base time
         offset = 3600.0  # 1 hour
-        
+
         result = base_timestamp + offset
         assert result == 1702380000.0
 
@@ -151,7 +151,7 @@ class TestTimeDeltaNode:
         _ = TimeDeltaNode(scene)
         base_timestamp = 1702376400.0
         offset = -86400.0  # -1 day
-        
+
         result = base_timestamp + offset
         assert result == 1702290000.0
 
@@ -160,7 +160,7 @@ class TestTimeDeltaNode:
         _ = TimeDeltaNode(scene)
         base_timestamp = 1702376400.0
         offset = 0.0
-        
+
         result = base_timestamp + offset
         assert result == base_timestamp
 
@@ -168,7 +168,7 @@ class TestTimeDeltaNode:
         """Test common time offset values."""
         _ = TimeDeltaNode(scene)
         base = 1000000.0
-        
+
         # Common offsets
         assert base + 60 == 1000060.0  # 1 minute
         assert base + 3600 == 1003600.0  # 1 hour
@@ -192,7 +192,7 @@ class TestCompareTimeNode:
         _ = CompareTimeNode(scene)
         timestamp1 = 1702380000.0  # Later
         timestamp2 = 1702376400.0  # Earlier
-        
+
         difference = timestamp1 - timestamp2
         assert difference == 3600.0  # 1 hour
 
@@ -201,7 +201,7 @@ class TestCompareTimeNode:
         _ = CompareTimeNode(scene)
         timestamp1 = 1702376400.0  # Earlier
         timestamp2 = 1702380000.0  # Later
-        
+
         difference = timestamp1 - timestamp2
         assert difference == -3600.0
 
@@ -210,7 +210,7 @@ class TestCompareTimeNode:
         _ = CompareTimeNode(scene)
         timestamp1 = 1702376400.0
         timestamp2 = 1702376400.0
-        
+
         difference = timestamp1 - timestamp2
         assert difference == 0.0
 
@@ -219,6 +219,6 @@ class TestCompareTimeNode:
         _ = CompareTimeNode(scene)
         timestamp1 = 1702376400.0  # 2023-12-12
         timestamp2 = 1702376400.0 - 31536000.0  # 1 year earlier
-        
+
         difference = timestamp1 - timestamp2
         assert difference == 31536000.0  # 365 days in seconds

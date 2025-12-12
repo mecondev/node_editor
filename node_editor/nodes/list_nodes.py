@@ -157,13 +157,13 @@ class GetItemNode(Node):
                 self.value = None
                 return None
 
-            if not isinstance(input_list, (list, tuple, str)):
+            if not isinstance(input_list, list | tuple | str):
                 self.markInvalid()
                 self.grNode.setToolTip(f"Input is not a list: {type(input_list).__name__}")
                 self.value = None
                 return None
 
-            if not isinstance(index, (int, float)):
+            if not isinstance(index, int | float):
                 self.markInvalid()
                 self.grNode.setToolTip("Index must be a number")
                 self.value = None
@@ -431,11 +431,10 @@ class JoinNode(Node):
                 sep_value = sep_socket.getValue()
                 if sep_value is not None:
                     separator = str(sep_value)
-
             # Validate input
             if input_list is None:
                 self.value = ""
-            elif isinstance(input_list, (list, tuple)):
+            elif isinstance(input_list, list | tuple):
                 # Convert all elements to strings and join
                 self.value = separator.join(str(item) for item in input_list)
             elif isinstance(input_list, str):

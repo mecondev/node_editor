@@ -156,7 +156,7 @@ class ToNumberNode(Node):
             if isinstance(input_value, bool):
                 # Handle bool before checking numeric (bool is subclass of int)
                 self.value = 1.0 if input_value else 0.0
-            elif isinstance(input_value, (int, float)):
+            elif isinstance(input_value, int | float):
                 self.value = float(input_value)
             elif isinstance(input_value, str):
                 # Try to parse string

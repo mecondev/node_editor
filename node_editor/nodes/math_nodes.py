@@ -123,9 +123,9 @@ class MathNode(Node):
             val2 = i2.eval()
 
             # Convert to numbers if possible
-            if not isinstance(val1, (int, float)):
+            if not isinstance(val1, int | float):
                 val1 = float(val1)
-            if not isinstance(val2, (int, float)):
+            if not isinstance(val2, int | float):
                 val2 = float(val2)
 
             self.value = self.evalOperation(val1, val2)
