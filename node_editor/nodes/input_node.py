@@ -1,0 +1,226 @@
+"""Input nodes for user data entry.
+
+Provides NumberInput and TextInput nodes for entering values into the graph.
+
+Author:
+    Michael Economou
+
+Date:
+    2025-12-12
+"""
+
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QLineEdit, QVBoxLayout
+
+from node_editor.core.node import Node
+from node_editor.core.socket import RIGHT_CENTER
+from node_editor.graphics.node import QDMGraphicsNode
+from node_editor.nodes.registry import NodeRegistry
+from node_editor.widgets.content_widget import QDMNodeContentWidget
+
+
+class InputGraphicsNode(QDMGraphicsNode):
+    """Graphics node for input nodes with compact size."""
+
+    def initSizes(self):
+        """Initialize size parameters for input nodes."""
+        super().initSizes()
+        self.width = 180
+        self.height = 90
+        self.edge_roundness = 6
+        self.edge_padding = 0
+        self.title_horizontal_padding = 8
+        self.title_vertical_padding = 10
+
+
+class NumberInputContent(QDMNodeContentWidget):
+    """Content widget with number input field."""
+
+    def initUI(self):
+        """Initialize the number input field."""
+        layout = QVBoxLayout()
+        layout.setContentsMargins(10, 5, 10, 5)
+        self.setLayout(layout)
+
+        self.edit = QLineEdit("0", self)
+        self.edit.setAlignment(Qt.AlignRight)
+        self.edit.setObjectName("node_input_edit")
+        self.edit.textChanged.connect(self.on_value_changed)
+        layout.addWidget(self.edit)
+
+    def on_value_changed(self):
+        """Handle value changes and trigger node evaluation."""
+        if hasattr(self.node, 'markDirty'):
+            self.node.markDirty()
+        if hasattr(self.node, 'eval'):
+            self.node.eval()
+
+    def serialize(self):
+        """Serialize the input value."""
+        return {"value": self.edit.text()}
+
+    def deserialize(self, data, hashmap=None):
+        """Restore the input value."""
+        _ = hashmap  # Unused
+        if "value" in data:
+            self.edit.setText(data["value"])
+        return True
+
+
+class TextInputContent(QDMNodeContentWidget):
+    """Content widget with text input field."""
+
+    def initUI(self):
+        """Initialize the text input field."""
+        layout = QVBoxLayout()
+        layout.setContentsMargins(10, 5, 10, 5)
+        self.setLayout(layout)
+
+        self.edit = QLineEdit("", self)
+        self.edit.setObjectName("node_input_edit")
+        self.edit.textChanged.connect(self.on_value_changed)
+        layout.addWidget(self.edit)
+
+    def on_value_changed(self):
+        """Handle value changes and trigger node evaluation."""
+        if hasattr(self.node, 'markDirty'):
+            self.node.markDirty()
+        if hasattr(self.node, 'eval'):
+            self.node.eval()
+
+    def serialize(self):
+        """Serialize the input value."""
+        return {"value": self.edit.text()}
+
+    def deserialize(self, data, hashmap=None):
+        """Restore the input value."""
+        _ = hashmap  # Unused
+        if "value" in data:
+            self.edit.setText(data["value"])
+        return True
+
+
+@NodeRegistry.register(1)
+class NumberInputNode(Node):
+    """Node for entering numeric values.
+
+    Provides a text field for entering numbers. Outputs the parsed
+    numeric value (float) to connected nodes.
+
+    Op Code: 1
+    Category: Input
+    Inputs: None
+    Outputs: 1 (numeric value)
+    """
+
+    icon = ""
+    op_code = 1
+    op_title = "Number Input"
+    content_label = ""
+    content_label_objname = "input_node"
+
+    GraphicsNode_class = InputGraphicsNode
+    NodeContent_class = NumberInputContent
+
+    def __init__(self, scene, inputs=None, outputs=None):
+        """Create a number input node.
+
+        Args:
+            scene: Parent scene containing this node.
+            inputs: Unused, number input has no inputs.
+            outputs: Output socket configuration (default: [1]).
+        """
+        _ = inputs  # Unused
+        if outputs is None:
+            outputs = [1]
+        super().__init__(scene, self.__class__.op_title, inputs=[], outputs=outputs)
+
+        self.value = 0.0
+        self.markDirty()
+
+    def initSettings(self):
+        """Configure socket positions."""
+        super().initSettings()
+        self.output_socket_position = RIGHT_CENTER
+
+    def eval(self):
+        """Evaluate the node and parse the input value.
+
+        Returns:
+            float: Parsed numeric value, or 0.0 if invalid.
+        """
+        try:
+            text = self.content.edit.text()
+            self.value = float(text) if text else 0.0
+            self.markDirty(False)
+            self.markInvalid(False)
+            self.grNode.setToolTip("")
+        except ValueError:
+            self.value = 0.0
+            self.markInvalid(True)
+            self.grNode.setToolTip("Invalid number format")
+
+        self.markDescendantsDirty()
+        self.evalChildren()
+
+        return self.value
+
+
+@NodeRegistry.register(2)
+class TextInputNode(Node):
+    """Node for entering text values.
+
+    Provides a text field for entering string values. Outputs the
+    text string to connected nodes.
+
+    Op Code: 2
+    Category: Input
+    Inputs: None
+    Outputs: 1 (text string)
+    """
+
+    icon = ""
+    op_code = 2
+    op_title = "Text Input"
+    content_label = ""
+    content_label_objname = "input_node"
+
+    GraphicsNode_class = InputGraphicsNode
+    NodeContent_class = TextInputContent
+
+    def __init__(self, scene, inputs=None, outputs=None):
+        """Create a text input node.
+
+        Args:
+            scene: Parent scene containing this node.
+            inputs: Unused, text input has no inputs.
+            outputs: Output socket configuration (default: [1]).
+        """
+        _ = inputs  # Unused
+        if outputs is None:
+            outputs = [1]
+        super().__init__(scene, self.__class__.op_title, inputs=[], outputs=outputs)
+
+        self.value = ""
+        self.markDirty()
+
+    def initSettings(self):
+        """Configure socket positions."""
+        super().initSettings()
+        self.output_socket_position = RIGHT_CENTER
+
+    def eval(self):
+        """Evaluate the node and get the input text.
+
+        Returns:
+            str: Text value from the input field.
+        """
+        self.value = self.content.edit.text()
+        self.markDirty(False)
+        self.markInvalid(False)
+        self.grNode.setToolTip("")
+
+        self.markDescendantsDirty()
+        self.evalChildren()
+
+        return self.value
