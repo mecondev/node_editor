@@ -46,6 +46,7 @@ class LightTheme(BaseTheme):
     node_border_default = QColor("#7F000000")
     node_border_selected = QColor("#FFFF8C00")
     node_border_hovered = QColor("#FF2196F3")
+    node_border_error = QColor("#FFCC0000")
 
     # Edge colors
     edge_color_default = QColor("#FF404040")

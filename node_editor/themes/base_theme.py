@@ -53,6 +53,7 @@ class BaseTheme:
     node_border_default = QColor("#7F000000")
     node_border_selected = QColor("#FFFFA637")
     node_border_hovered = QColor("#FF37A6FF")
+    node_border_error = QColor("#FFFF5555")
     node_border_width = 2.0
     node_border_width_hovered = 3.0
     node_border_radius = 10.0

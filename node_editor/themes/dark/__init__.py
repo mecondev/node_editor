@@ -46,6 +46,7 @@ class DarkTheme(BaseTheme):
     node_border_default = QColor("#7F000000")
     node_border_selected = QColor("#FFFFA637")
     node_border_hovered = QColor("#FF37A6FF")
+    node_border_error = QColor("#FFFF5555")
 
     # Edge colors
     edge_color_default = QColor("#001000")

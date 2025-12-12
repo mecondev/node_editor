@@ -21,7 +21,7 @@ Date:
 from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import QRectF, Qt
-from PyQt5.QtGui import QBrush, QColor, QFont, QPainterPath, QPen
+from PyQt5.QtGui import QBrush, QFont, QPainterPath, QPen
 from PyQt5.QtWidgets import QGraphicsItem, QGraphicsTextItem, QWidget
 
 from node_editor.themes.theme_engine import ThemeEngine
@@ -134,8 +134,8 @@ class QDMGraphicsNode(QGraphicsItem):
         self._pen_hovered = QPen(self._color_hovered)
         self._pen_hovered.setWidthF(theme.node_border_width_hovered)
 
-        # Error state pen - red color for invalid nodes
-        self._pen_error = QPen(QColor("#FF5555"))
+        # Error state pen - from theme
+        self._pen_error = QPen(theme.node_border_error)
         self._pen_error.setWidthF(2.5)
 
         self._brush_title = QBrush(theme.node_title_background)
