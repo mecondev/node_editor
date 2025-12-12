@@ -244,12 +244,17 @@ class NodeEditorWindow(QMainWindow):
 
     def on_file_new(self) -> None:
         """Create new empty graph after save prompt."""
-        if self.maybeSave():
-            self.getCurrentNodeEditorWidget().fileNew()
+        current_nodeeditor = self.getCurrentNodeEditorWidget()
+        if current_nodeeditor and self.maybeSave():
+            current_nodeeditor.fileNew()
             self.setTitle()
 
     def on_file_open(self) -> None:
         """Open file dialog and load selected graph."""
+        current_nodeeditor = self.getCurrentNodeEditorWidget()
+        if not current_nodeeditor:
+            return
+            
         if self.maybeSave():
             fname, filter = QFileDialog.getOpenFileName(
                 self, 'Open graph from file',
@@ -257,7 +262,7 @@ class NodeEditorWindow(QMainWindow):
                 self.getFileDialogFilter()
             )
             if fname != '' and os.path.isfile(fname):
-                self.getCurrentNodeEditorWidget().fileLoad(fname)
+                current_nodeeditor.fileLoad(fname)
                 self.setTitle()
 
     def on_file_save(self) -> bool:
