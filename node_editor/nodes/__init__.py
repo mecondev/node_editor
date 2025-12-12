@@ -20,6 +20,7 @@ Extended Nodes (Op Codes 40+):
     Logic Extended (60-69): AND, OR, NOT, XOR.
     Conversion Nodes (70-79): ToString, ToNumber, ToBool, ToInt.
     Utility Nodes (80-89): Constant, Print, Comment, Clamp, Random.
+    List Operations (90-99): CreateList, GetItem, ListLength, Append, Join.
 
 Usage:
     Create and register a custom node::
@@ -92,6 +93,13 @@ from node_editor.nodes.utility_nodes import (
     PrintNode,
     RandomNode,
 )
+from node_editor.nodes.list_nodes import (
+    CreateListNode,
+    GetItemNode,
+    ListLengthNode,
+    AppendNode,
+    JoinNode,
+)
 
 __all__ = [
     "NodeRegistry",
@@ -144,4 +152,10 @@ __all__ = [
     "CommentNode",
     "ClampNode",
     "RandomNode",
+    # List operations
+    "CreateListNode",
+    "GetItemNode",
+    "ListLengthNode",
+    "AppendNode",
+    "JoinNode",
 ]
