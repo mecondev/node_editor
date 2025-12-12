@@ -234,14 +234,14 @@ class TestNodeCallbacks:
     """Test node event callbacks."""
 
     def test_on_input_changed_callback(self, scene):
-        """Test onInputChanged callback is callable."""
+        """Test on_input_changed callback is callable."""
         node = Node(scene, "Test Node", inputs=[0])
 
         # Should not raise exception
         node.on_input_changed(node.inputs[0])
 
     def test_on_edge_connection_changed(self, scene):
-        """Test onEdgeConnectionChanged callback."""
+        """Test on_edge_connection_changed callback."""
         node1 = Node(scene, "Node 1", outputs=[0])
         node2 = Node(scene, "Node 2", inputs=[0])
 

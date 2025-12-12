@@ -58,7 +58,7 @@ class Node(Serializable):
     Attributes:
         scene: Parent Scene containing this node.
         title: Display title shown in the graphics node.
-        grNode: QDMGraphicsNode instance for visualization.
+        graphics_node: QDMGraphicsNode instance for visualization.
         content: QDMNodeContentWidget instance for UI content.
         inputs: List of input Socket instances.
         outputs: List of output Socket instances.

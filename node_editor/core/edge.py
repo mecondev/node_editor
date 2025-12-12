@@ -60,7 +60,7 @@ class Edge(Serializable):
         start_socket: Source socket (typically an output).
         end_socket: Target socket (typically an input), or None while dragging.
         edge_type: Path style constant (EDGE_TYPE_DIRECT, etc.).
-        grEdge: QDMGraphicsEdge instance for visual representation.
+        graphics_edge: QDMGraphicsEdge instance for visual representation.
 
     Class Attributes:
         edge_validators: List of validation callback functions.

@@ -60,7 +60,7 @@ class Socket(Serializable):
         is_input: True for input sockets (left side).
         is_output: True for output sockets (right side).
         edges: List of currently connected Edge instances.
-        grSocket: Associated QDMGraphicsSocket for visual representation.
+        graphics_socket: Associated QDMGraphicsSocket for visual representation.
         count_on_this_node_side: Total socket count on this side for layout.
 
     Class Attributes:
