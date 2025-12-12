@@ -446,13 +446,6 @@ class Node:
 
 Allows subclasses to override without modifying Node code. Set once via `_init_graphics_classes()`.
 
-### Why `tools/` Instead of `edge_tools/`?
-
-The original plan specified `edge_tools/`. Decision was made to keep `tools/` as it's:
-- More generic (future non-edge tools)
-- Already working code
-- Shorter import paths
-
 ### Why Op Codes?
 
 Operation codes provide:

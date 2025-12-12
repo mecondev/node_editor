@@ -14,7 +14,7 @@ Widget Components:
     NodeEditorWindow: Complete standalone window with menus and toolbar.
 
 Extension Points:
-    BaseNode: Subclass to create custom node types.
+    Node: Subclass core.Node to create custom node types.
     NodeRegistry: Register custom nodes with operation codes.
     ThemeEngine: Customize visual appearance.
 
@@ -27,10 +27,12 @@ Example:
 
     Creating custom nodes::
 
-        from node_editor.nodes import BaseNode, NodeRegistry
+        from node_editor.core import Node
+        from node_editor.nodes import NodeRegistry
 
         @NodeRegistry.register(100)
-        class MyNode(BaseNode):
+        class MyNode(Node):
+            op_code = 100
             op_title = "My Custom Node"
 
 Author:
@@ -53,7 +55,7 @@ _init_graphics_classes()
 from node_editor.core import Edge, Node, Socket
 
 # Node system
-from node_editor.nodes import BaseNode, NodeRegistry
+from node_editor.nodes import NodeRegistry
 
 # Theme engine
 from node_editor.themes import ThemeEngine

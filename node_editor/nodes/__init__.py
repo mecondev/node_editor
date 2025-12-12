@@ -4,7 +4,6 @@ This module provides the node type registration system and base classes
 for creating custom nodes in the node editor.
 
 Classes:
-    BaseNode: Base class for creating custom node types.
     NodeRegistry: Central registry for node type management.
 
 Built-in Nodes (Core - Op Codes 1-30):
@@ -27,12 +26,16 @@ Extended Nodes (Op Codes 40+):
 Usage:
     Create and register a custom node::
 
-        from node_editor.nodes import BaseNode, NodeRegistry
+        from node_editor.core import Node
+        from node_editor.nodes import NodeRegistry
 
         @NodeRegistry.register(100)
-        class MyNode(BaseNode):
+        class MyNode(Node):
+            op_code = 100
             op_title = "My Custom Node"
-            category = "Custom"
+            
+            def __init__(self, scene):
+                super().__init__(scene, "My Custom Node")
 
 Author:
     Michael Economou
@@ -48,7 +51,6 @@ from node_editor.nodes.advanced_nodes import (
     HttpRequestNode,
     RegexMatchNode,
 )
-from node_editor.nodes.base import BaseNode
 from node_editor.nodes.conversion_nodes import (
     ToBoolNode,
     ToIntNode,
@@ -117,7 +119,6 @@ from node_editor.nodes.utility_nodes import (
 
 __all__ = [
     "NodeRegistry",
-    "BaseNode",
     # Input nodes
     "NumberInputNode",
     "TextInputNode",

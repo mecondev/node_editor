@@ -6,11 +6,13 @@ lookup of node types by their unique operation codes (op_codes).
 Usage:
     Register nodes with decorator or manual call::
 
-        from node_editor.nodes import NodeRegistry, BaseNode
+        from node_editor.core import Node
+        from node_editor.nodes import NodeRegistry
 
         # Using decorator
         @NodeRegistry.register(100)
-        class MyNode(BaseNode):
+        class MyNode(Node):
+            op_code = 100
             op_title = "My Node"
 
         # Manual registration
@@ -58,7 +60,8 @@ class NodeRegistry:
             Register a custom node::
 
                 @NodeRegistry.register(100)
-                class MyNode(BaseNode):
+                class MyNode(Node):
+                    op_code = 100
                     op_title = "My Node"
         """
         def decorator(node_class: type) -> type:

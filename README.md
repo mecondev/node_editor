@@ -350,7 +350,6 @@ from node_editor import (
 ```python
 from node_editor.nodes import (
     NodeRegistry,       # Registration system
-    BaseNode,           # Alternate base class
     
     # Built-in nodes
     AddNode, SubtractNode, MultiplyNode, DivideNode,
