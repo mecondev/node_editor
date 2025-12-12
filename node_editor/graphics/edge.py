@@ -172,7 +172,7 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         self.changeColor(self.edge.start_socket.grSocket.getSocketColor(socket_type_start))
         return True
 
-    def onSelected(self) -> None:
+    def on_selected(self) -> None:
         """Emit selection signal to scene when selected."""
         self.edge.scene.grScene.item_selected.emit()
 
@@ -185,7 +185,7 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         self.setSelected(new_state)
         self._last_selected_state = new_state
         if new_state:
-            self.onSelected()
+            self.on_selected()
 
     def mouseReleaseEvent(self, event) -> None:
         """Handle selection changes on mouse release.
@@ -197,7 +197,7 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         if self._last_selected_state != self.isSelected():
             self.edge.scene.resetLastSelectedStates()
             self._last_selected_state = self.isSelected()
-            self.onSelected()
+            self.on_selected()
 
     def hoverEnterEvent(self, _event: "QGraphicsSceneHoverEvent") -> None:
         """Enable hover highlight when mouse enters.

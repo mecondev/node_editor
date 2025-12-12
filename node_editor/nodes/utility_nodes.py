@@ -44,7 +44,7 @@ class ConstantContent(QDMNodeContentWidget):
         """Initialize the input field."""
         self.edit = QLineEdit("0", self)
         self.edit.setObjectName("constant_edit")
-        self.edit.textChanged.connect(self.node.onInputChanged)
+        self.edit.textChanged.connect(self.node.on_input_changed)
 
 
 class CommentContent(QDMNodeContentWidget):
@@ -110,7 +110,7 @@ class ConstantNode(Node):
         super().initSettings()
         self.output_socket_position = RIGHT_CENTER
 
-    def onInputChanged(self, text):  # noqa: ARG002
+    def on_input_changed(self, text):  # noqa: ARG002
         """Handle text input change.
 
         Args:

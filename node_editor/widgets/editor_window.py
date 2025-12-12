@@ -81,25 +81,25 @@ class NodeEditorWindow(QMainWindow):
         self.statusBar().showMessage("")
         self.status_mouse_pos = QLabel("")
         self.statusBar().addPermanentWidget(self.status_mouse_pos)
-        self.nodeeditor.view.scene_pos_changed.connect(self.onScenePosChanged)
+        self.nodeeditor.view.scene_pos_changed.connect(self.on_scene_pos_changed)
 
     def createActions(self) -> None:
         """Create QAction instances for menus."""
         self.actNew = QAction(
             '&New', self, shortcut='Ctrl+N',
-            statusTip="Create new graph", triggered=self.onFileNew
+            statusTip="Create new graph", triggered=self.on_file_new
         )
         self.actOpen = QAction(
             '&Open', self, shortcut='Ctrl+O',
-            statusTip="Open file", triggered=self.onFileOpen
+            statusTip="Open file", triggered=self.on_file_open
         )
         self.actSave = QAction(
             '&Save', self, shortcut='Ctrl+S',
-            statusTip="Save file", triggered=self.onFileSave
+            statusTip="Save file", triggered=self.on_file_save
         )
         self.actSaveAs = QAction(
             'Save &As...', self, shortcut='Ctrl+Shift+S',
-            statusTip="Save file as...", triggered=self.onFileSaveAs
+            statusTip="Save file as...", triggered=self.on_file_save_as
         )
         self.actExit = QAction(
             'E&xit', self, shortcut='Ctrl+Q',
@@ -108,27 +108,27 @@ class NodeEditorWindow(QMainWindow):
 
         self.actUndo = QAction(
             '&Undo', self, shortcut='Ctrl+Z',
-            statusTip="Undo last operation", triggered=self.onEditUndo
+            statusTip="Undo last operation", triggered=self.on_edit_undo
         )
         self.actRedo = QAction(
             '&Redo', self, shortcut='Ctrl+Shift+Z',
-            statusTip="Redo last operation", triggered=self.onEditRedo
+            statusTip="Redo last operation", triggered=self.on_edit_redo
         )
         self.actCut = QAction(
             'Cu&t', self, shortcut='Ctrl+X',
-            statusTip="Cut to clipboard", triggered=self.onEditCut
+            statusTip="Cut to clipboard", triggered=self.on_edit_cut
         )
         self.actCopy = QAction(
             '&Copy', self, shortcut='Ctrl+C',
-            statusTip="Copy to clipboard", triggered=self.onEditCopy
+            statusTip="Copy to clipboard", triggered=self.on_edit_copy
         )
         self.actPaste = QAction(
             '&Paste', self, shortcut='Ctrl+V',
-            statusTip="Paste from clipboard", triggered=self.onEditPaste
+            statusTip="Paste from clipboard", triggered=self.on_edit_paste
         )
         self.actDelete = QAction(
             '&Delete', self, shortcut='Del',
-            statusTip="Delete selected items", triggered=self.onEditDelete
+            statusTip="Delete selected items", triggered=self.on_edit_delete
         )
 
     def createMenus(self) -> None:
@@ -211,13 +211,13 @@ class NodeEditorWindow(QMainWindow):
         )
 
         if res == QMessageBox.Save:
-            return self.onFileSave()
+            return self.on_file_save()
         elif res == QMessageBox.Cancel:
             return False
 
         return True
 
-    def onScenePosChanged(self, x: int, y: int) -> None:
+    def on_scene_pos_changed(self, x: int, y: int) -> None:
         """Update status bar with mouse position.
 
         Args:
@@ -242,13 +242,13 @@ class NodeEditorWindow(QMainWindow):
         """
         return 'Graph (*.json);;All files (*)'
 
-    def onFileNew(self) -> None:
+    def on_file_new(self) -> None:
         """Create new empty graph after save prompt."""
         if self.maybeSave():
             self.getCurrentNodeEditorWidget().fileNew()
             self.setTitle()
 
-    def onFileOpen(self) -> None:
+    def on_file_open(self) -> None:
         """Open file dialog and load selected graph."""
         if self.maybeSave():
             fname, filter = QFileDialog.getOpenFileName(
@@ -260,7 +260,7 @@ class NodeEditorWindow(QMainWindow):
                 self.getCurrentNodeEditorWidget().fileLoad(fname)
                 self.setTitle()
 
-    def onFileSave(self) -> bool:
+    def on_file_save(self) -> bool:
         """Save to current file or prompt for filename.
 
         Returns:
@@ -269,7 +269,7 @@ class NodeEditorWindow(QMainWindow):
         current_nodeeditor = self.getCurrentNodeEditorWidget()
         if current_nodeeditor is not None:
             if not current_nodeeditor.isFilenameSet():
-                return self.onFileSaveAs()
+                return self.on_file_save_as()
 
             current_nodeeditor.fileSave()
             self.statusBar().showMessage(
@@ -285,7 +285,7 @@ class NodeEditorWindow(QMainWindow):
 
         return False
 
-    def onFileSaveAs(self) -> bool:
+    def on_file_save_as(self) -> bool:
         """Prompt for filename and save graph.
 
         Returns:
@@ -301,7 +301,7 @@ class NodeEditorWindow(QMainWindow):
             if fname == '':
                 return False
 
-            self.onBeforeSaveAs(current_nodeeditor, fname)
+            self.on_before_save_as(current_nodeeditor, fname)
             current_nodeeditor.fileSave(fname)
             self.statusBar().showMessage(
                 f"Successfully saved as {current_nodeeditor.filename}", 5000
@@ -316,7 +316,7 @@ class NodeEditorWindow(QMainWindow):
 
         return False
 
-    def onBeforeSaveAs(self, current_nodeeditor: NodeEditorWidget, filename: str) -> None:
+    def on_before_save_as(self, current_nodeeditor: NodeEditorWidget, filename: str) -> None:
         """Hook called before Save As completes.
 
         Override to perform actions before saving with new name.
@@ -326,36 +326,36 @@ class NodeEditorWindow(QMainWindow):
             filename: New filename path.
         """
 
-    def onEditUndo(self) -> None:
+    def on_edit_undo(self) -> None:
         """Undo last operation."""
         if self.getCurrentNodeEditorWidget():
             self.getCurrentNodeEditorWidget().scene.history.undo()
 
-    def onEditRedo(self) -> None:
+    def on_edit_redo(self) -> None:
         """Redo last undone operation."""
         if self.getCurrentNodeEditorWidget():
             self.getCurrentNodeEditorWidget().scene.history.redo()
 
-    def onEditDelete(self) -> None:
+    def on_edit_delete(self) -> None:
         """Delete selected items."""
         if self.getCurrentNodeEditorWidget():
             self.getCurrentNodeEditorWidget().scene.getView().deleteSelected()
 
-    def onEditCut(self) -> None:
+    def on_edit_cut(self) -> None:
         """Cut selected items to clipboard."""
         if self.getCurrentNodeEditorWidget():
             data = self.getCurrentNodeEditorWidget().scene.clipboard.serializeSelected(delete=True)
             str_data = json.dumps(data, indent=4)
             QApplication.instance().clipboard().setText(str_data)
 
-    def onEditCopy(self) -> None:
+    def on_edit_copy(self) -> None:
         """Copy selected items to clipboard."""
         if self.getCurrentNodeEditorWidget():
             data = self.getCurrentNodeEditorWidget().scene.clipboard.serializeSelected(delete=False)
             str_data = json.dumps(data, indent=4)
             QApplication.instance().clipboard().setText(str_data)
 
-    def onEditPaste(self) -> None:
+    def on_edit_paste(self) -> None:
         """Paste items from clipboard."""
         if self.getCurrentNodeEditorWidget():
             raw_data = QApplication.instance().clipboard().text()

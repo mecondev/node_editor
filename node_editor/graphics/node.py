@@ -141,7 +141,7 @@ class QDMGraphicsNode(QGraphicsItem):
         self._brush_title = QBrush(theme.node_title_background)
         self._brush_background = QBrush(theme.node_background)
 
-    def onSelected(self) -> None:
+    def on_selected(self) -> None:
         """Emit selection signal to scene.
 
         Called when node becomes selected to notify listeners.
@@ -159,7 +159,7 @@ class QDMGraphicsNode(QGraphicsItem):
         self.setSelected(new_state)
         self._last_selected_state = new_state
         if new_state:
-            self.onSelected()
+            self.on_selected()
 
     def mouseMoveEvent(self, event) -> None:
         """Handle mouse drag to move node and update edges.
@@ -198,7 +198,7 @@ class QDMGraphicsNode(QGraphicsItem):
         ):
             self.node.scene.resetLastSelectedStates()
             self._last_selected_state = self.isSelected()
-            self.onSelected()
+            self.on_selected()
 
     def mouseDoubleClickEvent(self, event) -> None:
         """Forward double-click to logical node handler.
@@ -206,7 +206,7 @@ class QDMGraphicsNode(QGraphicsItem):
         Args:
             event: Qt mouse double-click event.
         """
-        self.node.onDoubleClicked(event)
+        self.node.on_double_clicked(event)
 
     def hoverEnterEvent(self, _event: "QGraphicsSceneHoverEvent") -> None:
         """Enable hover highlighting when mouse enters.

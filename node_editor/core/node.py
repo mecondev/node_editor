@@ -272,7 +272,7 @@ class Node(Serializable):
             )
             self.outputs.append(socket)
 
-    def onEdgeConnectionChanged(self, new_edge: "Edge") -> None:
+    def on_edge_connection_changed(self, new_edge: "Edge") -> None:
         """Handle edge connection or disconnection events.
 
         Called when any edge connected to this node changes state.
@@ -282,7 +282,7 @@ class Node(Serializable):
             new_edge: Edge that was connected or disconnected.
         """
 
-    def onInputChanged(self, _socket: Socket) -> None:
+    def on_input_changed(self, _socket: Socket) -> None:
         """Handle input socket value changes.
 
         Called when data arrives on an input socket. Default behavior
@@ -294,7 +294,7 @@ class Node(Serializable):
         self.mark_dirty()
         self.mark_descendants_dirty()
 
-    def onDeserialized(self, data: dict) -> None:
+    def on_deserialized(self, data: dict) -> None:
         """Handle post-deserialization initialization.
 
         Called after node state is restored from saved data. Override
@@ -304,7 +304,7 @@ class Node(Serializable):
             data: Dictionary containing the deserialized data.
         """
 
-    def onDoubleClicked(self, event) -> None:
+    def on_double_clicked(self, event) -> None:
         """Handle double-click on graphics node.
 
         Override to implement custom double-click behavior such as
@@ -448,16 +448,16 @@ class Node(Serializable):
     def mark_dirty(self, new_value: bool = True) -> None:
         """Set dirty state indicating need for re-evaluation.
 
-        Triggers onMarkedDirty() callback when transitioning to dirty.
+        Triggers on_marked_dirty() callback when transitioning to dirty.
 
         Args:
             new_value: True to mark dirty, False to clear dirty state.
         """
         self._is_dirty = new_value
         if self._is_dirty:
-            self.onMarkedDirty()
+            self.on_marked_dirty()
 
-    def onMarkedDirty(self) -> None:
+    def on_marked_dirty(self) -> None:
         """Handle transition to dirty state.
 
         Override to implement custom dirty-state handling such as
@@ -498,19 +498,19 @@ class Node(Serializable):
     def mark_invalid(self, new_value: bool = True) -> None:
         """Set invalid state indicating configuration error.
 
-        Triggers onMarkedInvalid() callback when transitioning to invalid.
+        Triggers on_marked_invalid() callback when transitioning to invalid.
 
         Args:
             new_value: True to mark invalid, False to clear.
         """
         self._is_invalid = new_value
         if self._is_invalid:
-            self.onMarkedInvalid()
+            self.on_marked_invalid()
         # Update visual representation
         if self.grNode:
             self.grNode.update()
 
-    def onMarkedInvalid(self) -> None:
+    def on_marked_invalid(self) -> None:
         """Handle transition to invalid state.
 
         Override to implement error indicators or recovery logic.

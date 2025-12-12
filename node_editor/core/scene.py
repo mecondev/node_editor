@@ -113,8 +113,8 @@ class Scene(Serializable):
         self.history = SceneHistory(self)
         self.clipboard = SceneClipboard(self)
 
-        self.grScene.item_selected.connect(self.onItemSelected)
-        self.grScene.items_deselected.connect(self.onItemsDeselected)
+        self.grScene.item_selected.connect(self.on_item_selected)
+        self.grScene.items_deselected.connect(self.on_items_deselected)
 
     @property
     def has_been_modified(self) -> bool:
@@ -256,7 +256,7 @@ class Scene(Serializable):
         for item in self.getSelectedItems():
             item.setSelected(False)
         if not silent:
-            self.onItemsDeselected()
+            self.on_items_deselected()
 
     def resetLastSelectedStates(self) -> None:
         """Clear internal selection state flags on all graphics items.
@@ -268,7 +268,7 @@ class Scene(Serializable):
         for edge in self.edges:
             edge.grEdge._last_selected_state = False
 
-    def onItemSelected(self, silent: bool = False) -> None:
+    def on_item_selected(self, silent: bool = False) -> None:
         """Handle selection change events.
 
         Compares current selection with previous state and triggers
@@ -288,7 +288,7 @@ class Scene(Serializable):
                     callback()
                 self.history.storeHistory("Selection Changed")
 
-    def onItemsDeselected(self, silent: bool = False) -> None:
+    def on_items_deselected(self, silent: bool = False) -> None:
         """Handle complete deselection events.
 
         Called when selection becomes empty. Triggers registered callbacks
@@ -549,13 +549,13 @@ class Scene(Serializable):
                     node_class = self.getNodeClassFromData(node_data)
                     new_node = node_class(self)
                     new_node.deserialize(node_data, hashmap, restore_id, *args, **kwargs)
-                    new_node.onDeserialized(node_data)
+                    new_node.on_deserialized(node_data)
                 except Exception as e:
                     dump_exception(e)
             else:
                 try:
                     found.deserialize(node_data, hashmap, restore_id, *args, **kwargs)
-                    found.onDeserialized(node_data)
+                    found.on_deserialized(node_data)
                     all_nodes.remove(found)
                 except Exception as e:
                     dump_exception(e)

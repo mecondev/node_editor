@@ -343,9 +343,9 @@ class Edge(Serializable):
                     if silent_for_socket is not None and socket == silent_for_socket:
                         continue
 
-                    socket.node.onEdgeConnectionChanged(self)
+                    socket.node.on_edge_connection_changed(self)
                     if socket.is_input:
-                        socket.node.onInputChanged(socket)
+                        socket.node.on_input_changed(socket)
 
         except Exception as e:
             dumpException(e)

@@ -199,11 +199,11 @@ class EdgeRerouting:
 
         # Send notifications for all affected nodes
         for affected_node, edge in affected_nodes:
-            affected_node.onEdgeConnectionChanged(edge)
+            affected_node.on_edge_connection_changed(edge)
             if edge.start_socket in affected_node.inputs:
-                affected_node.onInputChanged(edge.start_socket)
+                affected_node.on_input_changed(edge.start_socket)
             if edge.end_socket in affected_node.inputs:
-                affected_node.onInputChanged(edge.end_socket)
+                affected_node.on_input_changed(edge.end_socket)
 
         # Store history stamp
         if self.start_socket:

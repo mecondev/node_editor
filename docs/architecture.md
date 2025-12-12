@@ -481,7 +481,6 @@ node_editor/__init__.py
 │   └── editor_window.py ← editor_widget
 ├── nodes/__init__.py
 │   ├── registry.py
-│   ├── base.py
 │   └── *_nodes.py ← core.node, registry
 ├── themes/__init__.py
 │   ├── base_theme.py
@@ -504,3 +503,12 @@ node_editor/__init__.py
 
 *Document created: 2025-12-12*  
 *Last updated: 2025-12-12*
+
+---
+
+## Proposed Improvements and Renaming
+
+- Clarify graphics naming: consider `graphics_node` / `graphics_edge` / `graphics_socket` instead of `grNode` / `grEdge` / `grSocket` for snake_case consistency (breaking change; migration guide required).
+- Align method names with PEP8: `markDirty` / `markInvalid` → `mark_dirty` / `mark_invalid` in `core/node.py` (breaking change; requires deprecation shim).
+- Document the `_init_graphics_classes()` bootstrap as the intentional core→graphics bridge to make coupling explicit.
+- Confirm that `tools/` is the sole location for edge tools; removed `edge_tools/` and `nodes/base.py` to keep the public surface minimal.

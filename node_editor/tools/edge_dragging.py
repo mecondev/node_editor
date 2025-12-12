@@ -144,9 +144,9 @@ class EdgeDragging:
                     )
 
                     for socket in [self.drag_start_socket, item.socket]:
-                        socket.node.onEdgeConnectionChanged(new_edge)
+                        socket.node.on_edge_connection_changed(new_edge)
                         if socket.is_input:
-                            socket.node.onInputChanged(socket)
+                            socket.node.on_input_changed(socket)
 
                     self.grView.grScene.scene.history.storeHistory(
                         "Created new edge by dragging", set_modified=True

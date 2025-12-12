@@ -238,7 +238,7 @@ class TestNodeCallbacks:
         node = Node(scene, "Test Node", inputs=[0])
 
         # Should not raise exception
-        node.onInputChanged(node.inputs[0])
+        node.on_input_changed(node.inputs[0])
 
     def test_on_edge_connection_changed(self, scene):
         """Test onEdgeConnectionChanged callback."""
@@ -249,5 +249,5 @@ class TestNodeCallbacks:
         edge = Edge(scene, node1.outputs[0], node2.inputs[0])
 
         # Should not raise exception
-        node1.onEdgeConnectionChanged(edge)
-        node2.onEdgeConnectionChanged(edge)
+        node1.on_edge_connection_changed(edge)
+        node2.on_edge_connection_changed(edge)

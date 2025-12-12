@@ -148,7 +148,7 @@ git commit -m "Rename graphics attributes to snake_case in tests/examples (BREAK
        return self._graphics_node_class
    ```
 
-### Testi3: Update Graphics Class Names (Day 6)
+### Test i3: Update Graphics Class Names (Day 6)
 
 **Target**: `GraphicsNode_class` → `_graphics_node_class`  
 **Files**: `node_editor/core/__init__.py` and custom node classes  
