@@ -506,6 +506,9 @@ class Node(Serializable):
         self._is_invalid = new_value
         if self._is_invalid:
             self.onMarkedInvalid()
+        # Update visual representation
+        if self.grNode:
+            self.grNode.update()
 
     def onMarkedInvalid(self) -> None:
         """Handle transition to invalid state.
