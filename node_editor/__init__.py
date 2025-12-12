@@ -73,7 +73,6 @@ __all__ = [
     "NodeEditorWidget",
     "NodeEditorWindow",
     # Nodes
-    "BaseNode",
     "NodeRegistry",
     # Themes
     "ThemeEngine",
