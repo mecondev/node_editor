@@ -62,13 +62,13 @@ class TestFileReadNode:
         _ = FileReadNode(scene)
         # Test Python file operations
         import tempfile
-        
+
         with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".txt") as f:
             f.write("test content")
             temp_file = f.name
-        
+
         try:
-            with open(temp_file, "r", encoding="utf-8") as f:
+            with open(temp_file, encoding="utf-8") as f:
                 contents = f.read()
             assert contents == "test content"
         finally:
@@ -79,14 +79,14 @@ class TestFileReadNode:
         """Test reading multiline file."""
         _ = FileReadNode(scene)
         import tempfile
-        
+
         content = "line1\nline2\nline3"
         with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".txt") as f:
             f.write(content)
             temp_file = f.name
-        
+
         try:
-            with open(temp_file, "r", encoding="utf-8") as f:
+            with open(temp_file, encoding="utf-8") as f:
                 contents = f.read()
             assert "line1" in contents
             assert "line2" in contents
@@ -110,19 +110,19 @@ class TestFileWriteNode:
     def test_file_write_logic(self, scene: Scene):
         """Test file write logic."""
         _ = FileWriteNode(scene)
-        import tempfile
         import os
-        
+        import tempfile
+
         temp_dir = tempfile.gettempdir()
         temp_file = os.path.join(temp_dir, "test_write.txt")
-        
+
         try:
             # Write file
             with open(temp_file, "w", encoding="utf-8") as f:
                 f.write("test content")
-            
+
             # Verify
-            with open(temp_file, "r", encoding="utf-8") as f:
+            with open(temp_file, encoding="utf-8") as f:
                 contents = f.read()
             assert contents == "test content"
         finally:
@@ -132,23 +132,23 @@ class TestFileWriteNode:
     def test_file_write_overwrite(self, scene: Scene):
         """Test file overwriting."""
         _ = FileWriteNode(scene)
-        import tempfile
         import os
-        
+        import tempfile
+
         temp_dir = tempfile.gettempdir()
         temp_file = os.path.join(temp_dir, "test_overwrite.txt")
-        
+
         try:
             # Write first content
             with open(temp_file, "w", encoding="utf-8") as f:
                 f.write("first")
-            
+
             # Overwrite
             with open(temp_file, "w", encoding="utf-8") as f:
                 f.write("second")
-            
+
             # Verify
-            with open(temp_file, "r", encoding="utf-8") as f:
+            with open(temp_file, encoding="utf-8") as f:
                 contents = f.read()
             assert contents == "second"
         finally:
@@ -158,18 +158,18 @@ class TestFileWriteNode:
     def test_file_write_unicode(self, scene: Scene):
         """Test writing Unicode content."""
         _ = FileWriteNode(scene)
-        import tempfile
         import os
-        
+        import tempfile
+
         temp_dir = tempfile.gettempdir()
         temp_file = os.path.join(temp_dir, "test_unicode.txt")
-        
+
         try:
             unicode_content = "Ελληνικά 中文 日本語 العربية"
             with open(temp_file, "w", encoding="utf-8") as f:
                 f.write(unicode_content)
-            
-            with open(temp_file, "r", encoding="utf-8") as f:
+
+            with open(temp_file, encoding="utf-8") as f:
                 contents = f.read()
             assert contents == unicode_content
         finally:
@@ -202,7 +202,7 @@ class TestHttpRequestNode:
         _ = HttpRequestNode(scene)
         method = "GET"
         assert method.upper() == "GET"
-        
+
         method = "post"
         assert method.upper() == "POST"
 

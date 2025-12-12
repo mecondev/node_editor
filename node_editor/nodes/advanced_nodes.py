@@ -19,8 +19,8 @@ Date:
 
 import os
 import re
-import urllib.request
 import urllib.error
+import urllib.request
 
 from node_editor.core.node import Node
 from node_editor.core.socket import LEFT_CENTER, RIGHT_CENTER
@@ -140,12 +140,12 @@ class FileReadNode(Node):
                 return None
 
             # Read file with UTF-8 encoding
-            with open(filepath, "r", encoding="utf-8") as f:
+            with open(filepath, encoding="utf-8") as f:
                 contents = f.read()
 
             self.markValid()
             return contents
-        except (OSError, IOError, UnicodeDecodeError):
+        except (OSError, UnicodeDecodeError):
             self.markInvalid()
             return None
 
@@ -216,7 +216,7 @@ class FileWriteNode(Node):
 
             self.markValid()
             return True
-        except (OSError, IOError):
+        except OSError:
             self.markInvalid()
             return False
 
