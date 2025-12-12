@@ -49,6 +49,13 @@ from node_editor.nodes.conversion_nodes import (
 
 # Import built-in node types to auto-register them
 from node_editor.nodes.input_node import NumberInputNode, TextInputNode
+from node_editor.nodes.list_nodes import (
+    AppendNode,
+    CreateListNode,
+    GetItemNode,
+    JoinNode,
+    ListLengthNode,
+)
 from node_editor.nodes.logic_nodes import (
     AndNode,
     EqualNode,
@@ -92,13 +99,6 @@ from node_editor.nodes.utility_nodes import (
     ConstantNode,
     PrintNode,
     RandomNode,
-)
-from node_editor.nodes.list_nodes import (
-    CreateListNode,
-    GetItemNode,
-    ListLengthNode,
-    AppendNode,
-    JoinNode,
 )
 
 __all__ = [

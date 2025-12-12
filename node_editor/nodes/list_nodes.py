@@ -13,7 +13,7 @@ All list operations follow Python's standard list semantics.
 import logging
 
 from node_editor.core.node import Node
-from node_editor.core.socket import LEFT_BOTTOM, LEFT_CENTER, LEFT_TOP, RIGHT_CENTER
+from node_editor.core.socket import LEFT_CENTER, RIGHT_CENTER
 from node_editor.nodes.registry import NodeRegistry
 
 logger = logging.getLogger(__name__)
