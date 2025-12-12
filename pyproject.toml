@@ -1,6 +1,6 @@
 [project]
-name = "nodeeditor"
-version = "0.9.15"
+name = "pyqt-node-editor"
+version = "1.0.0"
 requires-python = ">=3.8"
 dependencies = [
     "PyQt5>=5.15.0",

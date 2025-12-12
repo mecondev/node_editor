@@ -9,7 +9,7 @@ Configuration file for Node Editor project.
 
 # Application information
 APP_NAME = "Node Editor"
-APP_VERSION = "0.9.15"
+APP_VERSION = "1.0.0"
 
 # Window settings
 WINDOW_TITLE = "Node Editor - Framework"

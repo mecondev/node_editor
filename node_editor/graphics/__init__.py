@@ -3,7 +3,7 @@
 This module contains Qt graphics items and views for rendering the
 visual node graph interface:
 
-Classes:
+Core Graphics Items:
     QDMGraphicsSocket: Colored circle for socket connection points.
     QDMGraphicsNode: Node rectangle with title, content, and sockets.
     QDMGraphicsEdge: Path connecting sockets with multiple styles.
@@ -26,19 +26,34 @@ Date:
     2025-12-11
 """
 
+from node_editor.graphics.cutline import QDMCutLine
+from node_editor.graphics.edge import QDMGraphicsEdge
+from node_editor.graphics.edge_path import (
+    GraphicsEdgePathBase,
+    GraphicsEdgePathBezier,
+    GraphicsEdgePathDirect,
+    GraphicsEdgePathImprovedBezier,
+    GraphicsEdgePathImprovedSharp,
+    GraphicsEdgePathSquare,
+)
 from node_editor.graphics.node import QDMGraphicsNode
+from node_editor.graphics.scene import QDMGraphicsScene
 from node_editor.graphics.socket import QDMGraphicsSocket
+from node_editor.graphics.view import QDMGraphicsView
 
 __all__ = [
+    # Core items
     "QDMGraphicsSocket",
     "QDMGraphicsNode",
+    "QDMGraphicsEdge",
+    "QDMGraphicsScene",
+    "QDMGraphicsView",
+    "QDMCutLine",
+    # Path calculators
+    "GraphicsEdgePathBase",
+    "GraphicsEdgePathDirect",
+    "GraphicsEdgePathBezier",
+    "GraphicsEdgePathSquare",
+    "GraphicsEdgePathImprovedSharp",
+    "GraphicsEdgePathImprovedBezier",
 ]
-
-# Will be populated after migration
-# from node_editor.graphics.view import QDMGraphicsView
-# from node_editor.graphics.scene import QDMGraphicsScene
-# from node_editor.graphics.edge import QDMGraphicsEdge
-# from node_editor.graphics.cutline import QDMGraphicsCutLine
-
-
-__all__ = []
