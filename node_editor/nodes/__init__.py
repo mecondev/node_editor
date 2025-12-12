@@ -22,6 +22,7 @@ Extended Nodes (Op Codes 40+):
     Utility Nodes (80-89): Constant, Print, Comment, Clamp, Random.
     List Operations (90-99): CreateList, GetItem, ListLength, Append, Join.
     Time/Date Operations (100-109): CurrentTime, FormatDate, ParseDate, TimeDelta, CompareTime.
+    Advanced Operations (110-119): RegexMatch, FileRead, FileWrite, HttpRequest.
 
 Usage:
     Create and register a custom node::
@@ -49,6 +50,12 @@ from node_editor.nodes.conversion_nodes import (
 )
 
 # Import built-in node types to auto-register them
+from node_editor.nodes.advanced_nodes import (
+    FileReadNode,
+    FileWriteNode,
+    HttpRequestNode,
+    RegexMatchNode,
+)
 from node_editor.nodes.input_node import NumberInputNode, TextInputNode
 from node_editor.nodes.list_nodes import (
     AppendNode,
@@ -172,4 +179,9 @@ __all__ = [
     "ParseDateNode",
     "TimeDeltaNode",
     "CompareTimeNode",
+    # Advanced operations
+    "RegexMatchNode",
+    "FileReadNode",
+    "FileWriteNode",
+    "HttpRequestNode",
 ]
