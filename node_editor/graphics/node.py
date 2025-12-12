@@ -146,7 +146,7 @@ class QDMGraphicsNode(QGraphicsItem):
 
         Called when node becomes selected to notify listeners.
         """
-        self.node.scene.grScene.item_selected.emit()
+        self.node.scene.graphics_scene.item_selected.emit()
 
     def doSelect(self, new_state: bool = True) -> None:
         """Programmatically select or deselect this node.
@@ -170,7 +170,7 @@ class QDMGraphicsNode(QGraphicsItem):
         super().mouseMoveEvent(event)
 
         for node in self.scene().scene.nodes:
-            if node.grNode.isSelected():
+            if node.graphics_node.isSelected():
                 node.updateConnectedEdges()
         self._was_moved = True
 
@@ -253,7 +253,7 @@ class QDMGraphicsNode(QGraphicsItem):
                 self.height - 2 * self.edge_padding - self.title_height,
             )
 
-        self.grContent = self.node.scene.grScene.addWidget(self.content)
+        self.grContent = self.node.scene.graphics_scene.addWidget(self.content)
         self.grContent.node = self.node  # type: ignore
         self.grContent.setParentItem(self)
 

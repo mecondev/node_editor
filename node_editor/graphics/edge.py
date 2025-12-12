@@ -169,12 +169,12 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         socket_type_end = self.edge.end_socket.socket_type
         if socket_type_start != socket_type_end:
             return False
-        self.changeColor(self.edge.start_socket.grSocket.getSocketColor(socket_type_start))
+        self.changeColor(self.edge.start_socket.graphics_socket.getSocketColor(socket_type_start))
         return True
 
     def on_selected(self) -> None:
         """Emit selection signal to scene when selected."""
-        self.edge.scene.grScene.item_selected.emit()
+        self.edge.scene.graphics_scene.item_selected.emit()
 
     def doSelect(self, new_state: bool = True) -> None:
         """Programmatically select or deselect this edge.

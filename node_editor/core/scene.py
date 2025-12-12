@@ -113,8 +113,8 @@ class Scene(Serializable):
         self.history = SceneHistory(self)
         self.clipboard = SceneClipboard(self)
 
-        self.grScene.item_selected.connect(self.on_item_selected)
-        self.grScene.items_deselected.connect(self.on_items_deselected)
+        self.graphics_scene.item_selected.connect(self.on_item_selected)
+        self.graphics_scene.items_deselected.connect(self.on_items_deselected)
 
     @property
     def has_been_modified(self) -> bool:
@@ -149,8 +149,8 @@ class Scene(Serializable):
         """
         from node_editor.graphics.scene import QDMGraphicsScene
 
-        self.grScene: QDMGraphicsScene = QDMGraphicsScene(self)
-        self.grScene.setGrScene(self.scene_width, self.scene_height)
+        self.graphics_scene: QDMGraphicsScene = QDMGraphicsScene(self)
+        self.graphics_scene.setGrScene(self.scene_width, self.scene_height)
 
     # Node and edge management
 
@@ -245,7 +245,7 @@ class Scene(Serializable):
         Returns:
             List of selected QGraphicsItem instances (nodes and edges).
         """
-        return self.grScene.selectedItems()
+        return self.graphics_scene.selectedItems()
 
     def doDeselectItems(self, silent: bool = False) -> None:
         """Clear selection from all items.
@@ -264,9 +264,9 @@ class Scene(Serializable):
         Ensures proper detection of selection changes on next interaction.
         """
         for node in self.nodes:
-            node.grNode._last_selected_state = False
+            node.graphics_node._last_selected_state = False
         for edge in self.edges:
-            edge.grEdge._last_selected_state = False
+            edge.graphics_edge._last_selected_state = False
 
     def on_item_selected(self, silent: bool = False) -> None:
         """Handle selection change events.
@@ -377,7 +377,7 @@ class Scene(Serializable):
         Returns:
             First QGraphicsView attached to the graphics scene.
         """
-        return self.grScene.views()[0]
+        return self.graphics_scene.views()[0]
 
     def getItemAt(self, pos: QPointF):
         """Find graphics item at scene position.

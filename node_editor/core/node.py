@@ -97,7 +97,7 @@ class Node(Serializable):
         self.scene = scene
 
         self.content: QDMNodeContentWidget | None = None
-        self.grNode: QDMGraphicsNode | None = None
+        self.graphics_node: QDMGraphicsNode | None = None
 
         self.initInnerClasses()
         self.initSettings()
@@ -105,7 +105,7 @@ class Node(Serializable):
         self.title = title
 
         self.scene.addNode(self)
-        self.scene.grScene.addItem(self.grNode)
+        self.scene.graphics_scene.addItem(self.graphics_node)
 
         self.inputs: list[Socket] = []
         self.outputs: list[Socket] = []
@@ -141,7 +141,7 @@ class Node(Serializable):
             value: New title to display.
         """
         self._title = value
-        self.grNode.title = self._title
+        self.graphics_node.title = self._title
 
     @property
     def pos(self) -> "QPointF":
@@ -150,7 +150,7 @@ class Node(Serializable):
         Returns:
             QPointF with x, y position.
         """
-        return self.grNode.pos()
+        return self.graphics_node.pos()
 
     def setPos(self, x: float, y: float) -> None:
         """Move node to specified scene position.
@@ -162,14 +162,14 @@ class Node(Serializable):
             x: Horizontal scene coordinate.
             y: Vertical scene coordinate.
         """
-        self.grNode.setPos(x, y)
+        self.graphics_node.setPos(x, y)
         for socket in self.inputs:
             for edge in socket.edges:
-                edge.grEdge.calcPath()
+                edge.graphics_edge.calcPath()
                 edge.updatePositions()
         for socket in self.outputs:
             for edge in socket.edges:
-                edge.grEdge.calcPath()
+                edge.graphics_edge.calcPath()
                 edge.updatePositions()
 
     def initInnerClasses(self) -> None:
@@ -183,7 +183,7 @@ class Node(Serializable):
         if node_content_class is not None:
             self.content = node_content_class(self)
         if graphics_node_class is not None:
-            self.grNode = graphics_node_class(self)
+            self.graphics_node = graphics_node_class(self)
 
     def getNodeContentClass(self) -> type["QDMNodeContentWidget"] | None:
         """Get factory class for content widget.
@@ -242,7 +242,7 @@ class Node(Serializable):
             if hasattr(self, "inputs") and hasattr(self, "outputs"):
                 # Remove graphics sockets from scene
                 for socket in self.inputs + self.outputs:
-                    self.scene.grScene.removeItem(socket.grSocket)
+                    self.scene.graphics_scene.removeItem(socket.graphics_socket)
                 self.inputs = []
                 self.outputs = []
 
@@ -320,7 +320,7 @@ class Node(Serializable):
         Args:
             new_state: True to select, False to deselect.
         """
-        self.grNode.doSelect(new_state)
+        self.graphics_node.doSelect(new_state)
 
     def isSelected(self) -> bool:
         """Check if node is currently selected.
@@ -328,7 +328,7 @@ class Node(Serializable):
         Returns:
             True if node is in selected state.
         """
-        return self.grNode.isSelected()
+        return self.graphics_node.isSelected()
 
     def hasConnectedEdge(self, edge: "Edge") -> bool:
         """Check if specified edge connects to this node.
@@ -360,22 +360,22 @@ class Node(Serializable):
         x = (
             self.socket_offsets[position]
             if (position in (LEFT_TOP, LEFT_CENTER, LEFT_BOTTOM))
-            else self.grNode.width + self.socket_offsets[position]
+            else self.graphics_node.width + self.socket_offsets[position]
         )
 
         if position in (LEFT_BOTTOM, RIGHT_BOTTOM):
             y = (
-                self.grNode.height
-                - self.grNode.edge_roundness
-                - self.grNode.title_vertical_padding
+                self.graphics_node.height
+                - self.graphics_node.edge_roundness
+                - self.graphics_node.title_vertical_padding
                 - index * self.socket_spacing
             )
         elif position in (LEFT_CENTER, RIGHT_CENTER):
-            node_height = self.grNode.height
+            node_height = self.graphics_node.height
             top_offset = (
-                self.grNode.title_height
-                + 2 * self.grNode.title_vertical_padding
-                + self.grNode.edge_padding
+                self.graphics_node.title_height
+                + 2 * self.graphics_node.title_vertical_padding
+                + self.graphics_node.edge_padding
             )
             available_height = node_height - top_offset
 
@@ -385,9 +385,9 @@ class Node(Serializable):
 
         elif position in (LEFT_TOP, RIGHT_TOP):
             y = (
-                self.grNode.title_height
-                + self.grNode.title_vertical_padding
-                + self.grNode.edge_roundness
+                self.graphics_node.title_height
+                + self.graphics_node.title_vertical_padding
+                + self.graphics_node.edge_roundness
                 + index * self.socket_spacing
             )
         else:
@@ -406,7 +406,7 @@ class Node(Serializable):
         Returns:
             Tuple of (x, y) in scene coordinates.
         """
-        nodepos = self.grNode.pos()
+        nodepos = self.graphics_node.pos()
         socketpos = self.getSocketPosition(
             socket.index, socket.position, socket.count_on_this_node_side
         )
@@ -431,8 +431,8 @@ class Node(Serializable):
             for edge in socket.edges.copy():
                 edge.remove()
 
-        self.scene.grScene.removeItem(self.grNode)
-        self.grNode = None
+        self.scene.graphics_scene.removeItem(self.graphics_node)
+        self.graphics_node = None
         self.scene.removeNode(self)
 
     # Node evaluation methods
@@ -507,8 +507,8 @@ class Node(Serializable):
         if self._is_invalid:
             self.on_marked_invalid()
         # Update visual representation
-        if self.grNode:
-            self.grNode.update()
+        if self.graphics_node:
+            self.graphics_node.update()
 
     def on_marked_invalid(self) -> None:
         """Handle transition to invalid state.
@@ -691,8 +691,8 @@ class Node(Serializable):
             [
                 ("id", self.id),
                 ("title", self.title),
-                ("pos_x", self.grNode.scenePos().x()),
-                ("pos_y", self.grNode.scenePos().y()),
+                ("pos_x", self.graphics_node.scenePos().x()),
+                ("pos_y", self.graphics_node.scenePos().y()),
                 ("inputs", inputs),
                 ("outputs", outputs),
                 ("content", ser_content),

@@ -97,7 +97,7 @@ class ConcatenateNode(Node):
         if i1 is None or i2 is None:
             self.mark_invalid()
             self.mark_descendants_dirty()
-            self.grNode.setToolTip("Connect all inputs")
+            self.graphics_node.setToolTip("Connect all inputs")
             return None
 
         try:
@@ -107,7 +107,7 @@ class ConcatenateNode(Node):
             self.value = val1 + val2
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip("")
+            self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -116,7 +116,7 @@ class ConcatenateNode(Node):
 
         except (ValueError, TypeError) as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Error: {str(e)}")
+            self.graphics_node.setToolTip(f"Error: {str(e)}")
             return None
 
 
@@ -177,7 +177,7 @@ class FormatNode(Node):
         if i1 is None or i2 is None:
             self.mark_invalid()
             self.mark_descendants_dirty()
-            self.grNode.setToolTip("Connect all inputs")
+            self.graphics_node.setToolTip("Connect all inputs")
             return None
 
         try:
@@ -192,7 +192,7 @@ class FormatNode(Node):
 
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip("")
+            self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -201,7 +201,7 @@ class FormatNode(Node):
 
         except (ValueError, TypeError, KeyError) as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Format error: {str(e)}")
+            self.graphics_node.setToolTip(f"Format error: {str(e)}")
             return None
 
 
@@ -260,7 +260,7 @@ class LengthNode(Node):
         if i1 is None:
             self.mark_invalid()
             self.mark_descendants_dirty()
-            self.grNode.setToolTip("Connect input")
+            self.graphics_node.setToolTip("Connect input")
             return None
 
         try:
@@ -271,7 +271,7 @@ class LengthNode(Node):
 
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip("")
+            self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -280,7 +280,7 @@ class LengthNode(Node):
 
         except (TypeError, AttributeError) as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Cannot get length: {str(e)}")
+            self.graphics_node.setToolTip(f"Cannot get length: {str(e)}")
             return None
 
 
@@ -341,7 +341,7 @@ class SubstringNode(Node):
         if string_node is None or start_node is None or end_node is None:
             self.mark_invalid()
             self.mark_descendants_dirty()
-            self.grNode.setToolTip("Connect all inputs")
+            self.graphics_node.setToolTip("Connect all inputs")
             return None
 
         try:
@@ -353,7 +353,7 @@ class SubstringNode(Node):
 
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip("")
+            self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -362,7 +362,7 @@ class SubstringNode(Node):
 
         except (ValueError, TypeError, IndexError) as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Substring error: {str(e)}")
+            self.graphics_node.setToolTip(f"Substring error: {str(e)}")
             return None
 
 
@@ -422,7 +422,7 @@ class SplitNode(Node):
         if string_node is None or delimiter_node is None:
             self.mark_invalid()
             self.mark_descendants_dirty()
-            self.grNode.setToolTip("Connect all inputs")
+            self.graphics_node.setToolTip("Connect all inputs")
             return None
 
         try:
@@ -437,7 +437,7 @@ class SplitNode(Node):
 
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip("")
+            self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -446,5 +446,5 @@ class SplitNode(Node):
 
         except (ValueError, TypeError) as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Split error: {str(e)}")
+            self.graphics_node.setToolTip(f"Split error: {str(e)}")
             return None

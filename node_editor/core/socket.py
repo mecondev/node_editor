@@ -101,7 +101,7 @@ class Socket(Serializable):
         self.is_input = is_input
         self.is_output = not self.is_input
 
-        self.grSocket: QDMGraphicsSocket = self.__class__.Socket_GR_Class(self)
+        self.graphics_socket: QDMGraphicsSocket = self.__class__.Socket_GR_Class(self)
         self.setSocketPosition()
 
         self.edges: list[Edge] = []
@@ -121,9 +121,9 @@ class Socket(Serializable):
         Detaches the graphics socket from its parent and removes it from
         the graphics scene. Should be called before discarding the socket.
         """
-        self.grSocket.setParentItem(None)
-        self.node.scene.grScene.removeItem(self.grSocket)
-        del self.grSocket
+        self.graphics_socket.setParentItem(None)
+        self.node.scene.graphics_scene.removeItem(self.graphics_socket)
+        del self.graphics_socket
 
     def changeSocketType(self, new_socket_type: int) -> bool:
         """Update socket type and refresh visual appearance.
@@ -136,7 +136,7 @@ class Socket(Serializable):
         """
         if self.socket_type != new_socket_type:
             self.socket_type = new_socket_type
-            self.grSocket.changeSocketType()
+            self.graphics_socket.changeSocketType()
             return True
         return False
 
@@ -149,7 +149,7 @@ class Socket(Serializable):
         pos = self.node.getSocketPosition(
             self.index, self.position, self.count_on_this_node_side
         )
-        self.grSocket.setPos(*pos)
+        self.graphics_socket.setPos(*pos)
 
     def getSocketPosition(self) -> tuple[float, float]:
         """Calculate socket position in node-local coordinates.

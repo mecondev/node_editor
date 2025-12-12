@@ -82,7 +82,7 @@ class CalcNode(Node):
         if i1 is None or i2 is None:
             self.mark_invalid()
             self.mark_descendants_dirty()
-            self.grNode.setToolTip("Connect all inputs")
+            self.graphics_node.setToolTip("Connect all inputs")
             return None
 
         else:
@@ -91,7 +91,7 @@ class CalcNode(Node):
                 self.value = val
                 self.mark_dirty(False)
                 self.mark_invalid(False)
-                self.grNode.setToolTip("")
+                self.graphics_node.setToolTip("")
 
                 self.mark_descendants_dirty()
                 self.evalChildren()
@@ -99,12 +99,12 @@ class CalcNode(Node):
                 return val
             except ZeroDivisionError:
                 self.mark_invalid()
-                self.grNode.setToolTip("⚠ Cannot divide by zero")
+                self.graphics_node.setToolTip("⚠ Cannot divide by zero")
                 self.mark_descendants_dirty()
                 return None
             except (ValueError, TypeError) as e:
                 self.mark_invalid()
-                self.grNode.setToolTip(f"⚠ Invalid input: {str(e)}")
+                self.graphics_node.setToolTip(f"⚠ Invalid input: {str(e)}")
                 self.mark_descendants_dirty()
                 return None
 
@@ -119,11 +119,11 @@ class CalcNode(Node):
             return val
         except ValueError as e:
             self.mark_invalid()
-            self.grNode.setToolTip(str(e))
+            self.graphics_node.setToolTip(str(e))
             self.mark_descendants_dirty()
         except Exception as e:
             self.mark_invalid()
-            self.grNode.setToolTip(str(e))
+            self.graphics_node.setToolTip(str(e))
             dumpException(e)
 
 

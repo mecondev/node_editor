@@ -59,7 +59,7 @@ class EdgeDragging:
         Returns:
             Edge class type for creating new edges.
         """
-        return self.grView.grScene.scene.getEdgeClass()
+        return self.grView.graphics_scene.scene.getEdgeClass()
 
     def updateDestination(self, x: float, y: float) -> None:
         """Move drag edge endpoint to new position.
@@ -68,9 +68,9 @@ class EdgeDragging:
             x: Scene X coordinate.
             y: Scene Y coordinate.
         """
-        if self.drag_edge is not None and self.drag_edge.grEdge is not None:
-            self.drag_edge.grEdge.setDestination(x, y)
-            self.drag_edge.grEdge.update()
+        if self.drag_edge is not None and self.drag_edge.graphics_edge is not None:
+            self.drag_edge.graphics_edge.setDestination(x, y)
+            self.drag_edge.graphics_edge.update()
 
     def edgeDragStart(self, item: QDMGraphicsSocket) -> None:
         """Begin edge drag from a socket.
@@ -89,7 +89,7 @@ class EdgeDragging:
                 None,
                 EDGE_TYPE_DEFAULT
             )
-            self.drag_edge.grEdge.makeUnselectable()
+            self.drag_edge.graphics_edge.makeUnselectable()
 
         except Exception as e:
             dump_exception(e)
@@ -148,7 +148,7 @@ class EdgeDragging:
                         if socket.is_input:
                             socket.node.on_input_changed(socket)
 
-                    self.grView.grScene.scene.history.storeHistory(
+                    self.grView.graphics_scene.scene.history.storeHistory(
                         "Created new edge by dragging", set_modified=True
                     )
                     return True

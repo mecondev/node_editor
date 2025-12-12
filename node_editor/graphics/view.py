@@ -88,10 +88,10 @@ class QDMGraphicsView(QGraphicsView):
             parent: Optional parent widget.
         """
         super().__init__(parent)
-        self.grScene = gr_scene
+        self.graphics_scene = gr_scene
 
         self.initUI()
-        self.setScene(self.grScene)
+        self.setScene(self.graphics_scene)
 
         self.mode: int = MODE_NOOP
         self.editingFlag: bool = False
@@ -116,7 +116,7 @@ class QDMGraphicsView(QGraphicsView):
         from node_editor.graphics.cutline import QDMCutLine
 
         self.cutline = QDMCutLine()
-        self.grScene.addItem(self.cutline)
+        self.graphics_scene.addItem(self.cutline)
 
         self.last_scene_mouse_position = QPoint(0, 0)
         self.last_lmb_click_scene_pos: QPointF | None = None
@@ -249,13 +249,13 @@ class QDMGraphicsView(QGraphicsView):
                 return
 
         if DEBUG_MMB_SCENE_ITEMS and (item is None or self.mode == MODE_EDGES_REROUTING):
-            for _node in self.grScene.scene.nodes:
+            for _node in self.graphics_scene.scene.nodes:
                 pass
-            for _edge in self.grScene.scene.edges:
+            for _edge in self.graphics_scene.scene.edges:
                 pass
 
             if is_ctrl_pressed(event):
-                for _item in self.grScene.items():
+                for _item in self.graphics_scene.items():
                     pass
 
         if DEBUG_MMB_LAST_SELECTIONS and is_shift_pressed(event):
@@ -449,20 +449,20 @@ class QDMGraphicsView(QGraphicsView):
 
             if self.rubberBandDraggingRectangle:
                 self.rubberBandDraggingRectangle = False
-                current_selected_items = self.grScene.selectedItems()
+                current_selected_items = self.graphics_scene.selectedItems()
 
-                if current_selected_items != self.grScene.scene._last_selected_items:
+                if current_selected_items != self.graphics_scene.scene._last_selected_items:
                     if current_selected_items == []:
-                        self.grScene.items_deselected.emit()
+                        self.graphics_scene.items_deselected.emit()
                     else:
-                        self.grScene.item_selected.emit()
-                    self.grScene.scene._last_selected_items = current_selected_items
+                        self.graphics_scene.item_selected.emit()
+                    self.graphics_scene.scene._last_selected_items = current_selected_items
 
                 super().mouseReleaseEvent(event)
                 return
 
             if item is None:
-                self.grScene.items_deselected.emit()
+                self.graphics_scene.items_deselected.emit()
 
         except Exception as e:
             dump_exception(e)
@@ -544,11 +544,11 @@ class QDMGraphicsView(QGraphicsView):
             p1 = self.cutline.line_points[ix]
             p2 = self.cutline.line_points[ix + 1]
 
-            for edge in self.grScene.scene.edges.copy():
-                if edge.grEdge.intersectsWith(p1, p2):
+            for edge in self.graphics_scene.scene.edges.copy():
+                if edge.graphics_edge.intersectsWith(p1, p2):
                     edge.remove()
 
-        self.grScene.scene.history.storeHistory("Delete cutted edges", set_modified=True)
+        self.graphics_scene.scene.history.storeHistory("Delete cutted edges", set_modified=True)
 
     def setSocketHighlights(
         self, scenepos: QPointF, highlighted: bool = True, radius: float = 50
@@ -566,7 +566,7 @@ class QDMGraphicsView(QGraphicsView):
         from node_editor.graphics.socket import QDMGraphicsSocket
 
         scanrect = QRectF(scenepos.x() - radius, scenepos.y() - radius, radius * 2, radius * 2)
-        items = self.grScene.items(scanrect)
+        items = self.graphics_scene.items(scanrect)
         items = list(filter(lambda x: isinstance(x, QDMGraphicsSocket), items))
 
         for gr_socket in items:
@@ -581,13 +581,13 @@ class QDMGraphicsView(QGraphicsView):
         """
         from node_editor.graphics.edge import QDMGraphicsEdge
 
-        for item in self.grScene.selectedItems():
+        for item in self.graphics_scene.selectedItems():
             if isinstance(item, QDMGraphicsEdge):
                 item.edge.remove()
             elif hasattr(item, "node"):
                 item.node.remove()
 
-        self.grScene.scene.history.storeHistory("Delete selected", set_modified=True)
+        self.graphics_scene.scene.history.storeHistory("Delete selected", set_modified=True)
 
     def getItemAtClick(self, event: QEvent):
         """Get graphics item at event position.

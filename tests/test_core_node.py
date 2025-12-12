@@ -24,7 +24,7 @@ class TestNodeCreation:
         assert node.title == "Test Node"
         assert node.scene == scene
         assert node in scene.nodes
-        assert node.grNode is not None
+        assert node.graphics_node is not None
 
     def test_create_node_with_sockets(self, scene):
         """Test creating a node with input and output sockets."""
@@ -79,8 +79,8 @@ class TestNodeProperties:
         node = Node(scene, "Test Node")
         node.setPos(150, 250)
 
-        assert node.grNode.pos().x() == 150
-        assert node.grNode.pos().y() == 250
+        assert node.graphics_node.pos().x() == 150
+        assert node.graphics_node.pos().y() == 250
 
 
 class TestNodeSockets:

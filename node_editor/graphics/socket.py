@@ -48,7 +48,7 @@ class QDMGraphicsSocket(QGraphicsItem):
         Args:
             socket: Logical Socket this graphics item represents.
         """
-        super().__init__(socket.node.grNode)
+        super().__init__(socket.node.graphics_node)
 
         self.socket = socket
 

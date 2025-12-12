@@ -48,7 +48,7 @@ class EdgeIntersect:
         Args:
             gr_view: QDMGraphicsView to operate on.
         """
-        self.grScene = gr_view.grScene
+        self.graphics_scene = gr_view.graphics_scene
         self.grView = gr_view
         self.draggedNode: Node | None = None
         self.hoveredList: list = []
@@ -104,15 +104,15 @@ class EdgeIntersect:
 
         edge_type = edge.edge_type
         edge.remove()
-        self.grView.grScene.scene.history.storeHistory("Delete existing edge", set_modified=True)
+        self.grView.graphics_scene.scene.history.storeHistory("Delete existing edge", set_modified=True)
 
         new_node_socket_in = node.inputs[0]
-        Edge(self.grScene.scene, socket_start, new_node_socket_in, edge_type=edge_type)
+        Edge(self.graphics_scene.scene, socket_start, new_node_socket_in, edge_type=edge_type)
 
         new_node_socket_out = node.outputs[0]
-        Edge(self.grScene.scene, new_node_socket_out, socket_end, edge_type=edge_type)
+        Edge(self.graphics_scene.scene, new_node_socket_out, socket_end, edge_type=edge_type)
 
-        self.grView.grScene.scene.history.storeHistory(
+        self.grView.graphics_scene.scene.history.storeHistory(
             "Created new edges by dropping node", set_modified=True
         )
 
@@ -125,11 +125,11 @@ class EdgeIntersect:
         Returns:
             QRectF covering the node's area.
         """
-        node_pos = node.grNode.scenePos()
+        node_pos = node.graphics_node.scenePos()
         x = node_pos.x()
         y = node_pos.y()
-        w = node.grNode.width
-        h = node.grNode.height
+        w = node.graphics_node.width
+        h = node.graphics_node.height
         return QRectF(x, y, w, h)
 
     def update(self, _scene_pos_x: float, _scene_pos_y: float) -> None:
@@ -140,7 +140,7 @@ class EdgeIntersect:
             _scene_pos_y: Current Y position (unused).
         """
         rect = self.hotZoneRect(self.draggedNode)
-        gr_items = self.grScene.items(rect)
+        gr_items = self.graphics_scene.items(rect)
 
         for gr_edge in self.hoveredList:
             gr_edge.hovered = False
@@ -160,7 +160,7 @@ class EdgeIntersect:
         Returns:
             First intersecting Edge, or None.
         """
-        gr_items = self.grScene.items(node_box)
+        gr_items = self.graphics_scene.items(node_box)
         for gr_item in gr_items:
             if hasattr(gr_item, "edge") and not self.draggedNode.hasConnectedEdge(gr_item.edge):
                 return gr_item.edge

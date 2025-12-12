@@ -65,7 +65,7 @@ class ToStringNode(Node):
             input_socket = self.getInput(0)
             if not input_socket or not input_socket.hasEdges():
                 self.mark_invalid()
-                self.grNode.setToolTip("Missing input connection")
+                self.graphics_node.setToolTip("Missing input connection")
                 self.value = None
                 return None
 
@@ -79,7 +79,7 @@ class ToStringNode(Node):
 
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip(f"Output: {self.value!r}")
+            self.graphics_node.setToolTip(f"Output: {self.value!r}")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -88,7 +88,7 @@ class ToStringNode(Node):
 
         except Exception as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Error: {e}")
+            self.graphics_node.setToolTip(f"Error: {e}")
             logger.error(f"ToStringNode eval error: {e}")
             return None
 
@@ -140,7 +140,7 @@ class ToNumberNode(Node):
             input_socket = self.getInput(0)
             if not input_socket or not input_socket.hasEdges():
                 self.mark_invalid()
-                self.grNode.setToolTip("Missing input connection")
+                self.graphics_node.setToolTip("Missing input connection")
                 self.value = None
                 return None
 
@@ -149,7 +149,7 @@ class ToNumberNode(Node):
             # Convert to float
             if input_value is None:
                 self.mark_invalid()
-                self.grNode.setToolTip("Cannot convert None to number")
+                self.graphics_node.setToolTip("Cannot convert None to number")
                 self.value = None
                 return None
 
@@ -163,13 +163,13 @@ class ToNumberNode(Node):
                 self.value = float(input_value)
             else:
                 self.mark_invalid()
-                self.grNode.setToolTip(f"Cannot convert {type(input_value).__name__} to number")
+                self.graphics_node.setToolTip(f"Cannot convert {type(input_value).__name__} to number")
                 self.value = None
                 return None
 
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip(f"Output: {self.value}")
+            self.graphics_node.setToolTip(f"Output: {self.value}")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -178,12 +178,12 @@ class ToNumberNode(Node):
 
         except ValueError as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Invalid number format: {e}")
+            self.graphics_node.setToolTip(f"Invalid number format: {e}")
             logger.error(f"ToNumberNode conversion error: {e}")
             return None
         except Exception as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Error: {e}")
+            self.graphics_node.setToolTip(f"Error: {e}")
             logger.error(f"ToNumberNode eval error: {e}")
             return None
 
@@ -236,7 +236,7 @@ class ToBoolNode(Node):
             input_socket = self.getInput(0)
             if not input_socket or not input_socket.hasEdges():
                 self.mark_invalid()
-                self.grNode.setToolTip("Missing input connection")
+                self.graphics_node.setToolTip("Missing input connection")
                 self.value = None
                 return None
 
@@ -258,7 +258,7 @@ class ToBoolNode(Node):
 
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip(f"Output: {self.value}")
+            self.graphics_node.setToolTip(f"Output: {self.value}")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -267,7 +267,7 @@ class ToBoolNode(Node):
 
         except Exception as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Error: {e}")
+            self.graphics_node.setToolTip(f"Error: {e}")
             logger.error(f"ToBoolNode eval error: {e}")
             return None
 
@@ -319,7 +319,7 @@ class ToIntNode(Node):
             input_socket = self.getInput(0)
             if not input_socket or not input_socket.hasEdges():
                 self.mark_invalid()
-                self.grNode.setToolTip("Missing input connection")
+                self.graphics_node.setToolTip("Missing input connection")
                 self.value = None
                 return None
 
@@ -328,7 +328,7 @@ class ToIntNode(Node):
             # Convert to int
             if input_value is None:
                 self.mark_invalid()
-                self.grNode.setToolTip("Cannot convert None to integer")
+                self.graphics_node.setToolTip("Cannot convert None to integer")
                 self.value = None
                 return None
 
@@ -345,13 +345,13 @@ class ToIntNode(Node):
                 self.value = int(input_value)
             else:
                 self.mark_invalid()
-                self.grNode.setToolTip(f"Cannot convert {type(input_value).__name__} to integer")
+                self.graphics_node.setToolTip(f"Cannot convert {type(input_value).__name__} to integer")
                 self.value = None
                 return None
 
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip(f"Output: {self.value}")
+            self.graphics_node.setToolTip(f"Output: {self.value}")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -360,11 +360,11 @@ class ToIntNode(Node):
 
         except ValueError as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Invalid integer format: {e}")
+            self.graphics_node.setToolTip(f"Invalid integer format: {e}")
             logger.error(f"ToIntNode conversion error: {e}")
             return None
         except Exception as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Error: {e}")
+            self.graphics_node.setToolTip(f"Error: {e}")
             logger.error(f"ToIntNode eval error: {e}")
             return None

@@ -63,7 +63,7 @@ class SceneClipboard:
         sel_edges = []
         sel_sockets = {}
 
-        for item in self.scene.grScene.selectedItems():
+        for item in self.scene.graphics_scene.selectedItems():
             if hasattr(item, "node"):
                 sel_nodes.append(item.node.serialize())
                 for socket in item.node.inputs + item.node.outputs:

@@ -224,7 +224,7 @@ class SceneHistory:
             "edges": [],
         }
 
-        for item in self.scene.grScene.selectedItems():
+        for item in self.scene.graphics_scene.selectedItems():
             if hasattr(item, "node"):
                 sel_obj["nodes"].append(item.node.id)
             elif hasattr(item, "edge"):
@@ -269,21 +269,21 @@ class SceneHistory:
             self.scene.deserialize(history_stamp["snapshot"])
 
             for edge in self.scene.edges:
-                edge.grEdge.setSelected(False)
+                edge.graphics_edge.setSelected(False)
 
             for edge_id in history_stamp["selection"]["edges"]:
                 for edge in self.scene.edges:
                     if edge.id == edge_id:
-                        edge.grEdge.setSelected(True)
+                        edge.graphics_edge.setSelected(True)
                         break
 
             for node in self.scene.nodes:
-                node.grNode.setSelected(False)
+                node.graphics_node.setSelected(False)
 
             for node_id in history_stamp["selection"]["nodes"]:
                 for node in self.scene.nodes:
                     if node.id == node_id:
-                        node.grNode.setSelected(True)
+                        node.graphics_node.setSelected(True)
                         break
 
             current_selection = self.captureCurrentSelection()

@@ -65,7 +65,7 @@ class EdgeRerouting:
         Returns:
             Edge class from the scene.
         """
-        return self.grView.grScene.scene.getEdgeClass()
+        return self.grView.graphics_scene.scene.getEdgeClass()
 
     def getAffectedEdges(self) -> list[Edge]:
         """Get all edges connected to the start socket.
@@ -85,9 +85,9 @@ class EdgeRerouting:
         """
         for edge in self.getAffectedEdges():
             if visibility:
-                edge.grEdge.show()
+                edge.graphics_edge.show()
             else:
-                edge.grEdge.hide()
+                edge.graphics_edge.hide()
 
     def resetRerouting(self) -> None:
         """Reset rerouting state to default values."""
@@ -112,9 +112,9 @@ class EdgeRerouting:
         """
         if self.is_rerouting:
             for edge in self.rerouting_edges:
-                if edge and edge.grEdge:
-                    edge.grEdge.setDestination(x, y)
-                    edge.grEdge.update()
+                if edge and edge.graphics_edge:
+                    edge.graphics_edge.setDestination(x, y)
+                    edge.graphics_edge.update()
 
     def startRerouting(self, socket: Socket) -> None:
         """Begin rerouting operation from a socket.
@@ -137,9 +137,9 @@ class EdgeRerouting:
 
             new_edge = edge_class(self.start_socket.node.scene, edge_type=edge.edge_type)
             new_edge.start_socket = other_socket
-            new_edge.grEdge.setSource(*other_socket.node.getSocketScenePosition(other_socket))
-            new_edge.grEdge.setDestination(*start_position)
-            new_edge.grEdge.update()
+            new_edge.graphics_edge.setSource(*other_socket.node.getSocketScenePosition(other_socket))
+            new_edge.graphics_edge.setDestination(*start_position)
+            new_edge.graphics_edge.update()
             self.rerouting_edges.append(new_edge)
 
     def stopRerouting(self, target: Socket | None = None) -> None:
@@ -153,7 +153,7 @@ class EdgeRerouting:
         """
         if self.start_socket is not None:
             # Reset start socket highlight
-            self.start_socket.grSocket.isHighlighted = False
+            self.start_socket.graphics_socket.isHighlighted = False
 
         # Collect all affected (node, edge) tuples
         affected_nodes = []

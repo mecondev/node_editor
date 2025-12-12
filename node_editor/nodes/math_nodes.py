@@ -115,7 +115,7 @@ class MathNode(Node):
         if i1 is None or i2 is None:
             self.mark_invalid()
             self.mark_descendants_dirty()
-            self.grNode.setToolTip("Connect all inputs")
+            self.graphics_node.setToolTip("Connect all inputs")
             return None
 
         try:
@@ -131,7 +131,7 @@ class MathNode(Node):
             self.value = self.evalOperation(val1, val2)
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip("")
+            self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -140,7 +140,7 @@ class MathNode(Node):
 
         except (ValueError, TypeError, ZeroDivisionError) as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Error: {str(e)}")
+            self.graphics_node.setToolTip(f"Error: {str(e)}")
             return None
 
 
@@ -322,7 +322,7 @@ class PowerNode(Node):
         if base_node is None or exp_node is None:
             self.mark_invalid()
             self.mark_descendants_dirty()
-            self.grNode.setToolTip("Connect all inputs")
+            self.graphics_node.setToolTip("Connect all inputs")
             return None
 
         try:
@@ -333,7 +333,7 @@ class PowerNode(Node):
 
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip("")
+            self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -342,7 +342,7 @@ class PowerNode(Node):
 
         except (ValueError, TypeError, OverflowError) as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Error: {str(e)}")
+            self.graphics_node.setToolTip(f"Error: {str(e)}")
             return None
 
 
@@ -401,7 +401,7 @@ class SqrtNode(Node):
         if input_node is None:
             self.mark_invalid()
             self.mark_descendants_dirty()
-            self.grNode.setToolTip("Connect input")
+            self.graphics_node.setToolTip("Connect input")
             return None
 
         try:
@@ -409,14 +409,14 @@ class SqrtNode(Node):
 
             if value < 0:
                 self.mark_invalid()
-                self.grNode.setToolTip("Cannot take square root of negative number")
+                self.graphics_node.setToolTip("Cannot take square root of negative number")
                 return None
 
             self.value = math.sqrt(value)
 
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip("")
+            self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -425,7 +425,7 @@ class SqrtNode(Node):
 
         except (ValueError, TypeError) as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Error: {str(e)}")
+            self.graphics_node.setToolTip(f"Error: {str(e)}")
             return None
 
 
@@ -484,7 +484,7 @@ class AbsNode(Node):
         if input_node is None:
             self.mark_invalid()
             self.mark_descendants_dirty()
-            self.grNode.setToolTip("Connect input")
+            self.graphics_node.setToolTip("Connect input")
             return None
 
         try:
@@ -493,7 +493,7 @@ class AbsNode(Node):
 
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip("")
+            self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -502,7 +502,7 @@ class AbsNode(Node):
 
         except (ValueError, TypeError) as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Error: {str(e)}")
+            self.graphics_node.setToolTip(f"Error: {str(e)}")
             return None
 
 
@@ -562,7 +562,7 @@ class MinNode(Node):
         if i1 is None or i2 is None:
             self.mark_invalid()
             self.mark_descendants_dirty()
-            self.grNode.setToolTip("Connect all inputs")
+            self.graphics_node.setToolTip("Connect all inputs")
             return None
 
         try:
@@ -573,7 +573,7 @@ class MinNode(Node):
 
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip("")
+            self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -582,7 +582,7 @@ class MinNode(Node):
 
         except (ValueError, TypeError) as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Error: {str(e)}")
+            self.graphics_node.setToolTip(f"Error: {str(e)}")
             return None
 
 
@@ -642,7 +642,7 @@ class MaxNode(Node):
         if i1 is None or i2 is None:
             self.mark_invalid()
             self.mark_descendants_dirty()
-            self.grNode.setToolTip("Connect all inputs")
+            self.graphics_node.setToolTip("Connect all inputs")
             return None
 
         try:
@@ -653,7 +653,7 @@ class MaxNode(Node):
 
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip("")
+            self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -662,7 +662,7 @@ class MaxNode(Node):
 
         except (ValueError, TypeError) as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Error: {str(e)}")
+            self.graphics_node.setToolTip(f"Error: {str(e)}")
             return None
 
 
@@ -722,7 +722,7 @@ class RoundNode(Node):
         if number_node is None or places_node is None:
             self.mark_invalid()
             self.mark_descendants_dirty()
-            self.grNode.setToolTip("Connect all inputs")
+            self.graphics_node.setToolTip("Connect all inputs")
             return None
 
         try:
@@ -733,7 +733,7 @@ class RoundNode(Node):
 
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip("")
+            self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -742,7 +742,7 @@ class RoundNode(Node):
 
         except (ValueError, TypeError) as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Error: {str(e)}")
+            self.graphics_node.setToolTip(f"Error: {str(e)}")
             return None
 
 
@@ -802,7 +802,7 @@ class ModuloNode(Node):
         if i1 is None or i2 is None:
             self.mark_invalid()
             self.mark_descendants_dirty()
-            self.grNode.setToolTip("Connect all inputs")
+            self.graphics_node.setToolTip("Connect all inputs")
             return None
 
         try:
@@ -816,7 +816,7 @@ class ModuloNode(Node):
 
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip("")
+            self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -825,5 +825,5 @@ class ModuloNode(Node):
 
         except (ValueError, TypeError, ZeroDivisionError) as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Error: {str(e)}")
+            self.graphics_node.setToolTip(f"Error: {str(e)}")
             return None

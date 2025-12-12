@@ -50,7 +50,7 @@ class EdgeSnapping:
             snapping_radius: Pixel radius for socket detection.
         """
         self.grView = gr_view
-        self.grScene = self.grView.grScene
+        self.graphics_scene = self.grView.graphics_scene
         self.edge_snapping_radius = snapping_radius
 
     def getSnappedSocketItem(self, event: QMouseEvent) -> QDMGraphicsSocket | None:
@@ -88,7 +88,7 @@ class EdgeSnapping:
             self.edge_snapping_radius * 2,
             self.edge_snapping_radius * 2
         )
-        items = self.grScene.items(scanrect)
+        items = self.graphics_scene.items(scanrect)
         items = list(filter(lambda x: isinstance(x, QDMGraphicsSocket), items))
 
         if len(items) == 0:

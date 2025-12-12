@@ -99,7 +99,7 @@ class Edge(Serializable):
         self.end_socket = end_socket
         self._edge_type = edge_type
 
-        self.grEdge = self.createEdgeClassInstance()
+        self.graphics_edge = self.createEdgeClassInstance()
 
         self.scene.addEdge(self)
 
@@ -186,7 +186,7 @@ class Edge(Serializable):
         """
         self._edge_type = value
 
-        self.grEdge.createEdgePathCalculator()
+        self.graphics_edge.createEdgePathCalculator()
 
         if self.start_socket is not None:
             self.updatePositions()
@@ -254,11 +254,11 @@ class Edge(Serializable):
         Returns:
             Configured QDMGraphicsEdge instance.
         """
-        self.grEdge = self.getGraphicsEdgeClass()(self)
-        self.scene.grScene.addItem(self.grEdge)
+        self.graphics_edge = self.getGraphicsEdgeClass()(self)
+        self.scene.graphics_scene.addItem(self.graphics_edge)
         if self.start_socket is not None:
             self.updatePositions()
-        return self.grEdge
+        return self.graphics_edge
 
     def getOtherSocket(self, known_socket: "Socket") -> "Socket | None":
         """Get the opposite socket on this edge.
@@ -280,7 +280,7 @@ class Edge(Serializable):
         Args:
             new_state: True to select, False to deselect.
         """
-        self.grEdge.doSelect(new_state)
+        self.graphics_edge.doSelect(new_state)
 
     def updatePositions(self) -> None:
         """Recalculate edge path based on current socket positions.
@@ -289,19 +289,19 @@ class Edge(Serializable):
         the graphics edge endpoints. Called automatically when nodes move.
         """
         source_pos = list(self.start_socket.getSocketPosition())
-        source_pos[0] += self.start_socket.node.grNode.pos().x()
-        source_pos[1] += self.start_socket.node.grNode.pos().y()
-        self.grEdge.setSource(*source_pos)
+        source_pos[0] += self.start_socket.node.graphics_node.pos().x()
+        source_pos[1] += self.start_socket.node.graphics_node.pos().y()
+        self.graphics_edge.setSource(*source_pos)
 
         if self.end_socket is not None:
             end_pos = list(self.end_socket.getSocketPosition())
-            end_pos[0] += self.end_socket.node.grNode.pos().x()
-            end_pos[1] += self.end_socket.node.grNode.pos().y()
-            self.grEdge.setDestination(*end_pos)
+            end_pos[0] += self.end_socket.node.graphics_node.pos().x()
+            end_pos[1] += self.end_socket.node.graphics_node.pos().y()
+            self.graphics_edge.setDestination(*end_pos)
         else:
-            self.grEdge.setDestination(*source_pos)
+            self.graphics_edge.setDestination(*source_pos)
 
-        self.grEdge.update()
+        self.graphics_edge.update()
 
     def remove_from_sockets(self) -> None:
         """Unregister edge from both connected sockets.
@@ -324,11 +324,11 @@ class Edge(Serializable):
         """
         old_sockets = [self.start_socket, self.end_socket]
 
-        self.grEdge.hide()
+        self.graphics_edge.hide()
 
-        self.scene.grScene.removeItem(self.grEdge)
+        self.scene.graphics_scene.removeItem(self.graphics_edge)
 
-        self.scene.grScene.update()
+        self.scene.graphics_scene.update()
 
         self.remove_from_sockets()
 

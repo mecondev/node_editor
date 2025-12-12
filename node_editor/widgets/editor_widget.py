@@ -75,7 +75,7 @@ class NodeEditorWidget(QWidget):
         if self.__class__.GraphicsView_class is None:
             self.__class__.GraphicsView_class = QDMGraphicsView
 
-        self.view = self.__class__.GraphicsView_class(self.scene.grScene, self)
+        self.view = self.__class__.GraphicsView_class(self.scene.graphics_scene, self)
         self.layout.addWidget(self.view)
 
     def isModified(self) -> bool:

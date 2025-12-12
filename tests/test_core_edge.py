@@ -65,7 +65,7 @@ class TestEdgeCreation:
 
         edge = Edge(node1.scene, node1.outputs[0], node2.inputs[0])
 
-        assert edge.grEdge is not None
+        assert edge.graphics_edge is not None
 
 
 class TestEdgeProperties:
@@ -143,7 +143,7 @@ class TestEdgeConnections:
         edge.updatePositions()
 
         # Edge should have updated graphics
-        assert edge.grEdge is not None
+        assert edge.graphics_edge is not None
 
 
 class TestEdgeValidation:

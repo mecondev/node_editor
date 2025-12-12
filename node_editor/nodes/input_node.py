@@ -154,11 +154,11 @@ class NumberInputNode(Node):
             self.value = float(text) if text else 0.0
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip("")
+            self.graphics_node.setToolTip("")
         except ValueError:
             self.value = 0.0
             self.mark_invalid(True)
-            self.grNode.setToolTip("Invalid number format")
+            self.graphics_node.setToolTip("Invalid number format")
 
         self.mark_descendants_dirty()
         self.evalChildren()
@@ -218,7 +218,7 @@ class TextInputNode(Node):
         self.value = self.content.edit.text()
         self.mark_dirty(False)
         self.mark_invalid(False)
-        self.grNode.setToolTip("")
+        self.graphics_node.setToolTip("")
 
         self.mark_descendants_dirty()
         self.evalChildren()

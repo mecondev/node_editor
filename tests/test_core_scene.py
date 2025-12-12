@@ -28,7 +28,7 @@ class TestSceneCreation:
 
         assert len(scene.nodes) == 0
         assert len(scene.edges) == 0
-        assert scene.grScene is not None
+        assert scene.graphics_scene is not None
 
     def test_scene_has_history(self):
         """Test scene has history manager."""
@@ -247,7 +247,7 @@ class TestSceneClear:
     def test_clear_selection(self, scene):
         """Test clearing selection."""
         # Scene should have a method to clear selection
-        scene.grScene.clearSelection()
+        scene.graphics_scene.clearSelection()
 
         # No exception should be raised
         assert True
@@ -273,7 +273,7 @@ class TestSceneView:
         node.setPos(100, 100)
 
         # Get items near node position
-        items = scene.grScene.items()
+        items = scene.graphics_scene.items()
 
         # Should include graphics node
         assert any(hasattr(item, 'node') for item in items)
@@ -288,7 +288,7 @@ class TestSceneSelection:
         Node(scene, "Node 2")
 
         # Get selection (should be empty initially)
-        selected = scene.grScene.selectedItems()
+        selected = scene.graphics_scene.selectedItems()
 
         assert isinstance(selected, list)
 
@@ -297,5 +297,5 @@ class TestSceneSelection:
         Node(scene, "Node 1")
 
         # Initially no selection
-        selected = scene.grScene.selectedItems()
+        selected = scene.graphics_scene.selectedItems()
         assert len(selected) == 0

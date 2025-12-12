@@ -114,7 +114,7 @@ class CompareNode(Node):
         if i1 is None or i2 is None:
             self.mark_invalid()
             self.mark_descendants_dirty()
-            self.grNode.setToolTip("Connect all inputs")
+            self.graphics_node.setToolTip("Connect all inputs")
             return None
 
         try:
@@ -124,7 +124,7 @@ class CompareNode(Node):
             self.value = self.compareOperation(val1, val2)
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip("")
+            self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -133,7 +133,7 @@ class CompareNode(Node):
 
         except (ValueError, TypeError) as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Error: {str(e)}")
+            self.graphics_node.setToolTip(f"Error: {str(e)}")
             return None
 
 
@@ -366,7 +366,7 @@ class IfNode(Node):
         if condition_node is None or true_node is None or false_node is None:
             self.mark_invalid()
             self.mark_descendants_dirty()
-            self.grNode.setToolTip("Connect all inputs")
+            self.graphics_node.setToolTip("Connect all inputs")
             return None
 
         try:
@@ -379,7 +379,7 @@ class IfNode(Node):
 
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip("")
+            self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -388,7 +388,7 @@ class IfNode(Node):
 
         except (ValueError, TypeError) as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Error: {str(e)}")
+            self.graphics_node.setToolTip(f"Error: {str(e)}")
             return None
 
 
@@ -453,7 +453,7 @@ class AndNode(Node):
         if i1 is None or i2 is None:
             self.mark_invalid()
             self.mark_descendants_dirty()
-            self.grNode.setToolTip("Connect all inputs")
+            self.graphics_node.setToolTip("Connect all inputs")
             return None
 
         try:
@@ -464,7 +464,7 @@ class AndNode(Node):
 
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip("")
+            self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -473,7 +473,7 @@ class AndNode(Node):
 
         except (ValueError, TypeError) as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Error: {str(e)}")
+            self.graphics_node.setToolTip(f"Error: {str(e)}")
             return None
 
 
@@ -533,7 +533,7 @@ class OrNode(Node):
         if i1 is None or i2 is None:
             self.mark_invalid()
             self.mark_descendants_dirty()
-            self.grNode.setToolTip("Connect all inputs")
+            self.graphics_node.setToolTip("Connect all inputs")
             return None
 
         try:
@@ -544,7 +544,7 @@ class OrNode(Node):
 
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip("")
+            self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -553,7 +553,7 @@ class OrNode(Node):
 
         except (ValueError, TypeError) as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Error: {str(e)}")
+            self.graphics_node.setToolTip(f"Error: {str(e)}")
             return None
 
 
@@ -612,7 +612,7 @@ class NotNode(Node):
         if input_node is None:
             self.mark_invalid()
             self.mark_descendants_dirty()
-            self.grNode.setToolTip("Connect input")
+            self.graphics_node.setToolTip("Connect input")
             return None
 
         try:
@@ -621,7 +621,7 @@ class NotNode(Node):
 
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip("")
+            self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -630,7 +630,7 @@ class NotNode(Node):
 
         except (ValueError, TypeError) as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Error: {str(e)}")
+            self.graphics_node.setToolTip(f"Error: {str(e)}")
             return None
 
 
@@ -690,7 +690,7 @@ class XorNode(Node):
         if i1 is None or i2 is None:
             self.mark_invalid()
             self.mark_descendants_dirty()
-            self.grNode.setToolTip("Connect all inputs")
+            self.graphics_node.setToolTip("Connect all inputs")
             return None
 
         try:
@@ -702,7 +702,7 @@ class XorNode(Node):
 
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip("")
+            self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -711,5 +711,5 @@ class XorNode(Node):
 
         except (ValueError, TypeError) as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Error: {str(e)}")
+            self.graphics_node.setToolTip(f"Error: {str(e)}")
             return None

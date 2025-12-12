@@ -254,7 +254,7 @@ class NodeEditorWindow(QMainWindow):
         current_nodeeditor = self.getCurrentNodeEditorWidget()
         if not current_nodeeditor:
             return
-            
+
         if self.maybeSave():
             fname, filter = QFileDialog.getOpenFileName(
                 self, 'Open graph from file',

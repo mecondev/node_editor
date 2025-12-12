@@ -63,13 +63,13 @@ class RegexMatchNode(Node):
         """Match pattern in text using regex."""
         if not self.inputs[0].hasEdges():
             self.mark_invalid()
-            self.grNode.setToolTip("Connect text input")
+            self.graphics_node.setToolTip("Connect text input")
             return None
 
         text = self.inputs[0].getValue()
         if text is None:
             self.mark_invalid()
-            self.grNode.setToolTip("Text input is empty")
+            self.graphics_node.setToolTip("Text input is empty")
             return None
 
         text = str(text)
@@ -84,11 +84,11 @@ class RegexMatchNode(Node):
         try:
             result = bool(re.search(pattern, text))
             self.markValid()
-            self.grNode.setToolTip("")
+            self.graphics_node.setToolTip("")
             return result
         except re.error as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Invalid regex pattern: {e}")
+            self.graphics_node.setToolTip(f"Invalid regex pattern: {e}")
             return None
 
 
@@ -128,13 +128,13 @@ class FileReadNode(Node):
         """Read file contents."""
         if not self.inputs[0].hasEdges():
             self.mark_invalid()
-            self.grNode.setToolTip("Connect filepath input")
+            self.graphics_node.setToolTip("Connect filepath input")
             return None
 
         filepath = self.inputs[0].getValue()
         if filepath is None:
             self.mark_invalid()
-            self.grNode.setToolTip("Filepath is empty")
+            self.graphics_node.setToolTip("Filepath is empty")
             return None
 
         filepath = str(filepath)
@@ -143,7 +143,7 @@ class FileReadNode(Node):
             # Check if file exists
             if not os.path.exists(filepath):
                 self.mark_invalid()
-                self.grNode.setToolTip(f"File not found: {filepath}")
+                self.graphics_node.setToolTip(f"File not found: {filepath}")
                 return None
 
             # Read file with UTF-8 encoding
@@ -151,15 +151,15 @@ class FileReadNode(Node):
                 contents = f.read()
 
             self.markValid()
-            self.grNode.setToolTip("")
+            self.graphics_node.setToolTip("")
             return contents
         except OSError as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"File read error: {e}")
+            self.graphics_node.setToolTip(f"File read error: {e}")
             return None
         except UnicodeDecodeError:
             self.mark_invalid()
-            self.grNode.setToolTip("File encoding error (not UTF-8)")
+            self.graphics_node.setToolTip("File encoding error (not UTF-8)")
             return None
 
 
@@ -201,13 +201,13 @@ class FileWriteNode(Node):
         """Write content to file."""
         if not self.inputs[0].hasEdges():
             self.mark_invalid()
-            self.grNode.setToolTip("Connect filepath input")
+            self.graphics_node.setToolTip("Connect filepath input")
             return None
 
         filepath = self.inputs[0].getValue()
         if filepath is None:
             self.mark_invalid()
-            self.grNode.setToolTip("Filepath is empty")
+            self.graphics_node.setToolTip("Filepath is empty")
             return None
 
         filepath = str(filepath)
@@ -230,15 +230,15 @@ class FileWriteNode(Node):
                 f.write(content)
 
             self.markValid()
-            self.grNode.setToolTip("")
+            self.graphics_node.setToolTip("")
             return True
         except OSError as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"File write error: {e}")
+            self.graphics_node.setToolTip(f"File write error: {e}")
             return False
         except PermissionError:
             self.mark_invalid()
-            self.grNode.setToolTip("Permission denied")
+            self.graphics_node.setToolTip("Permission denied")
             return False
 
 
@@ -280,13 +280,13 @@ class HttpRequestNode(Node):
         """Make HTTP request."""
         if not self.inputs[0].hasEdges():
             self.mark_invalid()
-            self.grNode.setToolTip("Connect URL input")
+            self.graphics_node.setToolTip("Connect URL input")
             return None
 
         url = self.inputs[0].getValue()
         if url is None:
             self.mark_invalid()
-            self.grNode.setToolTip("URL is empty")
+            self.graphics_node.setToolTip("URL is empty")
             return None
 
         url = str(url)
@@ -315,21 +315,21 @@ class HttpRequestNode(Node):
                 body = response.read().decode("utf-8")
 
             self.markValid()
-            self.grNode.setToolTip("")
+            self.graphics_node.setToolTip("")
             return body
         except urllib.error.HTTPError as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"HTTP Error: {e.code} {e.reason}")
+            self.graphics_node.setToolTip(f"HTTP Error: {e.code} {e.reason}")
             return None
         except urllib.error.URLError as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Connection error: {e.reason}")
+            self.graphics_node.setToolTip(f"Connection error: {e.reason}")
             return None
         except OSError as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Network error: {e}")
+            self.graphics_node.setToolTip(f"Network error: {e}")
             return None
         except TimeoutError:
             self.mark_invalid()
-            self.grNode.setToolTip("Request timed out")
+            self.graphics_node.setToolTip("Request timed out")
             return None

@@ -138,7 +138,7 @@ class ConstantNode(Node):
 
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip("")
+            self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -147,7 +147,7 @@ class ConstantNode(Node):
 
         except Exception as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Error: {str(e)}")
+            self.graphics_node.setToolTip(f"Error: {str(e)}")
             return None
 
     def serialize(self):
@@ -237,7 +237,7 @@ class PrintNode(Node):
         if input_node is None:
             self.mark_invalid()
             self.mark_descendants_dirty()
-            self.grNode.setToolTip("Connect input")
+            self.graphics_node.setToolTip("Connect input")
             return None
 
         try:
@@ -250,7 +250,7 @@ class PrintNode(Node):
 
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip(f"Output: {self.value}")
+            self.graphics_node.setToolTip(f"Output: {self.value}")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -259,7 +259,7 @@ class PrintNode(Node):
 
         except Exception as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Error: {str(e)}")
+            self.graphics_node.setToolTip(f"Error: {str(e)}")
             return None
 
 
@@ -393,7 +393,7 @@ class ClampNode(Node):
         if value_node is None or min_node is None or max_node is None:
             self.mark_invalid()
             self.mark_descendants_dirty()
-            self.grNode.setToolTip("Connect all inputs")
+            self.graphics_node.setToolTip("Connect all inputs")
             return None
 
         try:
@@ -410,7 +410,7 @@ class ClampNode(Node):
 
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip(f"Clamped: {self.value}")
+            self.graphics_node.setToolTip(f"Clamped: {self.value}")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -419,7 +419,7 @@ class ClampNode(Node):
 
         except (ValueError, TypeError) as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Error: {str(e)}")
+            self.graphics_node.setToolTip(f"Error: {str(e)}")
             return None
 
 
@@ -479,7 +479,7 @@ class RandomNode(Node):
         if min_node is None or max_node is None:
             self.mark_invalid()
             self.mark_descendants_dirty()
-            self.grNode.setToolTip("Connect all inputs")
+            self.graphics_node.setToolTip("Connect all inputs")
             return None
 
         try:
@@ -495,7 +495,7 @@ class RandomNode(Node):
 
             self.mark_dirty(False)
             self.mark_invalid(False)
-            self.grNode.setToolTip(f"Random: {self.value:.2f}")
+            self.graphics_node.setToolTip(f"Random: {self.value:.2f}")
 
             self.mark_descendants_dirty()
             self.evalChildren()
@@ -504,5 +504,5 @@ class RandomNode(Node):
 
         except (ValueError, TypeError) as e:
             self.mark_invalid()
-            self.grNode.setToolTip(f"Error: {str(e)}")
+            self.graphics_node.setToolTip(f"Error: {str(e)}")
             return None

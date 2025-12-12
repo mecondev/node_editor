@@ -114,7 +114,7 @@ class OutputNode(Node):
             self.value = None
             self.content.set_value(None)
             self.mark_invalid(True)
-            self.grNode.setToolTip("Connect an input")
+            self.graphics_node.setToolTip("Connect an input")
             return None
 
         # Get value from connected node
@@ -123,6 +123,6 @@ class OutputNode(Node):
 
         self.mark_dirty(False)
         self.mark_invalid(False)
-        self.grNode.setToolTip("")
+        self.graphics_node.setToolTip("")
 
         return self.value
