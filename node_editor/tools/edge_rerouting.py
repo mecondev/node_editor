@@ -59,16 +59,6 @@ class EdgeRerouting:
         self.is_rerouting: bool = False
         self.first_mb_release: bool = False
 
-    def print(self, *args) -> None:
-        """Log debug message if DEBUG_REROUTING is enabled.
-
-        Args:
-            *args: Values to concatenate and log.
-        """
-        if DEBUG_REROUTING:
-            message = " ".join(str(arg) for arg in args)
-            logger.debug(message)
-
     def getEdgeClass(self) -> type[Edge]:
         """Get the Edge class for creating preview edges.
 
@@ -107,10 +97,8 @@ class EdgeRerouting:
 
     def clearReroutingEdges(self) -> None:
         """Remove temporary preview edges from the scene."""
-        self.print("clean called")
         while self.rerouting_edges:
             edge = self.rerouting_edges.pop()
-            self.print("\twant to clean:", edge)
             edge.remove()
 
     def updateScenePos(self, x: float, y: float) -> None:
@@ -136,11 +124,9 @@ class EdgeRerouting:
         Args:
             socket: Socket to start rerouting from.
         """
-        self.print("startRerouting", socket)
         self.is_rerouting = True
         self.start_socket = socket
 
-        self.print("numEdges:", len(self.getAffectedEdges()))
         self.setAffectedEdgesVisible(visibility=False)
 
         start_position = self.start_socket.node.getSocketScenePosition(self.start_socket)
@@ -165,8 +151,6 @@ class EdgeRerouting:
         Args:
             target: Socket to connect to, or None to cancel rerouting.
         """
-        self.print("stopRerouting on:", target, "no change" if target == self.start_socket else "")
-
         if self.start_socket is not None:
             # Reset start socket highlight
             self.start_socket.grSocket.isHighlighted = False
@@ -186,7 +170,6 @@ class EdgeRerouting:
                 start_sock = edge.getOtherSocket(self.start_socket)
                 if not edge.validateEdge(start_sock, target):
                     # Not valid edge
-                    self.print("This edge rerouting is not valid!", edge)
                     invalid_edges.append(edge)
 
             # Remove the invalidated edges from the list
@@ -194,8 +177,6 @@ class EdgeRerouting:
                 valid_edges.remove(invalid_edge)
 
             # Reconnect to new socket
-            self.print("should reconnect from:", self.start_socket, "-->", target)
-
             self.setAffectedEdgesVisible(visibility=True)
 
             for edge in valid_edges:
