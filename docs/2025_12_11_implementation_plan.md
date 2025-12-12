@@ -127,12 +127,13 @@ Decision: Keep `tools/` naming - it's more generic and intuitive.
 - [x] `NotNode` - Logical NOT (!a) ✅
 - [x] `XorNode` - Exclusive OR (a XOR b) ✅
 
-**Total Implemented Nodes: 30** (Op Codes 1-63)
+**Total Implemented Nodes: 35** (Op Codes 1-63, 80-84)
 
 **Implementation Details:**
 - All math operations (basic + extended) consolidated in `math_nodes.py`
 - All logic operations (comparison + boolean) consolidated in `logic_nodes.py`
 - String operations in separate `string_nodes.py`
+- Utility operations in separate `utility_nodes.py`
 - Cleaner, more maintainable structure with fewer files
 
 #### ✅ Comprehensive Test Coverage:
@@ -141,13 +142,41 @@ Decision: Keep `tools/` naming - it's more generic and intuitive.
 - [x] `tests/test_nodes_math.py` - 66 tests (basic + extended) ✅
 - [x] `tests/test_nodes_logic.py` - 52 tests (comparison + boolean) ✅
 - [x] `tests/test_nodes_string.py` - 28 tests ✅
+- [x] `tests/test_nodes_utility.py` - 25 tests ✅
 
-**Total Tests: 177** (all passing in 4.16s)
+**Total Tests: 202** (all passing in 4.46s)
 
 **File Organization:**
-- 3 main node modules: `math_nodes.py`, `logic_nodes.py`, `string_nodes.py`
+- 4 main node modules: `math_nodes.py`, `logic_nodes.py`, `string_nodes.py`, `utility_nodes.py`
 - All tests consolidated for better maintainability
 - Simplified imports in `__init__.py`
+
+---
+
+### ✅ Phase 8: Utility Nodes (100% Complete) ✅
+
+**Date Completed:** 2025-12-12
+
+#### ✅ Utility Nodes (Op Codes 80-84):
+- [x] `ConstantNode` - Editable constant value with auto number/string parsing ✅
+- [x] `PrintNode` - Debug output to console with pass-through ✅
+- [x] `CommentNode` - Documentation annotation (no I/O) ✅
+- [x] `ClampNode` - Value clamping to [min, max] range ✅
+- [x] `RandomNode` - Random number generation between bounds ✅
+
+**Implementation Details:**
+- Custom content widgets using `QLineEdit` for ConstantNode, `QTextEdit` for CommentNode
+- Full serialization support for all utility nodes
+- PrintNode includes both logger and console output
+- ClampNode validates min <= max constraint
+- RandomNode generates values in [min_value, max_value] range
+
+#### ✅ Test Coverage:
+- [x] `tests/test_nodes_utility.py` - 25 tests covering all 5 nodes ✅
+  - Node creation and basic operations
+  - Edge cases and error handling
+  - Serialization/deserialization round-trips
+  - Input validation
 
 #### 🔜 Future Node Ideas (Not Yet Implemented):
 
@@ -156,13 +185,6 @@ Decision: Keep `tools/` naming - it's more generic and intuitive.
 - [ ] `ToNumberNode` - Convert to number
 - [ ] `ToBoolNode` - Convert to boolean
 - [ ] `ToIntNode` - Convert to integer
-
-**Utility Nodes (Op Codes 80-89):**
-- [ ] `ConstantNode` - Immutable constant value
-- [ ] `PrintNode` - Debug output (console)
-- [ ] `CommentNode` - Annotation/note
-- [ ] `ClampNode` - Clamp to range [min, max]
-- [ ] `RandomNode` - Random number [min, max]
 
 **List Nodes (Op Codes 90-99):**
 - [ ] `CreateListNode` - Create list from inputs

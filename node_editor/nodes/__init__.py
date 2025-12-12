@@ -18,6 +18,7 @@ Extended Nodes (Op Codes 40+):
     String Operations (40-49): Concatenate, Format, Length, Substring, Split.
     Math Extended (50-59): Power, Sqrt, Abs, Min, Max, Round, Modulo.
     Logic Extended (60-69): AND, OR, NOT, XOR.
+    Utility Nodes (80-89): Constant, Print, Comment, Clamp, Random.
 
 Usage:
     Create and register a custom node::
@@ -77,6 +78,13 @@ from node_editor.nodes.string_nodes import (
     SplitNode,
     SubstringNode,
 )
+from node_editor.nodes.utility_nodes import (
+    ClampNode,
+    CommentNode,
+    ConstantNode,
+    PrintNode,
+    RandomNode,
+)
 
 __all__ = [
     "NodeRegistry",
@@ -118,4 +126,10 @@ __all__ = [
     "OrNode",
     "NotNode",
     "XorNode",
+    # Utility nodes
+    "ConstantNode",
+    "PrintNode",
+    "CommentNode",
+    "ClampNode",
+    "RandomNode",
 ]
