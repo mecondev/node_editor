@@ -64,12 +64,12 @@ class Node(Serializable):
         outputs: List of output Socket instances.
 
     Class Attributes:
-        GraphicsNode_class: Graphics class for node visualization.
+        _graphics_node_class: Graphics class for node visualization.
         NodeContent_class: Content widget class for node UI.
         Socket_class: Socket class for creating connections.
     """
 
-    GraphicsNode_class: type["QDMGraphicsNode"] | None = None
+    _graphics_node_class: type["QDMGraphicsNode"] | None = None
     NodeContent_class: type["QDMNodeContentWidget"] | None = None
     Socket_class = Socket
 
@@ -203,7 +203,7 @@ class Node(Serializable):
         Returns:
             Graphics node class or None.
         """
-        return self.__class__.GraphicsNode_class
+        return self.__class__._graphics_node_class
 
     def initSettings(self) -> None:
         """Configure socket layout properties.

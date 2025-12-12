@@ -43,9 +43,9 @@ def _init_graphics_classes():
     from node_editor.widgets.content_widget import QDMNodeContentWidget
 
     Socket.Socket_GR_Class = QDMGraphicsSocket
-    Node.GraphicsNode_class = QDMGraphicsNode
+    Node._graphics_node_class = QDMGraphicsNode
     Node.NodeContent_class = QDMNodeContentWidget
-    Edge.GraphicsEdge_class = QDMGraphicsEdge
+    Edge._graphics_edge_class = QDMGraphicsEdge
 
 
 # NOTE: Graphics classes are initialized lazily on first use

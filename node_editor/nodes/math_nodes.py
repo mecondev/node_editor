@@ -59,7 +59,7 @@ class MathNode(Node):
     content_label = ""
     content_label_objname = "math_node"
 
-    GraphicsNode_class = MathGraphicsNode
+    _graphics_node_class = MathGraphicsNode
     NodeContent_class = MathContent
 
     def __init__(self, scene, inputs=None, outputs=None):
@@ -284,7 +284,7 @@ class PowerNode(Node):
     content_label = "^"
     content_label_objname = "math_power"
 
-    GraphicsNode_class = MathGraphicsNode
+    _graphics_node_class = MathGraphicsNode
     NodeContent_class = MathContent
 
     def __init__(self, scene, inputs=None, outputs=None):
@@ -364,7 +364,7 @@ class SqrtNode(Node):
     content_label = "√"
     content_label_objname = "math_sqrt"
 
-    GraphicsNode_class = MathGraphicsNode
+    _graphics_node_class = MathGraphicsNode
     NodeContent_class = MathContent
 
     def __init__(self, scene, inputs=None, outputs=None):
@@ -447,7 +447,7 @@ class AbsNode(Node):
     content_label = "|x|"
     content_label_objname = "math_abs"
 
-    GraphicsNode_class = MathGraphicsNode
+    _graphics_node_class = MathGraphicsNode
     NodeContent_class = MathContent
 
     def __init__(self, scene, inputs=None, outputs=None):
@@ -524,7 +524,7 @@ class MinNode(Node):
     content_label = "min"
     content_label_objname = "math_min"
 
-    GraphicsNode_class = MathGraphicsNode
+    _graphics_node_class = MathGraphicsNode
     NodeContent_class = MathContent
 
     def __init__(self, scene, inputs=None, outputs=None):
@@ -604,7 +604,7 @@ class MaxNode(Node):
     content_label = "max"
     content_label_objname = "math_max"
 
-    GraphicsNode_class = MathGraphicsNode
+    _graphics_node_class = MathGraphicsNode
     NodeContent_class = MathContent
 
     def __init__(self, scene, inputs=None, outputs=None):
@@ -684,7 +684,7 @@ class RoundNode(Node):
     content_label = "~"
     content_label_objname = "math_round"
 
-    GraphicsNode_class = MathGraphicsNode
+    _graphics_node_class = MathGraphicsNode
     NodeContent_class = MathContent
 
     def __init__(self, scene, inputs=None, outputs=None):
@@ -764,7 +764,7 @@ class ModuloNode(Node):
     content_label = "%"
     content_label_objname = "math_modulo"
 
-    GraphicsNode_class = MathGraphicsNode
+    _graphics_node_class = MathGraphicsNode
     NodeContent_class = MathContent
 
     def __init__(self, scene, inputs=None, outputs=None):

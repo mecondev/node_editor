@@ -58,7 +58,7 @@ class CompareNode(Node):
     content_label = ""
     content_label_objname = "logic_node"
 
-    GraphicsNode_class = LogicGraphicsNode
+    _graphics_node_class = LogicGraphicsNode
     NodeContent_class = LogicContent
 
     def __init__(self, scene, inputs=None, outputs=None):
@@ -325,7 +325,7 @@ class IfNode(Node):
     content_label = "?"
     content_label_objname = "logic_node_if"
 
-    GraphicsNode_class = LogicGraphicsNode
+    _graphics_node_class = LogicGraphicsNode
     NodeContent_class = LogicContent
 
     def __init__(self, scene, inputs=None, outputs=None):
@@ -415,7 +415,7 @@ class AndNode(Node):
     content_label = "&&"
     content_label_objname = "logic_and"
 
-    GraphicsNode_class = LogicGraphicsNode
+    _graphics_node_class = LogicGraphicsNode
     NodeContent_class = LogicContent
 
     def __init__(self, scene, inputs=None, outputs=None):
@@ -495,7 +495,7 @@ class OrNode(Node):
     content_label = "||"
     content_label_objname = "logic_or"
 
-    GraphicsNode_class = LogicGraphicsNode
+    _graphics_node_class = LogicGraphicsNode
     NodeContent_class = LogicContent
 
     def __init__(self, scene, inputs=None, outputs=None):
@@ -575,7 +575,7 @@ class NotNode(Node):
     content_label = "!"
     content_label_objname = "logic_not"
 
-    GraphicsNode_class = LogicGraphicsNode
+    _graphics_node_class = LogicGraphicsNode
     NodeContent_class = LogicContent
 
     def __init__(self, scene, inputs=None, outputs=None):
@@ -652,7 +652,7 @@ class XorNode(Node):
     content_label = "⊕"
     content_label_objname = "logic_xor"
 
-    GraphicsNode_class = LogicGraphicsNode
+    _graphics_node_class = LogicGraphicsNode
     NodeContent_class = LogicContent
 
     def __init__(self, scene, inputs=None, outputs=None):

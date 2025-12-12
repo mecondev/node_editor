@@ -78,7 +78,7 @@ class OutputNode(Node):
     content_label = ""
     content_label_objname = "output_node"
 
-    GraphicsNode_class = OutputGraphicsNode
+    _graphics_node_class = OutputGraphicsNode
     NodeContent_class = OutputContent
 
     def __init__(self, scene, inputs=None, outputs=None):

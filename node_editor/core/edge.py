@@ -64,11 +64,11 @@ class Edge(Serializable):
 
     Class Attributes:
         edge_validators: List of validation callback functions.
-        GraphicsEdge_class: Graphics class for edge visualization (set at init).
+        _graphics_edge_class: Graphics class for edge visualization (set at init).
     """
 
     edge_validators: list = []
-    GraphicsEdge_class: type["QDMGraphicsEdge"] | None = None
+    _graphics_edge_class: type["QDMGraphicsEdge"] | None = None
 
     def __init__(
         self,
@@ -243,7 +243,7 @@ class Edge(Serializable):
         Returns:
             QDMGraphicsEdge class or subclass.
         """
-        return self.__class__.GraphicsEdge_class
+        return self.__class__._graphics_edge_class
 
     def createEdgeClassInstance(self) -> "QDMGraphicsEdge":
         """Instantiate and configure graphics edge.

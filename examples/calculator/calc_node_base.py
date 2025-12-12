@@ -55,7 +55,7 @@ class CalcNode(Node):
     content_label = ""
     content_label_objname = "calc_node_bg"
 
-    GraphicsNode_class = CalcGraphicsNode
+    _graphics_node_class = CalcGraphicsNode
     NodeContent_class = CalcContent
 
     def __init__(self, scene, inputs=[2,2], outputs=[1]):

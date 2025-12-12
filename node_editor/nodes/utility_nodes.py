@@ -85,7 +85,7 @@ class ConstantNode(Node):
     content_label = ""
     content_label_objname = "utility_constant"
 
-    GraphicsNode_class = UtilityGraphicsNode
+    _graphics_node_class = UtilityGraphicsNode
     NodeContent_class = ConstantContent
 
     def __init__(self, scene, inputs=None, outputs=None):
@@ -198,7 +198,7 @@ class PrintNode(Node):
     content_label = "🖨️"
     content_label_objname = "utility_print"
 
-    GraphicsNode_class = UtilityGraphicsNode
+    _graphics_node_class = UtilityGraphicsNode
     NodeContent_class = UtilityContent
 
     def __init__(self, scene, inputs=None, outputs=None):
@@ -282,7 +282,7 @@ class CommentNode(Node):
     content_label = ""
     content_label_objname = "utility_comment"
 
-    GraphicsNode_class = UtilityGraphicsNode
+    _graphics_node_class = UtilityGraphicsNode
     NodeContent_class = CommentContent
 
     def __init__(self, scene, inputs=None, outputs=None):
@@ -354,7 +354,7 @@ class ClampNode(Node):
     content_label = "⊓⊔"
     content_label_objname = "utility_clamp"
 
-    GraphicsNode_class = UtilityGraphicsNode
+    _graphics_node_class = UtilityGraphicsNode
     NodeContent_class = UtilityContent
 
     def __init__(self, scene, inputs=None, outputs=None):
@@ -441,7 +441,7 @@ class RandomNode(Node):
     content_label = "🎲"
     content_label_objname = "utility_random"
 
-    GraphicsNode_class = UtilityGraphicsNode
+    _graphics_node_class = UtilityGraphicsNode
     NodeContent_class = UtilityContent
 
     def __init__(self, scene, inputs=None, outputs=None):

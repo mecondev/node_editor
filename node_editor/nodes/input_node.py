@@ -119,7 +119,7 @@ class NumberInputNode(Node):
     content_label = ""
     content_label_objname = "input_node"
 
-    GraphicsNode_class = InputGraphicsNode
+    _graphics_node_class = InputGraphicsNode
     NodeContent_class = NumberInputContent
 
     def __init__(self, scene, inputs=None, outputs=None):
@@ -185,7 +185,7 @@ class TextInputNode(Node):
     content_label = ""
     content_label_objname = "input_node"
 
-    GraphicsNode_class = InputGraphicsNode
+    _graphics_node_class = InputGraphicsNode
     NodeContent_class = TextInputContent
 
     def __init__(self, scene, inputs=None, outputs=None):

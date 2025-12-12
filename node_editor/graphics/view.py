@@ -494,6 +494,9 @@ class QDMGraphicsView(QGraphicsView):
         Args:
             event: Qt mouse move event.
         """
+        if event is None:
+            return
+            
         scenepos = self.mapToScene(event.pos())
 
         try:
@@ -518,11 +521,19 @@ class QDMGraphicsView(QGraphicsView):
                 self.cutline.line_points.append(scenepos)
                 self.cutline.update()
 
+        except (RuntimeError, AttributeError) as e:
+            # Ignore errors from deleted Qt objects during rapid movements
+            dump_exception(e)
         except Exception as e:
             dump_exception(e)
 
         self.last_scene_mouse_position = scenepos
-        self.scene_pos_changed.emit(int(scenepos.x()), int(scenepos.y()))
+        
+        try:
+            self.scene_pos_changed.emit(int(scenepos.x()), int(scenepos.y()))
+        except RuntimeError:
+            # Signal emitter may be deleted
+            pass
 
         super().mouseMoveEvent(event)
 

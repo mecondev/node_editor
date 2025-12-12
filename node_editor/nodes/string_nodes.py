@@ -59,7 +59,7 @@ class ConcatenateNode(Node):
     content_label = "+"
     content_label_objname = "string_node_concat"
 
-    GraphicsNode_class = StringGraphicsNode
+    _graphics_node_class = StringGraphicsNode
     NodeContent_class = StringContent
 
     def __init__(self, scene, inputs=None, outputs=None):
@@ -139,7 +139,7 @@ class FormatNode(Node):
     content_label = "{}"
     content_label_objname = "string_node_format"
 
-    GraphicsNode_class = StringGraphicsNode
+    _graphics_node_class = StringGraphicsNode
     NodeContent_class = StringContent
 
     def __init__(self, scene, inputs=None, outputs=None):
@@ -223,7 +223,7 @@ class LengthNode(Node):
     content_label = "len"
     content_label_objname = "string_node_length"
 
-    GraphicsNode_class = StringGraphicsNode
+    _graphics_node_class = StringGraphicsNode
     NodeContent_class = StringContent
 
     def __init__(self, scene, inputs=None, outputs=None):
@@ -302,7 +302,7 @@ class SubstringNode(Node):
     content_label = "[::]"
     content_label_objname = "string_node_substring"
 
-    GraphicsNode_class = StringGraphicsNode
+    _graphics_node_class = StringGraphicsNode
     NodeContent_class = StringContent
 
     def __init__(self, scene, inputs=None, outputs=None):
@@ -384,7 +384,7 @@ class SplitNode(Node):
     content_label = "split"
     content_label_objname = "string_node_split"
 
-    GraphicsNode_class = StringGraphicsNode
+    _graphics_node_class = StringGraphicsNode
     NodeContent_class = StringContent
 
     def __init__(self, scene, inputs=None, outputs=None):
