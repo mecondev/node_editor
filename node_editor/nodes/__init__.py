@@ -18,6 +18,7 @@ Extended Nodes (Op Codes 40+):
     String Operations (40-49): Concatenate, Format, Length, Substring, Split.
     Math Extended (50-59): Power, Sqrt, Abs, Min, Max, Round, Modulo.
     Logic Extended (60-69): AND, OR, NOT, XOR.
+    Conversion Nodes (70-79): ToString, ToNumber, ToBool, ToInt.
     Utility Nodes (80-89): Constant, Print, Comment, Clamp, Random.
 
 Usage:
@@ -38,6 +39,12 @@ Date:
 """
 
 from node_editor.nodes.base import BaseNode
+from node_editor.nodes.conversion_nodes import (
+    ToBoolNode,
+    ToIntNode,
+    ToNumberNode,
+    ToStringNode,
+)
 
 # Import built-in node types to auto-register them
 from node_editor.nodes.input_node import NumberInputNode, TextInputNode
@@ -126,6 +133,11 @@ __all__ = [
     "OrNode",
     "NotNode",
     "XorNode",
+    # Conversion nodes
+    "ToStringNode",
+    "ToNumberNode",
+    "ToBoolNode",
+    "ToIntNode",
     # Utility nodes
     "ConstantNode",
     "PrintNode",

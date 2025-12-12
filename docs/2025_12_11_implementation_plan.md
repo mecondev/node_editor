@@ -127,12 +127,13 @@ Decision: Keep `tools/` naming - it's more generic and intuitive.
 - [x] `NotNode` - Logical NOT (!a) ✅
 - [x] `XorNode` - Exclusive OR (a XOR b) ✅
 
-**Total Implemented Nodes: 35** (Op Codes 1-63, 80-84)
+**Total Implemented Nodes: 39** (Op Codes 1-63, 70-73, 80-84)
 
 **Implementation Details:**
 - All math operations (basic + extended) consolidated in `math_nodes.py`
 - All logic operations (comparison + boolean) consolidated in `logic_nodes.py`
 - String operations in separate `string_nodes.py`
+- Conversion operations in separate `conversion_nodes.py`
 - Utility operations in separate `utility_nodes.py`
 - Cleaner, more maintainable structure with fewer files
 
@@ -142,12 +143,13 @@ Decision: Keep `tools/` naming - it's more generic and intuitive.
 - [x] `tests/test_nodes_math.py` - 66 tests (basic + extended) ✅
 - [x] `tests/test_nodes_logic.py` - 52 tests (comparison + boolean) ✅
 - [x] `tests/test_nodes_string.py` - 28 tests ✅
+- [x] `tests/test_nodes_conversion.py` - 12 tests ✅
 - [x] `tests/test_nodes_utility.py` - 25 tests ✅
 
-**Total Tests: 202** (all passing in 4.46s)
+**Total Tests: 214** (all passing in 4.11s)
 
 **File Organization:**
-- 4 main node modules: `math_nodes.py`, `logic_nodes.py`, `string_nodes.py`, `utility_nodes.py`
+- 5 main node modules: `math_nodes.py`, `logic_nodes.py`, `string_nodes.py`, `conversion_nodes.py`, `utility_nodes.py`
 - All tests consolidated for better maintainability
 - Simplified imports in `__init__.py`
 
@@ -177,6 +179,32 @@ Decision: Keep `tools/` naming - it's more generic and intuitive.
   - Edge cases and error handling
   - Serialization/deserialization round-trips
   - Input validation
+
+---
+
+### ✅ Phase 9: Conversion Nodes (100% Complete) ✅
+
+**Date Completed:** 2025-12-12
+
+#### ✅ Conversion Nodes (Op Codes 70-73):
+- [x] `ToStringNode` - Convert any value to string representation ✅
+- [x] `ToNumberNode` - Convert value to float (handles string, int, bool) ✅
+- [x] `ToBoolNode` - Convert value to boolean (with special string handling) ✅
+- [x] `ToIntNode` - Convert value to integer (truncates floats) ✅
+
+**Implementation Details:**
+- Type-safe conversions following Python's standard conversion rules
+- ToStringNode handles None → "None"
+- ToNumberNode: True → 1.0, False → 0.0
+- ToBoolNode special cases: "false", "0", "no", "" → False
+- ToIntNode truncates (not rounds): 3.9 → 3
+
+#### ✅ Test Coverage:
+- [x] `tests/test_nodes_conversion.py` - 12 tests covering all 4 nodes ✅
+  - Node creation
+  - Type conversion logic validation
+  - Edge case handling
+  - Python conversion semantics verification
 
 #### 🔜 Future Node Ideas (Not Yet Implemented):
 
