@@ -51,7 +51,7 @@ class NumberInputContent(QDMNodeContentWidget):
     def on_value_changed(self):
         """Handle value changes and trigger node evaluation."""
         if hasattr(self.node, 'markDirty'):
-            self.node.markDirty()
+            self.node.mark_dirty()
         if hasattr(self.node, 'eval'):
             self.node.eval()
 
@@ -84,7 +84,7 @@ class TextInputContent(QDMNodeContentWidget):
     def on_value_changed(self):
         """Handle value changes and trigger node evaluation."""
         if hasattr(self.node, 'markDirty'):
-            self.node.markDirty()
+            self.node.mark_dirty()
         if hasattr(self.node, 'eval'):
             self.node.eval()
 
@@ -136,7 +136,7 @@ class NumberInputNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs=[], outputs=outputs)
 
         self.value = 0.0
-        self.markDirty()
+        self.mark_dirty()
 
     def initSettings(self):
         """Configure socket positions."""
@@ -152,15 +152,15 @@ class NumberInputNode(Node):
         try:
             text = self.content.edit.text()
             self.value = float(text) if text else 0.0
-            self.markDirty(False)
-            self.markInvalid(False)
+            self.mark_dirty(False)
+            self.mark_invalid(False)
             self.grNode.setToolTip("")
         except ValueError:
             self.value = 0.0
-            self.markInvalid(True)
+            self.mark_invalid(True)
             self.grNode.setToolTip("Invalid number format")
 
-        self.markDescendantsDirty()
+        self.mark_descendants_dirty()
         self.evalChildren()
 
         return self.value
@@ -202,7 +202,7 @@ class TextInputNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs=[], outputs=outputs)
 
         self.value = ""
-        self.markDirty()
+        self.mark_dirty()
 
     def initSettings(self):
         """Configure socket positions."""
@@ -216,11 +216,11 @@ class TextInputNode(Node):
             str: Text value from the input field.
         """
         self.value = self.content.edit.text()
-        self.markDirty(False)
-        self.markInvalid(False)
+        self.mark_dirty(False)
+        self.mark_invalid(False)
         self.grNode.setToolTip("")
 
-        self.markDescendantsDirty()
+        self.mark_descendants_dirty()
         self.evalChildren()
 
         return self.value

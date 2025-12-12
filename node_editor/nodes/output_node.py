@@ -95,7 +95,7 @@ class OutputNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs=inputs, outputs=[])
 
         self.value = None
-        self.markDirty()
+        self.mark_dirty()
 
     def initSettings(self):
         """Configure socket positions."""
@@ -113,7 +113,7 @@ class OutputNode(Node):
         if input_node is None:
             self.value = None
             self.content.set_value(None)
-            self.markInvalid(True)
+            self.mark_invalid(True)
             self.grNode.setToolTip("Connect an input")
             return None
 
@@ -121,8 +121,8 @@ class OutputNode(Node):
         self.value = input_node.eval()
         self.content.set_value(self.value)
 
-        self.markDirty(False)
-        self.markInvalid(False)
+        self.mark_dirty(False)
+        self.mark_invalid(False)
         self.grNode.setToolTip("")
 
         return self.value

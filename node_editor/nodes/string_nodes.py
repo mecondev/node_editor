@@ -77,7 +77,7 @@ class ConcatenateNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs, outputs)
 
         self.value = None
-        self.markDirty()
+        self.mark_dirty()
 
     def initSettings(self):
         """Configure socket positions."""
@@ -95,8 +95,8 @@ class ConcatenateNode(Node):
         i2 = self.getInput(1)
 
         if i1 is None or i2 is None:
-            self.markInvalid()
-            self.markDescendantsDirty()
+            self.mark_invalid()
+            self.mark_descendants_dirty()
             self.grNode.setToolTip("Connect all inputs")
             return None
 
@@ -105,17 +105,17 @@ class ConcatenateNode(Node):
             val2 = str(i2.eval())
 
             self.value = val1 + val2
-            self.markDirty(False)
-            self.markInvalid(False)
+            self.mark_dirty(False)
+            self.mark_invalid(False)
             self.grNode.setToolTip("")
 
-            self.markDescendantsDirty()
+            self.mark_descendants_dirty()
             self.evalChildren()
 
             return self.value
 
         except (ValueError, TypeError) as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(f"Error: {str(e)}")
             return None
 
@@ -157,7 +157,7 @@ class FormatNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs, outputs)
 
         self.value = None
-        self.markDirty()
+        self.mark_dirty()
 
     def initSettings(self):
         """Configure socket positions."""
@@ -175,8 +175,8 @@ class FormatNode(Node):
         i2 = self.getInput(1)
 
         if i1 is None or i2 is None:
-            self.markInvalid()
-            self.markDescendantsDirty()
+            self.mark_invalid()
+            self.mark_descendants_dirty()
             self.grNode.setToolTip("Connect all inputs")
             return None
 
@@ -190,17 +190,17 @@ class FormatNode(Node):
             else:
                 self.value = template.format(value)
 
-            self.markDirty(False)
-            self.markInvalid(False)
+            self.mark_dirty(False)
+            self.mark_invalid(False)
             self.grNode.setToolTip("")
 
-            self.markDescendantsDirty()
+            self.mark_descendants_dirty()
             self.evalChildren()
 
             return self.value
 
         except (ValueError, TypeError, KeyError) as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(f"Format error: {str(e)}")
             return None
 
@@ -241,7 +241,7 @@ class LengthNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs, outputs)
 
         self.value = None
-        self.markDirty()
+        self.mark_dirty()
 
     def initSettings(self):
         """Configure socket positions."""
@@ -258,8 +258,8 @@ class LengthNode(Node):
         i1 = self.getInput(0)
 
         if i1 is None:
-            self.markInvalid()
-            self.markDescendantsDirty()
+            self.mark_invalid()
+            self.mark_descendants_dirty()
             self.grNode.setToolTip("Connect input")
             return None
 
@@ -269,17 +269,17 @@ class LengthNode(Node):
             # Get length of string, list, or other sequence
             self.value = len(value)
 
-            self.markDirty(False)
-            self.markInvalid(False)
+            self.mark_dirty(False)
+            self.mark_invalid(False)
             self.grNode.setToolTip("")
 
-            self.markDescendantsDirty()
+            self.mark_descendants_dirty()
             self.evalChildren()
 
             return self.value
 
         except (TypeError, AttributeError) as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(f"Cannot get length: {str(e)}")
             return None
 
@@ -320,7 +320,7 @@ class SubstringNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs, outputs)
 
         self.value = None
-        self.markDirty()
+        self.mark_dirty()
 
     def initSettings(self):
         """Configure socket positions."""
@@ -339,8 +339,8 @@ class SubstringNode(Node):
         end_node = self.getInput(2)
 
         if string_node is None or start_node is None or end_node is None:
-            self.markInvalid()
-            self.markDescendantsDirty()
+            self.mark_invalid()
+            self.mark_descendants_dirty()
             self.grNode.setToolTip("Connect all inputs")
             return None
 
@@ -351,17 +351,17 @@ class SubstringNode(Node):
 
             self.value = string[start:end]
 
-            self.markDirty(False)
-            self.markInvalid(False)
+            self.mark_dirty(False)
+            self.mark_invalid(False)
             self.grNode.setToolTip("")
 
-            self.markDescendantsDirty()
+            self.mark_descendants_dirty()
             self.evalChildren()
 
             return self.value
 
         except (ValueError, TypeError, IndexError) as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(f"Substring error: {str(e)}")
             return None
 
@@ -402,7 +402,7 @@ class SplitNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs, outputs)
 
         self.value = None
-        self.markDirty()
+        self.mark_dirty()
 
     def initSettings(self):
         """Configure socket positions."""
@@ -420,8 +420,8 @@ class SplitNode(Node):
         delimiter_node = self.getInput(1)
 
         if string_node is None or delimiter_node is None:
-            self.markInvalid()
-            self.markDescendantsDirty()
+            self.mark_invalid()
+            self.mark_descendants_dirty()
             self.grNode.setToolTip("Connect all inputs")
             return None
 
@@ -435,16 +435,16 @@ class SplitNode(Node):
             else:
                 self.value = string.split(delimiter)
 
-            self.markDirty(False)
-            self.markInvalid(False)
+            self.mark_dirty(False)
+            self.mark_invalid(False)
             self.grNode.setToolTip("")
 
-            self.markDescendantsDirty()
+            self.mark_descendants_dirty()
             self.evalChildren()
 
             return self.value
 
         except (ValueError, TypeError) as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(f"Split error: {str(e)}")
             return None

@@ -62,13 +62,13 @@ class RegexMatchNode(Node):
     def evalImplementation(self):
         """Match pattern in text using regex."""
         if not self.inputs[0].hasEdges():
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip("Connect text input")
             return None
 
         text = self.inputs[0].getValue()
         if text is None:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip("Text input is empty")
             return None
 
@@ -87,7 +87,7 @@ class RegexMatchNode(Node):
             self.grNode.setToolTip("")
             return result
         except re.error as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(f"Invalid regex pattern: {e}")
             return None
 
@@ -127,13 +127,13 @@ class FileReadNode(Node):
     def evalImplementation(self):
         """Read file contents."""
         if not self.inputs[0].hasEdges():
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip("Connect filepath input")
             return None
 
         filepath = self.inputs[0].getValue()
         if filepath is None:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip("Filepath is empty")
             return None
 
@@ -142,7 +142,7 @@ class FileReadNode(Node):
         try:
             # Check if file exists
             if not os.path.exists(filepath):
-                self.markInvalid()
+                self.mark_invalid()
                 self.grNode.setToolTip(f"File not found: {filepath}")
                 return None
 
@@ -154,11 +154,11 @@ class FileReadNode(Node):
             self.grNode.setToolTip("")
             return contents
         except OSError as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(f"File read error: {e}")
             return None
         except UnicodeDecodeError:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip("File encoding error (not UTF-8)")
             return None
 
@@ -200,13 +200,13 @@ class FileWriteNode(Node):
     def evalImplementation(self):
         """Write content to file."""
         if not self.inputs[0].hasEdges():
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip("Connect filepath input")
             return None
 
         filepath = self.inputs[0].getValue()
         if filepath is None:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip("Filepath is empty")
             return None
 
@@ -233,11 +233,11 @@ class FileWriteNode(Node):
             self.grNode.setToolTip("")
             return True
         except OSError as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(f"File write error: {e}")
             return False
         except PermissionError:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip("Permission denied")
             return False
 
@@ -279,13 +279,13 @@ class HttpRequestNode(Node):
     def evalImplementation(self):
         """Make HTTP request."""
         if not self.inputs[0].hasEdges():
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip("Connect URL input")
             return None
 
         url = self.inputs[0].getValue()
         if url is None:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip("URL is empty")
             return None
 
@@ -318,18 +318,18 @@ class HttpRequestNode(Node):
             self.grNode.setToolTip("")
             return body
         except urllib.error.HTTPError as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(f"HTTP Error: {e.code} {e.reason}")
             return None
         except urllib.error.URLError as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(f"Connection error: {e.reason}")
             return None
         except OSError as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(f"Network error: {e}")
             return None
         except TimeoutError:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip("Request timed out")
             return None

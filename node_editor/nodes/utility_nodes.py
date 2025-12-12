@@ -103,7 +103,7 @@ class ConstantNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs, outputs)
 
         self.value = 0
-        self.markDirty()
+        self.mark_dirty()
 
     def initSettings(self):
         """Configure socket positions."""
@@ -116,7 +116,7 @@ class ConstantNode(Node):
         Args:
             text: New text value from input field.
         """
-        self.markDirty()
+        self.mark_dirty()
         self.eval()
 
     def eval(self):
@@ -136,17 +136,17 @@ class ConstantNode(Node):
                 # Keep as string
                 self.value = text
 
-            self.markDirty(False)
-            self.markInvalid(False)
+            self.mark_dirty(False)
+            self.mark_invalid(False)
             self.grNode.setToolTip("")
 
-            self.markDescendantsDirty()
+            self.mark_descendants_dirty()
             self.evalChildren()
 
             return self.value
 
         except Exception as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(f"Error: {str(e)}")
             return None
 
@@ -216,7 +216,7 @@ class PrintNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs, outputs)
 
         self.value = None
-        self.markDirty()
+        self.mark_dirty()
 
     def initSettings(self):
         """Configure socket positions."""
@@ -235,8 +235,8 @@ class PrintNode(Node):
         input_node = self.getInput(0)
 
         if input_node is None:
-            self.markInvalid()
-            self.markDescendantsDirty()
+            self.mark_invalid()
+            self.mark_descendants_dirty()
             self.grNode.setToolTip("Connect input")
             return None
 
@@ -248,17 +248,17 @@ class PrintNode(Node):
             logger.info(f"PrintNode: {self.value}")
             print(f"[PrintNode {self.id}] {self.value}")  # noqa: T201
 
-            self.markDirty(False)
-            self.markInvalid(False)
+            self.mark_dirty(False)
+            self.mark_invalid(False)
             self.grNode.setToolTip(f"Output: {self.value}")
 
-            self.markDescendantsDirty()
+            self.mark_descendants_dirty()
             self.evalChildren()
 
             return self.value
 
         except Exception as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(f"Error: {str(e)}")
             return None
 
@@ -372,7 +372,7 @@ class ClampNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs, outputs)
 
         self.value = None
-        self.markDirty()
+        self.mark_dirty()
 
     def initSettings(self):
         """Configure socket positions."""
@@ -391,8 +391,8 @@ class ClampNode(Node):
         max_node = self.getInput(2)
 
         if value_node is None or min_node is None or max_node is None:
-            self.markInvalid()
-            self.markDescendantsDirty()
+            self.mark_invalid()
+            self.mark_descendants_dirty()
             self.grNode.setToolTip("Connect all inputs")
             return None
 
@@ -408,17 +408,17 @@ class ClampNode(Node):
             # Clamp value
             self.value = max(min_val, min(max_val, value))
 
-            self.markDirty(False)
-            self.markInvalid(False)
+            self.mark_dirty(False)
+            self.mark_invalid(False)
             self.grNode.setToolTip(f"Clamped: {self.value}")
 
-            self.markDescendantsDirty()
+            self.mark_descendants_dirty()
             self.evalChildren()
 
             return self.value
 
         except (ValueError, TypeError) as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(f"Error: {str(e)}")
             return None
 
@@ -459,7 +459,7 @@ class RandomNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs, outputs)
 
         self.value = None
-        self.markDirty()
+        self.mark_dirty()
 
     def initSettings(self):
         """Configure socket positions."""
@@ -477,8 +477,8 @@ class RandomNode(Node):
         max_node = self.getInput(1)
 
         if min_node is None or max_node is None:
-            self.markInvalid()
-            self.markDescendantsDirty()
+            self.mark_invalid()
+            self.mark_descendants_dirty()
             self.grNode.setToolTip("Connect all inputs")
             return None
 
@@ -493,16 +493,16 @@ class RandomNode(Node):
             # Generate random number
             self.value = random.uniform(min_val, max_val)
 
-            self.markDirty(False)
-            self.markInvalid(False)
+            self.mark_dirty(False)
+            self.mark_invalid(False)
             self.grNode.setToolTip(f"Random: {self.value:.2f}")
 
-            self.markDescendantsDirty()
+            self.mark_descendants_dirty()
             self.evalChildren()
 
             return self.value
 
         except (ValueError, TypeError) as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(f"Error: {str(e)}")
             return None

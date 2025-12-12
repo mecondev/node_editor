@@ -93,18 +93,18 @@ class FormatDateNode(Node):
     def evalImplementation(self):
         """Format timestamp according to format string."""
         if not self.inputs[0].hasEdges():
-            self.markInvalid()
+            self.mark_invalid()
             return None
 
         timestamp = self.inputs[0].getValue()
         if timestamp is None:
-            self.markInvalid()
+            self.mark_invalid()
             return None
 
         try:
             timestamp = float(timestamp)
         except (TypeError, ValueError):
-            self.markInvalid()
+            self.mark_invalid()
             return None
 
         # Get format string (default if not connected)
@@ -120,7 +120,7 @@ class FormatDateNode(Node):
             self.markValid()
             return result
         except (ValueError, OSError):
-            self.markInvalid()
+            self.mark_invalid()
             return None
 
 
@@ -159,12 +159,12 @@ class ParseDateNode(Node):
     def evalImplementation(self):
         """Parse date string to timestamp."""
         if not self.inputs[0].hasEdges():
-            self.markInvalid()
+            self.mark_invalid()
             return None
 
         date_string = self.inputs[0].getValue()
         if date_string is None:
-            self.markInvalid()
+            self.mark_invalid()
             return None
 
         date_string = str(date_string)
@@ -182,7 +182,7 @@ class ParseDateNode(Node):
             self.markValid()
             return result
         except ValueError:
-            self.markInvalid()
+            self.mark_invalid()
             return None
 
 
@@ -221,18 +221,18 @@ class TimeDeltaNode(Node):
     def evalImplementation(self):
         """Add offset to timestamp."""
         if not self.inputs[0].hasEdges():
-            self.markInvalid()
+            self.mark_invalid()
             return None
 
         timestamp = self.inputs[0].getValue()
         if timestamp is None:
-            self.markInvalid()
+            self.mark_invalid()
             return None
 
         try:
             timestamp = float(timestamp)
         except (TypeError, ValueError):
-            self.markInvalid()
+            self.mark_invalid()
             return None
 
         # Get offset value (default to 0 if not connected)
@@ -243,7 +243,7 @@ class TimeDeltaNode(Node):
                 try:
                     offset = float(offset_value)
                 except (TypeError, ValueError):
-                    self.markInvalid()
+                    self.mark_invalid()
                     return None
 
         result = timestamp + offset
@@ -286,25 +286,25 @@ class CompareTimeNode(Node):
     def evalImplementation(self):
         """Calculate time difference between two timestamps."""
         if not self.inputs[0].hasEdges():
-            self.markInvalid()
+            self.mark_invalid()
             return None
 
         if not self.inputs[1].hasEdges():
-            self.markInvalid()
+            self.mark_invalid()
             return None
 
         timestamp1 = self.inputs[0].getValue()
         timestamp2 = self.inputs[1].getValue()
 
         if timestamp1 is None or timestamp2 is None:
-            self.markInvalid()
+            self.mark_invalid()
             return None
 
         try:
             timestamp1 = float(timestamp1)
             timestamp2 = float(timestamp2)
         except (TypeError, ValueError):
-            self.markInvalid()
+            self.mark_invalid()
             return None
 
         result = timestamp1 - timestamp2

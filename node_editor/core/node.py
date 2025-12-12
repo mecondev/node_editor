@@ -291,8 +291,8 @@ class Node(Serializable):
         Args:
             _socket: Input socket that received new data.
         """
-        self.markDirty()
-        self.markDescendantsDirty()
+        self.mark_dirty()
+        self.mark_descendants_dirty()
 
     def onDeserialized(self, data: dict) -> None:
         """Handle post-deserialization initialization.
@@ -445,7 +445,7 @@ class Node(Serializable):
         """
         return self._is_dirty
 
-    def markDirty(self, new_value: bool = True) -> None:
+    def mark_dirty(self, new_value: bool = True) -> None:
         """Set dirty state indicating need for re-evaluation.
 
         Triggers onMarkedDirty() callback when transitioning to dirty.
@@ -464,7 +464,7 @@ class Node(Serializable):
         visual indicators or logging.
         """
 
-    def markChildrenDirty(self, new_value: bool = True) -> None:
+    def mark_children_dirty(self, new_value: bool = True) -> None:
         """Mark immediate downstream nodes as dirty.
 
         Only affects first-level children connected to outputs.
@@ -473,9 +473,9 @@ class Node(Serializable):
             new_value: True to mark dirty, False to clear.
         """
         for other_node in self.getChildrenNodes():
-            other_node.markDirty(new_value)
+            other_node.mark_dirty(new_value)
 
-    def markDescendantsDirty(self, new_value: bool = True) -> None:
+    def mark_descendants_dirty(self, new_value: bool = True) -> None:
         """Recursively mark all downstream nodes as dirty.
 
         Propagates dirty state through entire downstream subgraph.
@@ -484,8 +484,8 @@ class Node(Serializable):
             new_value: True to mark dirty, False to clear.
         """
         for other_node in self.getChildrenNodes():
-            other_node.markDirty(new_value)
-            other_node.markDescendantsDirty(new_value)
+            other_node.mark_dirty(new_value)
+            other_node.mark_descendants_dirty(new_value)
 
     def isInvalid(self) -> bool:
         """Check if node is in an error state.
@@ -495,7 +495,7 @@ class Node(Serializable):
         """
         return self._is_invalid
 
-    def markInvalid(self, new_value: bool = True) -> None:
+    def mark_invalid(self, new_value: bool = True) -> None:
         """Set invalid state indicating configuration error.
 
         Triggers onMarkedInvalid() callback when transitioning to invalid.
@@ -516,24 +516,24 @@ class Node(Serializable):
         Override to implement error indicators or recovery logic.
         """
 
-    def markChildrenInvalid(self, new_value: bool = True) -> None:
+    def mark_children_invalid(self, new_value: bool = True) -> None:
         """Mark immediate downstream nodes as invalid.
 
         Args:
             new_value: True to mark invalid, False to clear.
         """
         for other_node in self.getChildrenNodes():
-            other_node.markInvalid(new_value)
+            other_node.mark_invalid(new_value)
 
-    def markDescendantsInvalid(self, new_value: bool = True) -> None:
+    def mark_descendants_invalid(self, new_value: bool = True) -> None:
         """Recursively mark all downstream nodes as invalid.
 
         Args:
             new_value: True to mark invalid, False to clear.
         """
         for other_node in self.getChildrenNodes():
-            other_node.markInvalid(new_value)
-            other_node.markDescendantsInvalid(new_value)
+            other_node.mark_invalid(new_value)
+            other_node.mark_descendants_invalid(new_value)
 
     def eval(self, _index: int = 0):
         """Evaluate node and compute output value.
@@ -547,8 +547,8 @@ class Node(Serializable):
         Returns:
             Computed value (type depends on node implementation).
         """
-        self.markDirty(False)
-        self.markInvalid(False)
+        self.mark_dirty(False)
+        self.mark_invalid(False)
         return 0
 
     def evalChildren(self) -> None:

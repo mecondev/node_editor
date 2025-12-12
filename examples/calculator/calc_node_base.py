@@ -64,7 +64,7 @@ class CalcNode(Node):
         self.value = None
 
         # it's really important to mark all nodes Dirty by default
-        self.markDirty()
+        self.mark_dirty()
 
 
     def initSettings(self):
@@ -80,8 +80,8 @@ class CalcNode(Node):
         i2 = self.getInput(1)
 
         if i1 is None or i2 is None:
-            self.markInvalid()
-            self.markDescendantsDirty()
+            self.mark_invalid()
+            self.mark_descendants_dirty()
             self.grNode.setToolTip("Connect all inputs")
             return None
 
@@ -89,23 +89,23 @@ class CalcNode(Node):
             try:
                 val = self.evalOperation(i1.eval(), i2.eval())
                 self.value = val
-                self.markDirty(False)
-                self.markInvalid(False)
+                self.mark_dirty(False)
+                self.mark_invalid(False)
                 self.grNode.setToolTip("")
 
-                self.markDescendantsDirty()
+                self.mark_descendants_dirty()
                 self.evalChildren()
 
                 return val
             except ZeroDivisionError:
-                self.markInvalid()
+                self.mark_invalid()
                 self.grNode.setToolTip("⚠ Cannot divide by zero")
-                self.markDescendantsDirty()
+                self.mark_descendants_dirty()
                 return None
             except (ValueError, TypeError) as e:
-                self.markInvalid()
+                self.mark_invalid()
                 self.grNode.setToolTip(f"⚠ Invalid input: {str(e)}")
-                self.markDescendantsDirty()
+                self.mark_descendants_dirty()
                 return None
 
     def eval(self):
@@ -118,11 +118,11 @@ class CalcNode(Node):
             val = self.evalImplementation()
             return val
         except ValueError as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(str(e))
-            self.markDescendantsDirty()
+            self.mark_descendants_dirty()
         except Exception as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(str(e))
             dumpException(e)
 
@@ -130,7 +130,7 @@ class CalcNode(Node):
 
     def onInputChanged(self, socket=None):
         print("%s::__onInputChanged" % self.__class__.__name__)
-        self.markDirty()
+        self.mark_dirty()
         self.eval()
 
 

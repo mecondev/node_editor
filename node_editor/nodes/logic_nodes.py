@@ -76,7 +76,7 @@ class CompareNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs, outputs)
 
         self.value = None
-        self.markDirty()
+        self.mark_dirty()
 
     def initSettings(self):
         """Configure socket positions."""
@@ -112,8 +112,8 @@ class CompareNode(Node):
         i2 = self.getInput(1)
 
         if i1 is None or i2 is None:
-            self.markInvalid()
-            self.markDescendantsDirty()
+            self.mark_invalid()
+            self.mark_descendants_dirty()
             self.grNode.setToolTip("Connect all inputs")
             return None
 
@@ -122,17 +122,17 @@ class CompareNode(Node):
             val2 = i2.eval()
 
             self.value = self.compareOperation(val1, val2)
-            self.markDirty(False)
-            self.markInvalid(False)
+            self.mark_dirty(False)
+            self.mark_invalid(False)
             self.grNode.setToolTip("")
 
-            self.markDescendantsDirty()
+            self.mark_descendants_dirty()
             self.evalChildren()
 
             return self.value
 
         except (ValueError, TypeError) as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(f"Error: {str(e)}")
             return None
 
@@ -343,7 +343,7 @@ class IfNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs, outputs)
 
         self.value = None
-        self.markDirty()
+        self.mark_dirty()
 
     def initSettings(self):
         """Configure socket positions."""
@@ -364,8 +364,8 @@ class IfNode(Node):
         false_node = self.getInput(2)
 
         if condition_node is None or true_node is None or false_node is None:
-            self.markInvalid()
-            self.markDescendantsDirty()
+            self.mark_invalid()
+            self.mark_descendants_dirty()
             self.grNode.setToolTip("Connect all inputs")
             return None
 
@@ -377,17 +377,17 @@ class IfNode(Node):
             # Select output based on condition
             self.value = true_value if condition else false_value
 
-            self.markDirty(False)
-            self.markInvalid(False)
+            self.mark_dirty(False)
+            self.mark_invalid(False)
             self.grNode.setToolTip("")
 
-            self.markDescendantsDirty()
+            self.mark_descendants_dirty()
             self.evalChildren()
 
             return self.value
 
         except (ValueError, TypeError) as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(f"Error: {str(e)}")
             return None
 
@@ -433,7 +433,7 @@ class AndNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs, outputs)
 
         self.value = None
-        self.markDirty()
+        self.mark_dirty()
 
     def initSettings(self):
         """Configure socket positions."""
@@ -451,8 +451,8 @@ class AndNode(Node):
         i2 = self.getInput(1)
 
         if i1 is None or i2 is None:
-            self.markInvalid()
-            self.markDescendantsDirty()
+            self.mark_invalid()
+            self.mark_descendants_dirty()
             self.grNode.setToolTip("Connect all inputs")
             return None
 
@@ -462,17 +462,17 @@ class AndNode(Node):
 
             self.value = bool(val1) and bool(val2)
 
-            self.markDirty(False)
-            self.markInvalid(False)
+            self.mark_dirty(False)
+            self.mark_invalid(False)
             self.grNode.setToolTip("")
 
-            self.markDescendantsDirty()
+            self.mark_descendants_dirty()
             self.evalChildren()
 
             return self.value
 
         except (ValueError, TypeError) as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(f"Error: {str(e)}")
             return None
 
@@ -513,7 +513,7 @@ class OrNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs, outputs)
 
         self.value = None
-        self.markDirty()
+        self.mark_dirty()
 
     def initSettings(self):
         """Configure socket positions."""
@@ -531,8 +531,8 @@ class OrNode(Node):
         i2 = self.getInput(1)
 
         if i1 is None or i2 is None:
-            self.markInvalid()
-            self.markDescendantsDirty()
+            self.mark_invalid()
+            self.mark_descendants_dirty()
             self.grNode.setToolTip("Connect all inputs")
             return None
 
@@ -542,17 +542,17 @@ class OrNode(Node):
 
             self.value = bool(val1) or bool(val2)
 
-            self.markDirty(False)
-            self.markInvalid(False)
+            self.mark_dirty(False)
+            self.mark_invalid(False)
             self.grNode.setToolTip("")
 
-            self.markDescendantsDirty()
+            self.mark_descendants_dirty()
             self.evalChildren()
 
             return self.value
 
         except (ValueError, TypeError) as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(f"Error: {str(e)}")
             return None
 
@@ -593,7 +593,7 @@ class NotNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs, outputs)
 
         self.value = None
-        self.markDirty()
+        self.mark_dirty()
 
     def initSettings(self):
         """Configure socket positions."""
@@ -610,8 +610,8 @@ class NotNode(Node):
         input_node = self.getInput(0)
 
         if input_node is None:
-            self.markInvalid()
-            self.markDescendantsDirty()
+            self.mark_invalid()
+            self.mark_descendants_dirty()
             self.grNode.setToolTip("Connect input")
             return None
 
@@ -619,17 +619,17 @@ class NotNode(Node):
             value = input_node.eval()
             self.value = not bool(value)
 
-            self.markDirty(False)
-            self.markInvalid(False)
+            self.mark_dirty(False)
+            self.mark_invalid(False)
             self.grNode.setToolTip("")
 
-            self.markDescendantsDirty()
+            self.mark_descendants_dirty()
             self.evalChildren()
 
             return self.value
 
         except (ValueError, TypeError) as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(f"Error: {str(e)}")
             return None
 
@@ -670,7 +670,7 @@ class XorNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs, outputs)
 
         self.value = None
-        self.markDirty()
+        self.mark_dirty()
 
     def initSettings(self):
         """Configure socket positions."""
@@ -688,8 +688,8 @@ class XorNode(Node):
         i2 = self.getInput(1)
 
         if i1 is None or i2 is None:
-            self.markInvalid()
-            self.markDescendantsDirty()
+            self.mark_invalid()
+            self.mark_descendants_dirty()
             self.grNode.setToolTip("Connect all inputs")
             return None
 
@@ -700,16 +700,16 @@ class XorNode(Node):
             # XOR: True if exactly one is True
             self.value = val1 != val2
 
-            self.markDirty(False)
-            self.markInvalid(False)
+            self.mark_dirty(False)
+            self.mark_invalid(False)
             self.grNode.setToolTip("")
 
-            self.markDescendantsDirty()
+            self.mark_descendants_dirty()
             self.evalChildren()
 
             return self.value
 
         except (ValueError, TypeError) as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(f"Error: {str(e)}")
             return None

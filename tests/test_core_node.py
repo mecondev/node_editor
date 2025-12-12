@@ -131,14 +131,14 @@ class TestNodeState:
     def test_mark_node_dirty(self, scene):
         """Test marking node as dirty."""
         node = Node(scene, "Test Node")
-        node.markDirty()
+        node.mark_dirty()
 
         assert node.isDirty()
 
     def test_mark_node_invalid(self, scene):
         """Test marking node as invalid."""
         node = Node(scene, "Test Node")
-        node.markInvalid()
+        node.mark_invalid()
 
         assert node.isInvalid()
 
@@ -153,8 +153,8 @@ class TestNodeState:
         Edge(scene, node2.outputs[0], node3.inputs[0])
 
         # Mark node1 dirty, should propagate
-        node1.markDirty()
-        node1.markDescendantsDirty()
+        node1.mark_dirty()
+        node1.mark_descendants_dirty()
 
         assert node2.isDirty()
         assert node3.isDirty()

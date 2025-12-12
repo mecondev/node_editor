@@ -71,17 +71,17 @@ class CreateListNode(Node):
 
             self.value = result_list
 
-            self.markDirty(False)
-            self.markInvalid(False)
+            self.mark_dirty(False)
+            self.mark_invalid(False)
             self.grNode.setToolTip(f"List: {self.value}")
 
-            self.markDescendantsDirty()
+            self.mark_descendants_dirty()
             self.evalChildren()
 
             return self.value
 
         except Exception as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(f"Error: {e}")
             logger.error(f"CreateListNode eval error: {e}")
             return None
@@ -133,7 +133,7 @@ class GetItemNode(Node):
             # Get list input
             list_socket = self.getInput(0)
             if not list_socket or not list_socket.hasEdges():
-                self.markInvalid()
+                self.mark_invalid()
                 self.grNode.setToolTip("Missing list input")
                 self.value = None
                 return None
@@ -143,7 +143,7 @@ class GetItemNode(Node):
             # Get index input
             index_socket = self.getInput(1)
             if not index_socket or not index_socket.hasEdges():
-                self.markInvalid()
+                self.mark_invalid()
                 self.grNode.setToolTip("Missing index input")
                 self.value = None
                 return None
@@ -152,19 +152,19 @@ class GetItemNode(Node):
 
             # Validate inputs
             if input_list is None:
-                self.markInvalid()
+                self.mark_invalid()
                 self.grNode.setToolTip("List is None")
                 self.value = None
                 return None
 
             if not isinstance(input_list, list | tuple | str):
-                self.markInvalid()
+                self.mark_invalid()
                 self.grNode.setToolTip(f"Input is not a list: {type(input_list).__name__}")
                 self.value = None
                 return None
 
             if not isinstance(index, int | float):
-                self.markInvalid()
+                self.mark_invalid()
                 self.grNode.setToolTip("Index must be a number")
                 self.value = None
                 return None
@@ -176,22 +176,22 @@ class GetItemNode(Node):
             try:
                 self.value = input_list[index]
             except IndexError:
-                self.markInvalid()
+                self.mark_invalid()
                 self.grNode.setToolTip(f"Index {index} out of range (length: {len(input_list)})")
                 self.value = None
                 return None
 
-            self.markDirty(False)
-            self.markInvalid(False)
+            self.mark_dirty(False)
+            self.mark_invalid(False)
             self.grNode.setToolTip(f"Item: {self.value!r}")
 
-            self.markDescendantsDirty()
+            self.mark_descendants_dirty()
             self.evalChildren()
 
             return self.value
 
         except Exception as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(f"Error: {e}")
             logger.error(f"GetItemNode eval error: {e}")
             return None
@@ -242,7 +242,7 @@ class ListLengthNode(Node):
             # Get input
             input_socket = self.getInput(0)
             if not input_socket or not input_socket.hasEdges():
-                self.markInvalid()
+                self.mark_invalid()
                 self.grNode.setToolTip("Missing input connection")
                 self.value = None
                 return None
@@ -256,22 +256,22 @@ class ListLengthNode(Node):
             elif hasattr(input_value, "__len__"):
                 self.value = len(input_value)
             else:
-                self.markInvalid()
+                self.mark_invalid()
                 self.grNode.setToolTip(f"Cannot get length of {type(input_value).__name__}")
                 self.value = None
                 return None
 
-            self.markDirty(False)
-            self.markInvalid(False)
+            self.mark_dirty(False)
+            self.mark_invalid(False)
             self.grNode.setToolTip(f"Length: {self.value}")
 
-            self.markDescendantsDirty()
+            self.mark_descendants_dirty()
             self.evalChildren()
 
             return self.value
 
         except Exception as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(f"Error: {e}")
             logger.error(f"ListLengthNode eval error: {e}")
             return None
@@ -323,7 +323,7 @@ class AppendNode(Node):
             # Get list input
             list_socket = self.getInput(0)
             if not list_socket or not list_socket.hasEdges():
-                self.markInvalid()
+                self.mark_invalid()
                 self.grNode.setToolTip("Missing list input")
                 self.value = None
                 return None
@@ -333,7 +333,7 @@ class AppendNode(Node):
             # Get item input
             item_socket = self.getInput(1)
             if not item_socket or not item_socket.hasEdges():
-                self.markInvalid()
+                self.mark_invalid()
                 self.grNode.setToolTip("Missing item input")
                 self.value = None
                 return None
@@ -355,17 +355,17 @@ class AppendNode(Node):
             else:
                 self.value = [input_list, item]
 
-            self.markDirty(False)
-            self.markInvalid(False)
+            self.mark_dirty(False)
+            self.mark_invalid(False)
             self.grNode.setToolTip(f"Result: {self.value}")
 
-            self.markDescendantsDirty()
+            self.mark_descendants_dirty()
             self.evalChildren()
 
             return self.value
 
         except Exception as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(f"Error: {e}")
             logger.error(f"AppendNode eval error: {e}")
             return None
@@ -417,7 +417,7 @@ class JoinNode(Node):
             # Get list input
             list_socket = self.getInput(0)
             if not list_socket or not list_socket.hasEdges():
-                self.markInvalid()
+                self.mark_invalid()
                 self.grNode.setToolTip("Missing list input")
                 self.value = None
                 return None
@@ -444,17 +444,17 @@ class JoinNode(Node):
                 # Convert single value to string
                 self.value = str(input_list)
 
-            self.markDirty(False)
-            self.markInvalid(False)
+            self.mark_dirty(False)
+            self.mark_invalid(False)
             self.grNode.setToolTip(f"Result: {self.value!r}")
 
-            self.markDescendantsDirty()
+            self.mark_descendants_dirty()
             self.evalChildren()
 
             return self.value
 
         except Exception as e:
-            self.markInvalid()
+            self.mark_invalid()
             self.grNode.setToolTip(f"Error: {e}")
             logger.error(f"JoinNode eval error: {e}")
             return None
