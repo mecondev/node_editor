@@ -133,7 +133,7 @@ class QDMGraphicsNode(QGraphicsItem):
         self._pen_selected.setWidthF(theme.node_border_width)
         self._pen_hovered = QPen(self._color_hovered)
         self._pen_hovered.setWidthF(theme.node_border_width_hovered)
-        
+
         # Error state pen - red color for invalid nodes
         self._pen_error = QPen(QColor("#FF5555"))
         self._pen_error.setWidthF(2.5)
@@ -312,7 +312,7 @@ class QDMGraphicsNode(QGraphicsItem):
             -1, -1, self.width + 2, self.height + 2, self.edge_roundness, self.edge_roundness
         )
         painter.setBrush(Qt.BrushStyle.NoBrush)
-        
+
         # Check if node is in error state
         if self.node and self.node.isInvalid():
             painter.setPen(self._pen_error)
