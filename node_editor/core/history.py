@@ -25,8 +25,6 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from node_editor.core.scene import Scene
 
-DEBUG_SELECTION = False
-
 
 class SceneHistory:
     """Undo/redo stack manager for scene state.
@@ -268,9 +266,6 @@ class SceneHistory:
             self.undo_selection_has_changed = False
             previous_selection = self.captureCurrentSelection()
 
-            if DEBUG_SELECTION:
-                pass
-
             self.scene.deserialize(history_stamp["snapshot"])
 
             for edge in self.scene.edges:
@@ -293,17 +288,12 @@ class SceneHistory:
 
             current_selection = self.captureCurrentSelection()
 
-            if DEBUG_SELECTION:
-                pass
-
             self.scene._last_selected_items = self.scene.getSelectedItems()
 
             if (
                 current_selection["nodes"] != previous_selection["nodes"]
                 or current_selection["edges"] != previous_selection["edges"]
             ):
-                if DEBUG_SELECTION:
-                    pass
                 self.undo_selection_has_changed = True
 
         except Exception as e:

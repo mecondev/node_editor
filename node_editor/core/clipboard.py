@@ -26,8 +26,6 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from node_editor.core.scene import Scene
 
-DEBUG_PASTING = False
-
 
 class SceneClipboard:
     """Clipboard manager for scene copy/paste operations.
@@ -146,9 +144,6 @@ class SceneClipboard:
 
         (miny + maxy) / 2 - miny if miny is not None and maxy is not None else 0
 
-        if DEBUG_PASTING:
-            pass
-
         mousex = mouse_scene_pos.x()
         mousey = mouse_scene_pos.y()
 
@@ -175,9 +170,6 @@ class SceneClipboard:
 
             new_node.setPos(newx, newy)
             new_node.doSelect()
-
-            if DEBUG_PASTING:
-                pass
 
         if "edges" in data:
             from node_editor.core.edge import Edge

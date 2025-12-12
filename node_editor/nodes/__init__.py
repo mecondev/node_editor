@@ -33,7 +33,7 @@ Usage:
         class MyNode(Node):
             op_code = 100
             op_title = "My Custom Node"
-            
+
             def __init__(self, scene):
                 super().__init__(scene, "My Custom Node")
 
