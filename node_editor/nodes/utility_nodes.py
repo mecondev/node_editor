@@ -26,9 +26,9 @@ logger = logging.getLogger(__name__)
 class UtilityGraphicsNode(QDMGraphicsNode):
     """Graphics node for utility nodes."""
 
-    def initSizes(self):
+    def init_sizes(self):
         """Initialize size parameters for utility nodes."""
-        super().initSizes()
+        super().init_sizes()
         self.width = 180
         self.height = 100
         self.edge_roundness = 6
@@ -105,9 +105,9 @@ class ConstantNode(Node):
         self.value = 0
         self.mark_dirty()
 
-    def initSettings(self):
+    def init_settings(self):
         """Configure socket positions."""
-        super().initSettings()
+        super().init_settings()
         self.output_socket_position = RIGHT_CENTER
 
     def on_input_changed(self, text):  # noqa: ARG002
@@ -218,9 +218,9 @@ class PrintNode(Node):
         self.value = None
         self.mark_dirty()
 
-    def initSettings(self):
+    def init_settings(self):
         """Configure socket positions."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -374,9 +374,9 @@ class ClampNode(Node):
         self.value = None
         self.mark_dirty()
 
-    def initSettings(self):
+    def init_settings(self):
         """Configure socket positions."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -461,9 +461,9 @@ class RandomNode(Node):
         self.value = None
         self.mark_dirty()
 
-    def initSettings(self):
+    def init_settings(self):
         """Configure socket positions."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 

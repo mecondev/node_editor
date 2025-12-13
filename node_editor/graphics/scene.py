@@ -68,10 +68,10 @@ class QDMGraphicsScene(QGraphicsScene):
         self.gridSize = 20
         self.gridSquares = 5
 
-        self.initAssets()
+        self.init_assets()
         self.setBackgroundBrush(self._color_background)
 
-    def initAssets(self) -> None:
+    def init_assets(self) -> None:
         """Initialize pens and colors from current theme."""
         theme = ThemeEngine.current_theme()
 

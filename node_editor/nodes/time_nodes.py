@@ -47,9 +47,9 @@ class CurrentTimeNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs=[], outputs=[5])
         self.value = None
 
-    def initSettings(self):
+    def init_settings(self):
         """Initialize node settings."""
-        super().initSettings()
+        super().init_settings()
         self.output_socket_position = RIGHT_CENTER
 
     def evalImplementation(self):
@@ -84,9 +84,9 @@ class FormatDateNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs=[5, 5], outputs=[5])
         self.value = None
 
-    def initSettings(self):
+    def init_settings(self):
         """Initialize node settings."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -150,9 +150,9 @@ class ParseDateNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs=[5, 5], outputs=[5])
         self.value = None
 
-    def initSettings(self):
+    def init_settings(self):
         """Initialize node settings."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -212,9 +212,9 @@ class TimeDeltaNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs=[5, 5], outputs=[5])
         self.value = None
 
-    def initSettings(self):
+    def init_settings(self):
         """Initialize node settings."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -277,9 +277,9 @@ class CompareTimeNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs=[5, 5], outputs=[5])
         self.value = None
 
-    def initSettings(self):
+    def init_settings(self):
         """Initialize node settings."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 

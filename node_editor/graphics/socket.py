@@ -56,7 +56,7 @@ class QDMGraphicsSocket(QGraphicsItem):
 
         self.radius = 6
         self.outline_width = 1
-        self.initAssets()
+        self.init_assets()
 
     @property
     def socket_type(self) -> int:
@@ -97,7 +97,7 @@ class QDMGraphicsSocket(QGraphicsItem):
         self._brush = QBrush(self._color_background)
         self.update()
 
-    def initAssets(self) -> None:
+    def init_assets(self) -> None:
         """Initialize pens and brushes from theme.
 
         Creates Qt drawing objects for normal and highlighted states.

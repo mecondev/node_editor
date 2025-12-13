@@ -53,9 +53,9 @@ class RegexMatchNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs=[5, 5], outputs=[5])
         self.value = None
 
-    def initSettings(self):
+    def init_settings(self):
         """Initialize node settings."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -118,9 +118,9 @@ class FileReadNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs=[5], outputs=[5])
         self.value = None
 
-    def initSettings(self):
+    def init_settings(self):
         """Initialize node settings."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -191,9 +191,9 @@ class FileWriteNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs=[5, 5], outputs=[5])
         self.value = None
 
-    def initSettings(self):
+    def init_settings(self):
         """Initialize node settings."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -270,9 +270,9 @@ class HttpRequestNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs=[5, 5], outputs=[5])
         self.value = None
 
-    def initSettings(self):
+    def init_settings(self):
         """Initialize node settings."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 

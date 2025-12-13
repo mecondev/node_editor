@@ -22,9 +22,9 @@ from node_editor.widgets.content_widget import QDMNodeContentWidget
 class OutputGraphicsNode(QDMGraphicsNode):
     """Graphics node for output nodes with compact size."""
 
-    def initSizes(self):
+    def init_sizes(self):
         """Initialize size parameters for output nodes."""
-        super().initSizes()
+        super().init_sizes()
         self.width = 180
         self.height = 90
         self.edge_roundness = 6
@@ -97,9 +97,9 @@ class OutputNode(Node):
         self.value = None
         self.mark_dirty()
 
-    def initSettings(self):
+    def init_settings(self):
         """Configure socket positions."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
 
     def eval(self):

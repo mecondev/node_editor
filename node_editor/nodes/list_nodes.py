@@ -45,9 +45,9 @@ class CreateListNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs=[5, 5, 5], outputs=[5])
         self.value = None
 
-    def initSettings(self):
+    def init_settings(self):
         """Initialize node settings."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -114,9 +114,9 @@ class GetItemNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs=[5, 1], outputs=[5])
         self.value = None
 
-    def initSettings(self):
+    def init_settings(self):
         """Initialize node settings."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -223,9 +223,9 @@ class ListLengthNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs=[5], outputs=[1])
         self.value = None
 
-    def initSettings(self):
+    def init_settings(self):
         """Initialize node settings."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -304,9 +304,9 @@ class AppendNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs=[5, 5], outputs=[5])
         self.value = None
 
-    def initSettings(self):
+    def init_settings(self):
         """Initialize node settings."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -398,9 +398,9 @@ class JoinNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs=[5, 3], outputs=[3])
         self.value = None
 
-    def initSettings(self):
+    def init_settings(self):
         """Initialize node settings."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 

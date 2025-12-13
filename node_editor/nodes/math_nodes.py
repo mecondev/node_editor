@@ -26,9 +26,9 @@ from node_editor.widgets.content_widget import QDMNodeContentWidget
 class MathGraphicsNode(QDMGraphicsNode):
     """Graphics node for math operation nodes."""
 
-    def initSizes(self):
+    def init_sizes(self):
         """Initialize size parameters for math nodes."""
-        super().initSizes()
+        super().init_sizes()
         self.width = 160
         self.height = 74
         self.edge_roundness = 6
@@ -79,9 +79,9 @@ class MathNode(Node):
         self.value = None
         self.mark_dirty()
 
-    def initSettings(self):
+    def init_settings(self):
         """Configure socket positions."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -304,9 +304,9 @@ class PowerNode(Node):
         self.value = None
         self.mark_dirty()
 
-    def initSettings(self):
+    def init_settings(self):
         """Configure socket positions."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -384,9 +384,9 @@ class SqrtNode(Node):
         self.value = None
         self.mark_dirty()
 
-    def initSettings(self):
+    def init_settings(self):
         """Configure socket positions."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -467,9 +467,9 @@ class AbsNode(Node):
         self.value = None
         self.mark_dirty()
 
-    def initSettings(self):
+    def init_settings(self):
         """Configure socket positions."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -544,9 +544,9 @@ class MinNode(Node):
         self.value = None
         self.mark_dirty()
 
-    def initSettings(self):
+    def init_settings(self):
         """Configure socket positions."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -624,9 +624,9 @@ class MaxNode(Node):
         self.value = None
         self.mark_dirty()
 
-    def initSettings(self):
+    def init_settings(self):
         """Configure socket positions."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -704,9 +704,9 @@ class RoundNode(Node):
         self.value = None
         self.mark_dirty()
 
-    def initSettings(self):
+    def init_settings(self):
         """Configure socket positions."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -784,9 +784,9 @@ class ModuloNode(Node):
         self.value = None
         self.mark_dirty()
 
-    def initSettings(self):
+    def init_settings(self):
         """Configure socket positions."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 

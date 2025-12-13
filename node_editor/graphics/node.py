@@ -62,8 +62,8 @@ class QDMGraphicsNode(QGraphicsItem):
         self._was_moved = False
         self._last_selected_state = False
 
-        self.initSizes()
-        self.initAssets()
+        self.init_sizes()
+        self.init_assets()
         self.init_ui()
 
     @property
@@ -105,7 +105,7 @@ class QDMGraphicsNode(QGraphicsItem):
 
         self.initContent()
 
-    def initSizes(self) -> None:
+    def init_sizes(self) -> None:
         """Set default dimensions and padding values."""
         self.width = 180
         self.height = 240
@@ -115,7 +115,7 @@ class QDMGraphicsNode(QGraphicsItem):
         self.title_horizontal_padding = 4.0
         self.title_vertical_padding = 4.0
 
-    def initAssets(self) -> None:
+    def init_assets(self) -> None:
         """Initialize pens, brushes, and fonts from theme."""
         theme = ThemeEngine.current_theme()
 

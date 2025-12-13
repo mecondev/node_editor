@@ -73,7 +73,7 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         self.posSource = [0, 0]
         self.posDestination = [200, 100]
 
-        self.initAssets()
+        self.init_assets()
         self.init_ui()
 
     def init_ui(self) -> None:
@@ -82,7 +82,7 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         self.setAcceptHoverEvents(True)
         self.setZValue(-1)
 
-    def initAssets(self) -> None:
+    def init_assets(self) -> None:
         """Initialize pens for various visual states from theme."""
         theme = ThemeEngine.current_theme()
 

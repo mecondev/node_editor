@@ -25,9 +25,9 @@ from node_editor.widgets.content_widget import QDMNodeContentWidget
 class LogicGraphicsNode(QDMGraphicsNode):
     """Graphics node for logic operation nodes."""
 
-    def initSizes(self):
+    def init_sizes(self):
         """Initialize size parameters for logic nodes."""
-        super().initSizes()
+        super().init_sizes()
         self.width = 160
         self.height = 74
         self.edge_roundness = 6
@@ -78,9 +78,9 @@ class CompareNode(Node):
         self.value = None
         self.mark_dirty()
 
-    def initSettings(self):
+    def init_settings(self):
         """Configure socket positions."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -345,9 +345,9 @@ class IfNode(Node):
         self.value = None
         self.mark_dirty()
 
-    def initSettings(self):
+    def init_settings(self):
         """Configure socket positions."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -435,9 +435,9 @@ class AndNode(Node):
         self.value = None
         self.mark_dirty()
 
-    def initSettings(self):
+    def init_settings(self):
         """Configure socket positions."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -515,9 +515,9 @@ class OrNode(Node):
         self.value = None
         self.mark_dirty()
 
-    def initSettings(self):
+    def init_settings(self):
         """Configure socket positions."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -595,9 +595,9 @@ class NotNode(Node):
         self.value = None
         self.mark_dirty()
 
-    def initSettings(self):
+    def init_settings(self):
         """Configure socket positions."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -672,9 +672,9 @@ class XorNode(Node):
         self.value = None
         self.mark_dirty()
 
-    def initSettings(self):
+    def init_settings(self):
         """Configure socket positions."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 

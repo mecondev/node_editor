@@ -15,8 +15,8 @@ from node_editor.widgets.content_widget import QDMNodeContentWidget
 
 
 class CalcGraphicsNode(QDMGraphicsNode):
-    def initSizes(self):
-        super().initSizes()
+    def init_sizes(self):
+        super().init_sizes()
         self.width = 160
         self.height = 74
         self.edge_roundness = 6
@@ -24,8 +24,8 @@ class CalcGraphicsNode(QDMGraphicsNode):
         self.title_horizontal_padding = 8
         self.title_vertical_padding = 10
 
-    def initAssets(self):
-        super().initAssets()
+    def init_assets(self):
+        super().init_assets()
         self.icons = QImage("icons/status_icons.png")
 
     def paint(self, painter, option, widget=None):
@@ -73,8 +73,8 @@ class CalcNode(Node):
         self.mark_dirty()
 
 
-    def initSettings(self):
-        super().initSettings()
+    def init_settings(self):
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 

@@ -21,9 +21,9 @@ from node_editor.widgets.content_widget import QDMNodeContentWidget
 class StringGraphicsNode(QDMGraphicsNode):
     """Graphics node for string operation nodes."""
 
-    def initSizes(self):
+    def init_sizes(self):
         """Initialize size parameters for string nodes."""
-        super().initSizes()
+        super().init_sizes()
         self.width = 160
         self.height = 74
         self.edge_roundness = 6
@@ -79,9 +79,9 @@ class ConcatenateNode(Node):
         self.value = None
         self.mark_dirty()
 
-    def initSettings(self):
+    def init_settings(self):
         """Configure socket positions."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -159,9 +159,9 @@ class FormatNode(Node):
         self.value = None
         self.mark_dirty()
 
-    def initSettings(self):
+    def init_settings(self):
         """Configure socket positions."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -243,9 +243,9 @@ class LengthNode(Node):
         self.value = None
         self.mark_dirty()
 
-    def initSettings(self):
+    def init_settings(self):
         """Configure socket positions."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -322,9 +322,9 @@ class SubstringNode(Node):
         self.value = None
         self.mark_dirty()
 
-    def initSettings(self):
+    def init_settings(self):
         """Configure socket positions."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
@@ -404,9 +404,9 @@ class SplitNode(Node):
         self.value = None
         self.mark_dirty()
 
-    def initSettings(self):
+    def init_settings(self):
         """Configure socket positions."""
-        super().initSettings()
+        super().init_settings()
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
