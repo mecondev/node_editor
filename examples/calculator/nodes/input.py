@@ -50,7 +50,7 @@ class CalcNodeInput(CalcNode):
     def init_inner_classes(self):
         self.content = CalcInputContent(self)
         self.graphics_node = CalcGraphicsNode(self)
-        self.content.edit.textChanged.connect(self.onInputChanged)
+        self.content.edit.textChanged.connect(self.on_input_changed)
 
     def eval_implementation(self):
         u_value = self.content.edit.text()

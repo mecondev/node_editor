@@ -27,10 +27,10 @@ class CalculatorSubWindow(NodeEditorWidget):
         self.init_new_node_actions()
 
         self.scene.add_has_been_modified_listener(self.set_title)
-        self.scene.history.addHistoryRestoredListener(self.onHistoryRestored)
-        self.scene.add_drag_enter_listener(self.onDragEnter)
-        self.scene.add_drop_listener(self.onDrop)
-        self.scene.setNodeClassSelector(self.getNodeClassFromData)
+        self.scene.history.add_history_restored_listener(self.on_history_restored)
+        self.scene.add_drag_enter_listener(self.on_drag_enter)
+        self.scene.add_drop_listener(self.on_drop)
+        self.scene.set_node_class_selector(self.get_node_class_from_data)
 
         self._close_event_listeners = []
 
@@ -122,7 +122,7 @@ class CalculatorSubWindow(NodeEditorWidget):
 
     def contextMenuEvent(self, event):
         try:
-            item = self.scene.getItemAt(event.pos())
+            item = self.scene.get_item_at(event.pos())
             if DEBUG_CONTEXT:
                 print(item)
 
@@ -130,12 +130,12 @@ class CalculatorSubWindow(NodeEditorWidget):
                 item = item.widget()
 
             if hasattr(item, 'node') or hasattr(item, 'socket'):
-                self.handleNodeContextMenu(event)
+                self.handle_node_context_menu(event)
             elif hasattr(item, 'edge'):
-                self.handleEdgeContextMenu(event)
+                self.handle_edge_context_menu(event)
             #elif item is None:
             else:
-                self.handleNewNodeContextMenu(event)
+                self.handle_new_node_context_menu(event)
 
             return super().contextMenuEvent(event)
         except Exception as e:
@@ -153,7 +153,7 @@ class CalculatorSubWindow(NodeEditorWidget):
         action = context_menu.exec_(self.mapToGlobal(event.pos()))
 
         selected = None
-        item = self.scene.getItemAt(event.pos())
+        item = self.scene.get_item_at(event.pos())
         if isinstance(item, QGraphicsProxyWidget):
             item = item.widget()
 
@@ -188,7 +188,7 @@ class CalculatorSubWindow(NodeEditorWidget):
         action = context_menu.exec_(self.mapToGlobal(event.pos()))
 
         selected = None
-        item = self.scene.getItemAt(event.pos())
+        item = self.scene.get_item_at(event.pos())
         if hasattr(item, 'edge'):
             selected = item.edge
 
@@ -211,7 +211,7 @@ class CalculatorSubWindow(NodeEditorWidget):
         return target_socket
 
     def finish_new_node_state(self, new_calc_node):
-        self.scene.doDeselectItems()
+        self.scene.do_deselect_items()
         new_calc_node.graphics_node.do_select(True)
         new_calc_node.graphics_node.on_selected()
 
