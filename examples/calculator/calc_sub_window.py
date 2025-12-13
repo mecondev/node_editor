@@ -19,20 +19,28 @@ DEBUG_CONTEXT = False
 
 class CalculatorSubWindow(NodeEditorWidget):
     def __init__(self):
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info("CalculatorSubWindow.__init__: Starting")
         super().__init__()
+        logger.info("CalculatorSubWindow.__init__: super().__init__() complete")
         # self.setAttribute(Qt.WA_DeleteOnClose)
 
         self.set_title()
+        logger.info("CalculatorSubWindow.__init__: Title set")
 
         self.init_new_node_actions()
+        logger.info("CalculatorSubWindow.__init__: Node actions initialized")
 
         self.scene.add_has_been_modified_listener(self.set_title)
         self.scene.history.add_history_restored_listener(self.on_history_restored)
         self.scene.add_drag_enter_listener(self.on_drag_enter)
         self.scene.add_drop_listener(self.on_drop)
         self.scene.set_node_class_selector(self.get_node_class_from_data)
+        logger.info("CalculatorSubWindow.__init__: Listeners registered")
 
         self._close_event_listeners = []
+        logger.info("CalculatorSubWindow.__init__: Complete")
 
     def get_node_class_from_data(self, data):
         if 'op_code' not in data:

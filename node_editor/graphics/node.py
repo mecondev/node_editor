@@ -177,7 +177,7 @@ class QDMGraphicsNode(QGraphicsItem):
             # Update edges for all selected nodes
             for node in list(scene.scene.nodes):  # Create copy to avoid iteration issues
                 if node.graphics_node and node.graphics_node.isSelected():
-                    node.updateConnectedEdges()
+                    node.update_connected_edges()
         except (RuntimeError, AttributeError):
             # Ignore errors from deleted Qt objects
             pass

@@ -64,6 +64,6 @@ class CalcNodeInput(CalcNode):
 
         self.graphics_node.setToolTip("")
 
-        self.evalChildren()
+        self.eval_children()
 
         return self.value

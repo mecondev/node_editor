@@ -27,7 +27,7 @@ from contextlib import suppress
 from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import QEvent, QPoint, QPointF, QRectF, Qt, pyqtSignal
-from PyQt5.QtGui import QDragEnterEvent, QDropEvent, QKeyEvent, QMouseEvent, QPainter, QWheelEvent
+from PyQt5.QtGui import QDragEnterEvent, QDragLeaveEvent, QDragMoveEvent, QDropEvent, QKeyEvent, QMouseEvent, QPainter, QWheelEvent
 from PyQt5.QtWidgets import QApplication, QGraphicsView
 
 from node_editor.utils.helpers import dump_exception
@@ -187,6 +187,23 @@ class QDMGraphicsView(QGraphicsView):
         for callback in self._drag_enter_listeners:
             callback(event)
 
+    def dragMoveEvent(self, event: QDragMoveEvent) -> None:
+        """Handle drag move to keep drag active over the view.
+
+        Args:
+            event: Qt drag move event.
+        """
+        for callback in self._drag_enter_listeners:
+            callback(event)
+
+    def dragLeaveEvent(self, event: QDragLeaveEvent) -> None:
+        """Handle drag leave to properly terminate drag operations.
+
+        Args:
+            event: Qt drag leave event.
+        """
+        pass
+
     def dropEvent(self, event: QDropEvent) -> None:
         """Dispatch drop to registered listeners.
 
@@ -338,7 +355,7 @@ class QDMGraphicsView(QGraphicsView):
                 pass
             if self.mode == MODE_NOOP:
                 self.mode = MODE_NODE_DRAG
-                self.edgeIntersect.enterState(item.node)
+                self.edgeIntersect.enter_state(item.node)
                 if DEBUG_EDGE_INTERSECT:
                     pass
 
@@ -350,16 +367,16 @@ class QDMGraphicsView(QGraphicsView):
                 socket = item.socket
                 if socket.has_any_edge():
                     self.mode = MODE_EDGES_REROUTING
-                    self.rerouting.startRerouting(socket)
+                    self.rerouting.start_rerouting(socket)
                     return
 
             if self.mode == MODE_NOOP:
                 self.mode = MODE_EDGE_DRAG
-                self.dragging.edgeDragStart(item)
+                self.dragging.edge_drag_start(item)
                 return
 
         if self.mode == MODE_EDGE_DRAG:
-            res = self.dragging.edgeDragEnd(item)
+            res = self.dragging.edge_drag_end(item)
             if res:
                 return
 
@@ -416,7 +433,7 @@ class QDMGraphicsView(QGraphicsView):
                     if self.is_snapping_enabled(event):
                         item = self.snapping.getSnappedSocketItem(event)
 
-                    res = self.dragging.edgeDragEnd(item)
+                    res = self.dragging.edge_drag_end(item)
                     if res:
                         return
 
@@ -429,7 +446,7 @@ class QDMGraphicsView(QGraphicsView):
                         self.rerouting.first_mb_release = True
                         return
 
-                self.rerouting.stopRerouting(
+                self.rerouting.stop_rerouting(
                     item.socket if isinstance(item, QDMGraphicsSocket) else None
                 )
                 self.mode = MODE_NOOP
@@ -444,7 +461,7 @@ class QDMGraphicsView(QGraphicsView):
 
             if self.mode == MODE_NODE_DRAG:
                 scenepos = self.mapToScene(event.pos())
-                self.edgeIntersect.leaveState(scenepos.x(), scenepos.y())
+                self.edgeIntersect.leave_state(scenepos.x(), scenepos.y())
                 self.mode = MODE_NOOP
                 self.update()
 
@@ -510,13 +527,13 @@ class QDMGraphicsView(QGraphicsView):
                 self.update()
 
             if self.mode == MODE_EDGE_DRAG:
-                self.dragging.updateDestination(scenepos.x(), scenepos.y())
+                self.dragging.update_destination(scenepos.x(), scenepos.y())
 
             if self.mode == MODE_NODE_DRAG:
                 self.edgeIntersect.update(scenepos.x(), scenepos.y())
 
             if self.mode == MODE_EDGES_REROUTING:
-                self.rerouting.updateScenePos(scenepos.x(), scenepos.y())
+                self.rerouting.update_scene_pos(scenepos.x(), scenepos.y())
 
             if self.mode == MODE_EDGE_CUT and self.cutline is not None:
                 self.cutline.line_points.append(scenepos)

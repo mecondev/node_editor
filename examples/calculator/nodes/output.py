@@ -33,7 +33,7 @@ class CalcNodeOutput(CalcNode):
         self.graphics_node = CalcGraphicsNode(self)
 
     def eval_implementation(self):
-        input_node = self.getInput(0)
+        input_node = self.get_input(0)
         if not input_node:
             self.graphics_node.setToolTip("Input is not connected")
             self.mark_invalid()

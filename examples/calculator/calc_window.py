@@ -29,17 +29,14 @@ Edge.register_edge_validator(edge_cannot_connect_two_outputs_or_two_inputs)
 Edge.register_edge_validator(edge_cannot_connect_input_and_output_of_same_node)
 
 
-# images for the dark skin
-
 
 DEBUG = False
-
 
 class CalculatorWindow(NodeEditorWindow):
 
     def init_ui(self):
-        self.name_company = 'Blenderfreak'
-        self.name_product = 'Calculator NodeEditor'
+        self.name_company = 'oncut'
+        self.name_product = 'Calculator Node Editor'
 
         self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "qss/nodeeditor.qss")
         loadStylesheets(
@@ -75,7 +72,7 @@ class CalculatorWindow(NodeEditorWindow):
 
         self.read_settings()
 
-        self.setWindowTitle("Calculator NodeEditor Example")
+        self.setWindowTitle("Calculator Node Editor Example")
 
     def closeEvent(self, event):
         self.mdiArea.closeAllSubWindows()
@@ -112,11 +109,19 @@ class CalculatorWindow(NodeEditorWindow):
         return None
 
     def on_file_new(self):
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info("on_file_new: Starting")
         try:
+            logger.info("on_file_new: Creating MDI child")
             subwnd = self.create_mdi_child()
+            logger.info("on_file_new: Calling file_new on widget")
             subwnd.widget().file_new()
+            logger.info("on_file_new: Showing subwindow")
             subwnd.show()
+            logger.info("on_file_new: Complete")
         except Exception as e:
+            logger.error("on_file_new: Exception occurred", exc_info=True)
             dump_exception(e)
 
 
@@ -262,13 +267,20 @@ class CalculatorWindow(NodeEditorWindow):
         self.statusBar().showMessage("Ready")
 
     def create_mdi_child(self, child_widget=None):
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info("create_mdi_child: Starting")
         nodeeditor = child_widget if child_widget is not None else CalculatorSubWindow()
+        logger.info("create_mdi_child: CalculatorSubWindow created")
         subwnd = self.mdiArea.addSubWindow(nodeeditor)
+        logger.info("create_mdi_child: Added to MDI area")
         subwnd.setWindowIcon(self.empty_icon)
         # nodeeditor.scene.add_item_selected_listener(self.updateEditMenu)
         # nodeeditor.scene.add_items_deselected_listener(self.updateEditMenu)
         nodeeditor.scene.history.add_history_modified_listener(self.update_edit_menu)
+        logger.info("create_mdi_child: Added history listener")
         nodeeditor.add_close_event_listener(self.on_sub_wnd_close)
+        logger.info("create_mdi_child: Complete")
         return subwnd
 
     def on_sub_wnd_close(self, widget, event):

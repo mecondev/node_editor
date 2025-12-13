@@ -45,7 +45,6 @@ class CalcNodeMul(CalcNode):
     content_label_objname = "calc_node_mul"
 
     def eval_operation(self, input1, input2):
-        print('foo')
         return input1 * input2
 
 @register_node(OP_NODE_DIV)

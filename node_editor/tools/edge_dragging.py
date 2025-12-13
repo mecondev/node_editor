@@ -53,15 +53,15 @@ class EdgeDragging:
         self.drag_edge: Edge | None = None
         self.drag_start_socket = None
 
-    def getEdgeClass(self) -> type[Edge]:
+    def get_edge_class(self) -> type[Edge]:
         """Get Edge class configured for this scene.
 
         Returns:
             Edge class type for creating new edges.
         """
-        return self.grView.graphics_scene.scene.getEdgeClass()
+        return self.grView.graphics_scene.scene.get_edge_class()
 
-    def updateDestination(self, x: float, y: float) -> None:
+    def update_destination(self, x: float, y: float) -> None:
         """Move drag edge endpoint to new position.
 
         Args:
@@ -72,7 +72,7 @@ class EdgeDragging:
             self.drag_edge.graphics_edge.set_destination(x, y)
             self.drag_edge.graphics_edge.update()
 
-    def edgeDragStart(self, item: QDMGraphicsSocket) -> None:
+    def edge_drag_start(self, item: QDMGraphicsSocket) -> None:
         """Begin edge drag from a socket.
 
         Creates temporary dashed edge starting from clicked socket.
@@ -82,7 +82,7 @@ class EdgeDragging:
         """
         try:
             self.drag_start_socket = item.socket
-            edge_class = self.getEdgeClass()
+            edge_class = self.get_edge_class()
             self.drag_edge = edge_class(
                 item.socket.node.scene,
                 item.socket,
@@ -94,7 +94,7 @@ class EdgeDragging:
         except Exception as e:
             dump_exception(e)
 
-    def edgeDragEnd(self, item: QGraphicsItem | None) -> bool:
+    def edge_drag_end(self, item: QGraphicsItem | None) -> bool:
         """Complete edge drag and create permanent edge if valid.
 
         Validates the connection and creates a permanent edge if
@@ -135,7 +135,7 @@ class EdgeDragging:
                             else:
                                 socket.remove_all_edges(silent=False)
 
-                    edge_class = self.getEdgeClass()
+                    edge_class = self.get_edge_class()
                     new_edge = edge_class(
                         item.socket.node.scene,
                         self.drag_start_socket,

@@ -53,7 +53,7 @@ class EdgeIntersect:
         self.draggedNode: Node | None = None
         self.hoveredList: list = []
 
-    def enterState(self, node: Node) -> None:
+    def enter_state(self, node: Node) -> None:
         """Begin tracking node drag for edge intersection.
 
         Args:
@@ -62,18 +62,18 @@ class EdgeIntersect:
         self.hoveredList = []
         self.draggedNode = node
 
-    def leaveState(self, scene_pos_x: float, scene_pos_y: float) -> None:
+    def leave_state(self, scene_pos_x: float, scene_pos_y: float) -> None:
         """End drag tracking and process any intersection.
 
         Args:
             scene_pos_x: Final X position in scene coordinates.
             scene_pos_y: Final Y position in scene coordinates.
         """
-        self.dropNode(self.draggedNode, scene_pos_x, scene_pos_y)
+        self.drop_node(self.draggedNode, scene_pos_x, scene_pos_y)
         self.draggedNode = None
         self.hoveredList = []
 
-    def dropNode(self, node: Node, _scene_pos_x: float, _scene_pos_y: float) -> None:
+    def drop_node(self, node: Node, _scene_pos_x: float, _scene_pos_y: float) -> None:
         """Handle node drop and create edge split if intersecting.
 
         If node overlaps an edge, removes that edge and creates
@@ -86,7 +86,7 @@ class EdgeIntersect:
         """
         from node_editor.core.edge import Edge
 
-        node_box = self.hotZoneRect(node)
+        node_box = self.hot_zone_rect(node)
 
         edge = self.intersect(node_box)
         if edge is None:
@@ -116,7 +116,7 @@ class EdgeIntersect:
             "Created new edges by dropping node", set_modified=True
         )
 
-    def hotZoneRect(self, node: Node) -> QRectF:
+    def hot_zone_rect(self, node: Node) -> QRectF:
         """Calculate bounding rectangle for node intersection testing.
 
         Args:
@@ -139,7 +139,7 @@ class EdgeIntersect:
             _scene_pos_x: Current X position (unused).
             _scene_pos_y: Current Y position (unused).
         """
-        rect = self.hotZoneRect(self.draggedNode)
+        rect = self.hot_zone_rect(self.draggedNode)
         gr_items = self.graphics_scene.items(rect)
 
         for gr_edge in self.hoveredList:
@@ -147,7 +147,7 @@ class EdgeIntersect:
         self.hoveredList = []
 
         for gr_item in gr_items:
-            if hasattr(gr_item, "edge") and not self.draggedNode.hasConnectedEdge(gr_item.edge):
+            if hasattr(gr_item, "edge") and not self.draggedNode.has_connected_edge(gr_item.edge):
                 self.hoveredList.append(gr_item)
                 gr_item.hovered = True
 
@@ -162,7 +162,7 @@ class EdgeIntersect:
         """
         gr_items = self.graphics_scene.items(node_box)
         for gr_item in gr_items:
-            if hasattr(gr_item, "edge") and not self.draggedNode.hasConnectedEdge(gr_item.edge):
+            if hasattr(gr_item, "edge") and not self.draggedNode.has_connected_edge(gr_item.edge):
                 return gr_item.edge
         return None
 

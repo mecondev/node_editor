@@ -3,6 +3,8 @@ Module description.
 Author: Michael Economou
 Date: 2025-12-11
 """
+import logging
+
 from PyQt5.QtCore import QRectF
 from PyQt5.QtGui import QImage
 from PyQt5.QtWidgets import QLabel
@@ -82,8 +84,8 @@ class CalcNode(Node):
         return 123
 
     def eval_implementation(self):
-        i1 = self.getInput(0)
-        i2 = self.getInput(1)
+        i1 = self.get_input(0)
+        i2 = self.get_input(1)
 
         if i1 is None or i2 is None:
             self.mark_invalid()
@@ -93,14 +95,14 @@ class CalcNode(Node):
 
         else:
             try:
-                val = self.evalOperation(i1.eval(), i2.eval())
+                val = self.eval_operation(i1.eval(), i2.eval())
                 self.value = val
                 self.mark_dirty(False)
                 self.mark_invalid(False)
                 self.graphics_node.setToolTip("")
 
                 self.mark_descendants_dirty()
-                self.evalChildren()
+                self.eval_children()
 
                 return val
             except ZeroDivisionError:
@@ -116,12 +118,12 @@ class CalcNode(Node):
 
     def eval(self):
         if not self.is_dirty() and not self.is_invalid():
-            print(f" _> returning cached {self.__class__.__name__} value:", self.value)
+            logging.getLogger(__name__).debug(f"Returning cached {self.__class__.__name__} value: {self.value}")
             return self.value
 
         try:
 
-            val = self.evalImplementation()
+            val = self.eval_implementation()
             return val
         except ValueError as e:
             self.mark_invalid()
@@ -135,7 +137,7 @@ class CalcNode(Node):
 
 
     def on_input_changed(self, _socket=None):
-        print(f"{self.__class__.__name__}::__onInputChanged")
+        logging.getLogger(__name__).debug(f"{self.__class__.__name__}::on_input_changed")
         self.mark_dirty()
         self.eval()
 
@@ -149,5 +151,5 @@ class CalcNode(Node):
         if hashmap is None:
             hashmap = {}
         res = super().deserialize(data, hashmap, restore_id)
-        print(f"Deserialized CalcNode '{self.__class__.__name__}'", "res:", res)
+        logging.getLogger(__name__).debug(f"Deserialized CalcNode '{self.__class__.__name__}', res: {res}")
         return res

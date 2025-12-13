@@ -59,15 +59,15 @@ class EdgeRerouting:
         self.is_rerouting: bool = False
         self.first_mb_release: bool = False
 
-    def getEdgeClass(self) -> type[Edge]:
+    def get_edge_class(self) -> type[Edge]:
         """Get the Edge class for creating preview edges.
 
         Returns:
             Edge class from the scene.
         """
-        return self.grView.graphics_scene.scene.getEdgeClass()
+        return self.grView.graphics_scene.scene.get_edge_class()
 
-    def getAffectedEdges(self) -> list[Edge]:
+    def get_affected_edges(self) -> list[Edge]:
         """Get all edges connected to the start socket.
 
         Returns:
@@ -77,31 +77,31 @@ class EdgeRerouting:
             return []
         return self.start_socket.edges.copy()
 
-    def setAffectedEdgesVisible(self, visibility: bool = True) -> None:
+    def set_affected_edges_visible(self, visibility: bool = True) -> None:
         """Control visibility of affected edges during rerouting.
 
         Args:
             visibility: True to show edges, False to hide them.
         """
-        for edge in self.getAffectedEdges():
+        for edge in self.get_affected_edges():
             if visibility:
                 edge.graphics_edge.show()
             else:
                 edge.graphics_edge.hide()
 
-    def resetRerouting(self) -> None:
+    def reset_rerouting(self) -> None:
         """Reset rerouting state to default values."""
         self.is_rerouting = False
         self.start_socket = None
         self.first_mb_release = False
 
-    def clearReroutingEdges(self) -> None:
+    def clear_rerouting_edges(self) -> None:
         """Remove temporary preview edges from the scene."""
         while self.rerouting_edges:
             edge = self.rerouting_edges.pop()
             edge.remove()
 
-    def updateScenePos(self, x: float, y: float) -> None:
+    def update_scene_pos(self, x: float, y: float) -> None:
         """Update preview edge endpoints during drag.
 
         Called from mouse move event to track cursor position.
@@ -116,7 +116,7 @@ class EdgeRerouting:
                     edge.graphics_edge.set_destination(x, y)
                     edge.graphics_edge.update()
 
-    def startRerouting(self, socket: Socket) -> None:
+    def start_rerouting(self, socket: Socket) -> None:
         """Begin rerouting operation from a socket.
 
         Hides original edges and creates preview edges for visual feedback.
@@ -127,13 +127,13 @@ class EdgeRerouting:
         self.is_rerouting = True
         self.start_socket = socket
 
-        self.setAffectedEdgesVisible(visibility=False)
+        self.set_affected_edges_visible(visibility=False)
 
         start_position = self.start_socket.node.get_socket_scene_position(self.start_socket)
 
-        edge_class = self.getEdgeClass()
-        for edge in self.getAffectedEdges():
-            other_socket = edge.getOtherSocket(self.start_socket)
+        edge_class = self.get_edge_class()
+        for edge in self.get_affected_edges():
+            other_socket = edge.get_other_socket(self.start_socket)
 
             new_edge = edge_class(self.start_socket.node.scene, edge_type=edge.edge_type)
             new_edge.start_socket = other_socket
@@ -142,7 +142,7 @@ class EdgeRerouting:
             new_edge.graphics_edge.update()
             self.rerouting_edges.append(new_edge)
 
-    def stopRerouting(self, target: Socket | None = None) -> None:
+    def stop_rerouting(self, target: Socket | None = None) -> None:
         """Complete or cancel the rerouting operation.
 
         Validates potential connections and reconnects edges to the target
@@ -160,14 +160,14 @@ class EdgeRerouting:
 
         if target is None or target == self.start_socket:
             # Canceling - no change
-            self.setAffectedEdgesVisible(visibility=True)
+            self.set_affected_edges_visible(visibility=True)
         else:
             # Validate edges before doing anything
-            valid_edges = self.getAffectedEdges()
+            valid_edges = self.get_affected_edges()
             invalid_edges = []
 
-            for edge in self.getAffectedEdges():
-                start_sock = edge.getOtherSocket(self.start_socket)
+            for edge in self.get_affected_edges():
+                start_sock = edge.get_other_socket(self.start_socket)
                 if not edge.validate_edge(start_sock, target):
                     # Not valid edge
                     invalid_edges.append(edge)
@@ -177,7 +177,7 @@ class EdgeRerouting:
                 valid_edges.remove(invalid_edge)
 
             # Reconnect to new socket
-            self.setAffectedEdgesVisible(visibility=True)
+            self.set_affected_edges_visible(visibility=True)
 
             for edge in valid_edges:
                 for node in [edge.start_socket.node, edge.end_socket.node]:
@@ -192,10 +192,10 @@ class EdgeRerouting:
                 else:
                     edge.start_socket = target
 
-                edge.updatePositions()
+                edge.update_positions()
 
         # Hide rerouting edges
-        self.clearReroutingEdges()
+        self.clear_rerouting_edges()
 
         # Send notifications for all affected nodes
         for affected_node, edge in affected_nodes:
@@ -210,4 +210,4 @@ class EdgeRerouting:
             self.start_socket.node.scene.history.store_history("Rerouted edges", set_modified=True)
 
         # Reset variables
-        self.resetRerouting()
+        self.reset_rerouting()
