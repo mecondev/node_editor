@@ -38,7 +38,7 @@ class EdgeRerouting:
     new connections during drag.
 
     Attributes:
-        grView: QDMGraphicsView being used.
+        graphics_view: QDMGraphicsView being used.
         start_socket: Socket where rerouting started.
         rerouting_edges: Temporary preview edges during rerouting.
         is_rerouting: Whether rerouting operation is active.
@@ -51,7 +51,7 @@ class EdgeRerouting:
         Args:
             gr_view: QDMGraphicsView to operate on.
         """
-        self.grView = gr_view
+        self.graphics_view = gr_view
         self.start_socket: Socket | None = None
         self.rerouting_edges: list[Edge] = []
         self.is_rerouting: bool = False
@@ -63,7 +63,7 @@ class EdgeRerouting:
         Returns:
             Edge class from the scene.
         """
-        return self.grView.graphics_scene.scene.get_edge_class()
+        return self.graphics_view.graphics_scene.scene.get_edge_class()
 
     def get_affected_edges(self) -> list[Edge]:
         """Get all edges connected to the start socket.

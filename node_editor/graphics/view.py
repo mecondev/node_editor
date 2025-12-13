@@ -69,7 +69,7 @@ class QDMGraphicsView(QGraphicsView):
     a state machine with multiple interaction modes.
 
     Attributes:
-        grScene: QDMGraphicsScene being displayed.
+        graphics_scene: QDMGraphicsScene being displayed.
         mode: Current interaction mode constant.
         zoom: Current zoom level integer.
         zoomInFactor: Scaling factor per zoom step.
@@ -83,15 +83,15 @@ class QDMGraphicsView(QGraphicsView):
 
     scene_pos_changed = pyqtSignal(int, int)
 
-    def __init__(self, gr_scene: QDMGraphicsScene, parent: QWidget | None = None) -> None:
+    def __init__(self, graphics_scene: QDMGraphicsScene, parent: QWidget | None = None) -> None:
         """Initialize graphics view with a scene.
 
         Args:
-            gr_scene: QDMGraphicsScene to display.
+            graphics_scene: QDMGraphicsScene to display.
             parent: Optional parent widget.
         """
         super().__init__(parent)
-        self.graphics_scene = gr_scene
+        self.graphics_scene = graphics_scene
 
         self.init_ui()
         self.setScene(self.graphics_scene)
@@ -566,8 +566,8 @@ class QDMGraphicsView(QGraphicsView):
         items = self.graphics_scene.items(scanrect)
         items = list(filter(lambda x: isinstance(x, QDMGraphicsSocket), items))
 
-        for gr_socket in items:
-            gr_socket.isHighlighted = highlighted
+        for graphics_socket in items:
+            graphics_socket.isHighlighted = highlighted
 
         return items
 

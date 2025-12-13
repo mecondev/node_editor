@@ -36,8 +36,8 @@ class EdgeIntersect:
     automatic reconnection when dropped.
 
     Attributes:
-        grScene: QDMGraphicsScene for item queries.
-        grView: QDMGraphicsView for coordinate mapping.
+        graphics_scene: QDMGraphicsScene for item queries.
+        graphics_view: QDMGraphicsView for coordinate mapping.
         draggedNode: Node currently being dragged.
         hoveredList: Graphics items under the dragged node.
     """
@@ -49,7 +49,7 @@ class EdgeIntersect:
             gr_view: QDMGraphicsView to operate on.
         """
         self.graphics_scene = gr_view.graphics_scene
-        self.grView = gr_view
+        self.graphics_view = gr_view
         self.draggedNode: Node | None = None
         self.hoveredList: list = []
 
@@ -104,7 +104,7 @@ class EdgeIntersect:
 
         edge_type = edge.edge_type
         edge.remove()
-        self.grView.graphics_scene.scene.history.store_history("Delete existing edge", set_modified=True)
+        self.graphics_view.graphics_scene.scene.history.store_history("Delete existing edge", set_modified=True)
 
         new_node_socket_in = node.inputs[0]
         Edge(self.graphics_scene.scene, socket_start, new_node_socket_in, edge_type=edge_type)
@@ -112,7 +112,7 @@ class EdgeIntersect:
         new_node_socket_out = node.outputs[0]
         Edge(self.graphics_scene.scene, new_node_socket_out, socket_end, edge_type=edge_type)
 
-        self.grView.graphics_scene.scene.history.store_history(
+        self.graphics_view.graphics_scene.scene.history.store_history(
             "Created new edges by dropping node", set_modified=True
         )
 

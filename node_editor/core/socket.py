@@ -61,10 +61,10 @@ class Socket(Serializable):
         count_on_this_node_side: Total socket count on this side for layout.
 
     Class Attributes:
-        Socket_GR_Class: Graphics class for socket visualization (set at init).
+        Socket_Graphics_Class: Graphics class for socket visualization (set at init).
     """
 
-    Socket_GR_Class: type["QDMGraphicsSocket"] | None = None
+    Socket_Graphics_Class: type["QDMGraphicsSocket"] | None = None
 
     def __init__(
         self,
@@ -98,7 +98,7 @@ class Socket(Serializable):
         self.is_input = is_input
         self.is_output = not self.is_input
 
-        self.graphics_socket: QDMGraphicsSocket = self.__class__.Socket_GR_Class(self)
+        self.graphics_socket: QDMGraphicsSocket = self.__class__.Socket_Graphics_Class(self)
         self.set_socket_position()
 
         self.edges: list[Edge] = []

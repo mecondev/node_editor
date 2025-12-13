@@ -38,7 +38,7 @@ class EdgeDragging:
     validates and creates permanent edge on release.
 
     Attributes:
-        grView: QDMGraphicsView for coordinate mapping.
+        graphics_view: QDMGraphicsView for coordinate mapping.
         drag_edge: Temporary Edge shown during drag.
         drag_start_socket: Socket where drag originated.
     """
@@ -49,7 +49,7 @@ class EdgeDragging:
         Args:
             gr_view: QDMGraphicsView to operate on.
         """
-        self.grView = gr_view
+        self.graphics_view = gr_view
         self.drag_edge: Edge | None = None
         self.drag_start_socket = None
 
@@ -59,7 +59,7 @@ class EdgeDragging:
         Returns:
             Edge class type for creating new edges.
         """
-        return self.grView.graphics_scene.scene.get_edge_class()
+        return self.graphics_view.graphics_scene.scene.get_edge_class()
 
     def update_destination(self, x: float, y: float) -> None:
         """Move drag edge endpoint to new position.
@@ -110,7 +110,7 @@ class EdgeDragging:
         from node_editor.graphics.socket import QDMGraphicsSocket
 
         if not isinstance(item, QDMGraphicsSocket):
-            self.grView.reset_mode()
+            self.graphics_view.reset_mode()
             if self.drag_edge:
                 self.drag_edge.remove(silent=True)
             self.drag_edge = None
@@ -120,7 +120,7 @@ class EdgeDragging:
             if not self.drag_edge.validate_edge(self.drag_start_socket, item.socket):
                 return False
 
-            self.grView.reset_mode()
+            self.graphics_view.reset_mode()
 
             if self.drag_edge:
                 self.drag_edge.remove(silent=True)
@@ -148,7 +148,7 @@ class EdgeDragging:
                         if socket.is_input:
                             socket.node.on_input_changed(socket)
 
-                    self.grView.graphics_scene.scene.history.store_history(
+                    self.graphics_view.graphics_scene.scene.history.store_history(
                         "Created new edge by dragging", set_modified=True
                     )
                     return True

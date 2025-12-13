@@ -37,8 +37,8 @@ class EdgeSnapping:
     making precise connections easier for users.
 
     Attributes:
-        grView: QDMGraphicsView being used.
-        grScene: QDMGraphicsScene for item queries.
+        graphics_view: QDMGraphicsView being used.
+        graphics_scene: QDMGraphicsScene for item queries.
         edge_snapping_radius: Distance within which to snap to sockets.
     """
 
@@ -49,8 +49,8 @@ class EdgeSnapping:
             gr_view: QDMGraphicsView to operate on.
             snapping_radius: Pixel radius for socket detection.
         """
-        self.grView = gr_view
-        self.graphics_scene = self.grView.graphics_scene
+        self.graphics_view = gr_view
+        self.graphics_scene = self.graphics_view.graphics_scene
         self.edge_snapping_radius = snapping_radius
 
     def getSnappedSocketItem(self, event: QMouseEvent) -> QDMGraphicsSocket | None:
@@ -62,9 +62,9 @@ class EdgeSnapping:
         Returns:
             QDMGraphicsSocket to snap to, or None if no socket nearby.
         """
-        scenepos = self.grView.mapToScene(event.pos())
-        gr_socket, pos = self.getSnappedToSocketPosition(scenepos)
-        return gr_socket
+        scenepos = self.graphics_view.mapToScene(event.pos())
+        graphics_socket, pos = self.getSnappedToSocketPosition(scenepos)
+        return graphics_socket
 
     def getSnappedToSocketPosition(
         self, scenepos: QPointF
@@ -89,7 +89,7 @@ class EdgeSnapping:
             self.edge_snapping_radius * 2
         )
         items = self.graphics_scene.items(scanrect)
-        items = list(filter(lambda x: isinstance(x, QDMGraphicsSocket), items))
+        items = list(filter(lambda socket_item: isinstance(socket_item, QDMGraphicsSocket), items))
 
         if len(items) == 0:
             return None, scenepos
@@ -97,13 +97,13 @@ class EdgeSnapping:
         selected_item = items[0]
         if len(items) > 1:
             nearest = float('inf')
-            for grsock in items:
-                grsock_scenepos = grsock.socket.node.get_socket_scene_position(grsock.socket)
-                qpdist = QPointF(*grsock_scenepos) - scenepos
+            for graphics_socket_item in items:
+                socket_scene_position = graphics_socket_item.socket.node.get_socket_scene_position(graphics_socket_item.socket)
+                qpdist = QPointF(*socket_scene_position) - scenepos
                 dist = qpdist.x() * qpdist.x() + qpdist.y() * qpdist.y()
                 if dist < nearest:
                     nearest = dist
-                    selected_item = grsock
+                    selected_item = graphics_socket_item
 
         selected_item.isHighlighted = True
 

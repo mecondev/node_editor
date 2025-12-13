@@ -65,7 +65,7 @@ class Scene(Serializable):
         scene_width: Horizontal extent of scene in pixels.
         scene_height: Vertical extent of scene in pixels.
         filename: Path to associated file, or None if unsaved.
-        grScene: QDMGraphicsScene for visual representation.
+        graphics_scene: QDMGraphicsScene for visual representation.
 
     Class Attributes:
         history_class: Factory class for history (set at runtime).
@@ -146,7 +146,7 @@ class Scene(Serializable):
         from node_editor.graphics.scene import QDMGraphicsScene
 
         self.graphics_scene: QDMGraphicsScene = QDMGraphicsScene(self)
-        self.graphics_scene.set_gr_scene(self.scene_width, self.scene_height)
+        self.graphics_scene.set_graphics_scene_rect(self.scene_width, self.scene_height)
 
     # Node and edge management
 

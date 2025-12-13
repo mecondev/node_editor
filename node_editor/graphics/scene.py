@@ -87,7 +87,7 @@ class QDMGraphicsScene(QGraphicsScene):
             event: Qt drag move event.
         """
 
-    def set_gr_scene(self, width: int, height: int) -> None:
+    def set_graphics_scene_rect(self, width: int, height: int) -> None:
         """Configure scene dimensions centered at origin.
 
         Args:
