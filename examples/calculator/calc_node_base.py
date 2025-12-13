@@ -11,7 +11,7 @@ from node_editor.core.node import Node
 from node_editor.widgets.content_widget import QDMNodeContentWidget
 from node_editor.graphics.node import QDMGraphicsNode
 from node_editor.core.socket import LEFT_CENTER, RIGHT_CENTER
-from node_editor.utils.helpers import dumpException
+from node_editor.utils.helpers import dump_exception
 
 
 class CalcGraphicsNode(QDMGraphicsNode):
@@ -124,7 +124,7 @@ class CalcNode(Node):
         except Exception as e:
             self.mark_invalid()
             self.graphics_node.setToolTip(str(e))
-            dumpException(e)
+            dump_exception(e)
 
 
 

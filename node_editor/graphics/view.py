@@ -23,6 +23,7 @@ Date:
 
 from __future__ import annotations
 
+from contextlib import suppress
 from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import QEvent, QPoint, QPointF, QRectF, Qt, pyqtSignal
@@ -496,7 +497,7 @@ class QDMGraphicsView(QGraphicsView):
         """
         if event is None:
             return
-            
+
         scenepos = self.mapToScene(event.pos())
 
         try:
@@ -528,12 +529,9 @@ class QDMGraphicsView(QGraphicsView):
             dump_exception(e)
 
         self.last_scene_mouse_position = scenepos
-        
-        try:
+
+        with suppress(RuntimeError):
             self.scene_pos_changed.emit(int(scenepos.x()), int(scenepos.y()))
-        except RuntimeError:
-            # Signal emitter may be deleted
-            pass
 
         super().mouseMoveEvent(event)
 

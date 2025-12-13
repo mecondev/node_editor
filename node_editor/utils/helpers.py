@@ -4,7 +4,7 @@ This module provides basic utility functions that do not require Qt,
 suitable for use in any Python context.
 
 Functions:
-    dumpException: Print exception traceback for debugging.
+    dump_exception: Print exception traceback for debugging.
     pp: Pretty-print data structures.
 
 Author:
@@ -18,7 +18,7 @@ import traceback
 from pprint import PrettyPrinter
 
 
-def dumpException(_e: Exception | None = None) -> None:
+def dump_exception(_e: Exception | None = None) -> None:
     """Print the current exception traceback to console.
 
     Useful for debugging exception handlers. Prints the full
@@ -32,6 +32,3 @@ def dumpException(_e: Exception | None = None) -> None:
 
 pp = PrettyPrinter(indent=4).pprint
 """Pretty-print function with 4-space indentation."""
-
-dump_exception = dumpException
-"""Alias for backwards compatibility with snake_case naming."""

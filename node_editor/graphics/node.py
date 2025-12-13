@@ -173,7 +173,7 @@ class QDMGraphicsNode(QGraphicsItem):
             scene = self.scene()
             if scene is None or not hasattr(scene, 'scene'):
                 return
-                
+
             # Update edges for all selected nodes
             for node in list(scene.scene.nodes):  # Create copy to avoid iteration issues
                 if node.graphics_node and node.graphics_node.isSelected():
@@ -181,7 +181,7 @@ class QDMGraphicsNode(QGraphicsItem):
         except (RuntimeError, AttributeError):
             # Ignore errors from deleted Qt objects
             pass
-            
+
         self._was_moved = True
 
     def mouseReleaseEvent(self, event) -> None:

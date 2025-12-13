@@ -33,7 +33,7 @@ from node_editor.core.socket import (
     RIGHT_TOP,
     Socket,
 )
-from node_editor.utils.helpers import dumpException
+from node_editor.utils.helpers import dump_exception
 
 if TYPE_CHECKING:
     from PyQt5.QtCore import QPointF
@@ -595,7 +595,7 @@ class Node(Serializable):
             other_socket = connecting_edge.getOtherSocket(self.inputs[index])
             return other_socket.node
         except Exception as e:
-            dumpException(e)
+            dump_exception(e)
             return None
 
     def getInputWithSocket(self, index: int = 0) -> tuple["Node | None", "Socket | None"]:
@@ -617,7 +617,7 @@ class Node(Serializable):
             other_socket = connecting_edge.getOtherSocket(self.inputs[index])
             return other_socket.node, other_socket
         except Exception as e:
-            dumpException(e)
+            dump_exception(e)
             return None, None
 
     def getInputWithSocketIndex(self, index: int = 0) -> tuple["Node | None", int | None]:
@@ -636,7 +636,7 @@ class Node(Serializable):
         except IndexError:
             return None, None
         except Exception as e:
-            dumpException(e)
+            dump_exception(e)
             return None, None
 
     def getInputs(self, index: int = 0) -> list["Node"]:
@@ -773,7 +773,7 @@ class Node(Serializable):
                 found.deserialize(socket_data, hashmap, restore_id)
 
         except Exception as e:
-            dumpException(e)
+            dump_exception(e)
 
         if isinstance(self.content, Serializable):
             res = self.content.deserialize(data["content"], hashmap)

@@ -28,7 +28,7 @@ from collections import OrderedDict
 from typing import TYPE_CHECKING
 
 from node_editor.core.serializable import Serializable
-from node_editor.utils.helpers import dumpException
+from node_editor.utils.helpers import dump_exception
 
 if TYPE_CHECKING:
     from node_editor.core.scene import Scene
@@ -348,7 +348,7 @@ class Edge(Serializable):
                         socket.node.on_input_changed(socket)
 
         except Exception as e:
-            dumpException(e)
+            dump_exception(e)
 
     def serialize(self) -> OrderedDict:
         """Convert edge state to ordered dictionary for persistence.
