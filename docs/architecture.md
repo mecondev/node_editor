@@ -502,13 +502,23 @@ node_editor/__init__.py
 ---
 
 *Document created: 2025-12-12*  
-*Last updated: 2025-12-12*
+*Last updated: 2025-12-13*
 
 ---
 
-## Proposed Improvements and Renaming
+## Completed Refactoring (v2.0.0)
 
-- Clarify graphics naming: consider `graphics_node` / `graphics_edge` / `graphics_socket` instead of `grNode` / `grEdge` / `grSocket` for snake_case consistency (breaking change; migration guide required).
-- Align method names with PEP8: `markDirty` / `markInvalid` → `mark_dirty` / `mark_invalid` in `core/node.py` (breaking change; requires deprecation shim).
-- Document the `_init_graphics_classes()` bootstrap as the intentional core→graphics bridge to make coupling explicit.
-- Confirm that `tools/` is the sole location for edge tools; removed `edge_tools/` and `nodes/base.py` to keep the public surface minimal.
+All PEP8 snake_case improvements have been successfully implemented:
+
+- ✅ **Graphics attributes renamed**: `grNode` → `graphics_node`, `grEdge` → `graphics_edge`, `grSocket` → `graphics_socket`, `grScene` → `graphics_scene`
+- ✅ **State methods renamed**: `markDirty` → `mark_dirty`, `markInvalid` → `mark_invalid`, `markDescendantsDirty` → `mark_descendants_dirty`, etc.
+- ✅ **Class attributes renamed**: `GraphicsNode_class` → `_graphics_node_class` (private convention)
+- ✅ **Init methods renamed**: `initSettings` → `init_settings`, `initSizes` → `init_sizes`, `initAssets` → `init_assets`
+- ✅ **Graphics methods renamed**: 13 methods including `calcPath` → `calc_path`, `doSelect` → `do_select`, etc.
+- ✅ **Node methods renamed**: `getInput` → `get_input`, `evalChildren` → `eval_children`, `isDirty` → `is_dirty`, etc.
+- ✅ **Documentation updated**: `_init_graphics_classes()` is documented as the intentional core→graphics bootstrap
+- ✅ **Tools consolidated**: `tools/` is the official location for all edge manipulation behaviors
+
+**Breaking Changes**: This is a complete API rename. No backward-compatible aliases provided.  
+**Testing**: All 328 tests passing, ruff checks passing.  
+**Migration**: Use provided sed scripts in repository history to update downstream code.
