@@ -18,6 +18,7 @@ Date:
 
 from __future__ import annotations
 
+import logging
 from typing import TYPE_CHECKING
 
 from node_editor.core.edge import EDGE_TYPE_DEFAULT
@@ -29,6 +30,8 @@ if TYPE_CHECKING:
     from node_editor.core.edge import Edge
     from node_editor.graphics.socket import QDMGraphicsSocket
     from node_editor.graphics.view import QDMGraphicsView
+
+logger = logging.getLogger(__name__)
 
 
 class EdgeDragging:

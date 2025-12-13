@@ -14,8 +14,6 @@ Date:
     2025-12-11
 """
 
-from collections import OrderedDict
-
 
 class Serializable:
     """Abstract base class for objects supporting dictionary serialization.
@@ -35,15 +33,15 @@ class Serializable:
         """Initialize with a unique identifier based on object memory address."""
         self.id = id(self)
 
-    def serialize(self) -> OrderedDict:
-        """Convert this object to an ordered dictionary representation.
+    def serialize(self) -> dict:
+        """Convert this object to a dictionary representation.
 
         Subclasses must override this to serialize their specific attributes.
         The returned dict should contain all data needed to reconstruct the
         object, including the object's id for reference tracking.
 
         Returns:
-            Ordered dictionary containing all serializable object state.
+            Dictionary containing all serializable object state.
 
         Raises:
             NotImplementedError: Always raised if not overridden in subclass.

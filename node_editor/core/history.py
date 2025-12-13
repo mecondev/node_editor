@@ -19,11 +19,14 @@ Date:
 
 from __future__ import annotations
 
+import logging
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from node_editor.core.scene import Scene
+
+logger = logging.getLogger(__name__)
 
 
 class SceneHistory:

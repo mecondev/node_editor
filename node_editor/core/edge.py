@@ -24,7 +24,7 @@ Date:
 """
 
 import contextlib
-from collections import OrderedDict
+from enum import IntEnum
 from typing import TYPE_CHECKING
 
 from node_editor.core.serializable import Serializable
@@ -35,12 +35,26 @@ if TYPE_CHECKING:
     from node_editor.core.socket import Socket
     from node_editor.graphics.edge import QDMGraphicsEdge
 
-# Edge path style constants
-EDGE_TYPE_DIRECT = 1
-EDGE_TYPE_BEZIER = 2
-EDGE_TYPE_SQUARE = 3
-EDGE_TYPE_IMPROVED_SHARP = 4
-EDGE_TYPE_IMPROVED_BEZIER = 5
+
+class EdgeType(IntEnum):
+    """Edge path style constants.
+
+    IntEnum provides type safety while maintaining backward compatibility
+    with integer comparisons and serialization.
+    """
+    DIRECT = 1
+    BEZIER = 2
+    SQUARE = 3
+    IMPROVED_SHARP = 4
+    IMPROVED_BEZIER = 5
+
+
+# Backward compatibility: expose as module-level constants
+EDGE_TYPE_DIRECT = EdgeType.DIRECT
+EDGE_TYPE_BEZIER = EdgeType.BEZIER
+EDGE_TYPE_SQUARE = EdgeType.SQUARE
+EDGE_TYPE_IMPROVED_SHARP = EdgeType.IMPROVED_SHARP
+EDGE_TYPE_IMPROVED_BEZIER = EdgeType.IMPROVED_BEZIER
 EDGE_TYPE_DEFAULT = EDGE_TYPE_IMPROVED_BEZIER
 
 
@@ -350,23 +364,18 @@ class Edge(Serializable):
         except Exception as e:
             dump_exception(e)
 
-    def serialize(self) -> OrderedDict:
-        """Convert edge state to ordered dictionary for persistence.
+    def serialize(self) -> dict:
+        """Convert edge state to dictionary for persistence.
 
         Returns:
-            OrderedDict with edge ID, type, and socket references.
+            Dictionary with edge ID, type, and socket references.
         """
-        return OrderedDict(
-            [
-                ("id", self.id),
-                ("edge_type", self.edge_type),
-                (
-                    "start",
-                    self.start_socket.id if self.start_socket is not None else None,
-                ),
-                ("end", self.end_socket.id if self.end_socket is not None else None),
-            ]
-        )
+        return {
+            "id": self.id,
+            "edge_type": self.edge_type,
+            "start": self.start_socket.id if self.start_socket is not None else None,
+            "end": self.end_socket.id if self.end_socket is not None else None,
+        }
 
     def deserialize(
         self,

@@ -48,9 +48,9 @@ class QDMGraphicsEdge(QGraphicsPathItem):
 
     Attributes:
         edge: Reference to logical Edge model.
-        pathCalculator: Instance computing the connection path.
-        posSource: [x, y] source position in scene coordinates.
-        posDestination: [x, y] destination position in scene coordinates.
+        path_calculator: Instance computing the connection path.
+        pos_source: [x, y] source position in scene coordinates.
+        pos_destination: [x, y] destination position in scene coordinates.
         hovered: True while mouse hovers over this edge.
     """
 
@@ -65,13 +65,13 @@ class QDMGraphicsEdge(QGraphicsPathItem):
 
         self.edge = edge
 
-        self.pathCalculator = self.determine_edge_path_class()(self)
+        self.path_calculator = self.determine_edge_path_class()(self)
 
         self._last_selected_state = False
         self.hovered = False
 
-        self.posSource = [0, 0]
-        self.posDestination = [200, 100]
+        self.pos_source = [0, 0]
+        self.pos_destination = [200, 100]
 
         self.init_assets()
         self.init_ui()
@@ -107,8 +107,8 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         Returns:
             GraphicsEdgePathBase subclass instance.
         """
-        self.pathCalculator = self.determine_edge_path_class()(self)
-        return self.pathCalculator
+        self.path_calculator = self.determine_edge_path_class()(self)
+        return self.path_calculator
 
     def determine_edge_path_class(self):
         """Select path calculator class based on edge_type constant.
@@ -224,7 +224,7 @@ class QDMGraphicsEdge(QGraphicsPathItem):
             x: Horizontal position in scene coordinates.
             y: Vertical position in scene coordinates.
         """
-        self.posSource = [x, y]
+        self.pos_source = [x, y]
 
     def set_destination(self, x: float, y: float) -> None:
         """Set destination endpoint position.
@@ -233,7 +233,7 @@ class QDMGraphicsEdge(QGraphicsPathItem):
             x: Horizontal position in scene coordinates.
             y: Vertical position in scene coordinates.
         """
-        self.posDestination = [x, y]
+        self.pos_destination = [x, y]
 
     def boundingRect(self) -> QRectF:
         """Calculate bounding rectangle from endpoints.
@@ -306,4 +306,4 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         Returns:
             QPainterPath from source to destination.
         """
-        return self.pathCalculator.calc_path()
+        return self.path_calculator.calc_path()

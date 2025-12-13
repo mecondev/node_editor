@@ -26,8 +26,8 @@ Date:
 from __future__ import annotations
 
 import json
+import logging
 import os
-from collections import OrderedDict
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 
@@ -41,6 +41,9 @@ if TYPE_CHECKING:
     from node_editor.core.edge import Edge
     from node_editor.core.node import Node
     from node_editor.graphics.scene import QDMGraphicsScene
+
+logger = logging.getLogger(__name__)
+
 
 class InvalidFileError(Exception):
     """Raised when file loading fails due to invalid format or content."""
@@ -370,6 +373,17 @@ class Scene(Serializable):
         """
         return self.graphics_scene.views()[0]
 
+    @property
+    def view(self) -> QGraphicsView:
+        """Get the graphics view displaying this scene.
+
+        Convenience property for get_view().
+
+        Returns:
+            First QGraphicsView attached to the graphics scene.
+        """
+        return self.get_view()
+
     def get_item_at(self, pos: QPointF):
         """Find graphics item at scene position.
 
@@ -470,13 +484,13 @@ class Scene(Serializable):
 
     # Serialization
 
-    def serialize(self) -> OrderedDict:
-        """Convert scene state to ordered dictionary.
+    def serialize(self) -> dict:
+        """Convert scene state to dictionary.
 
         Serializes all nodes and edges, avoiding duplicates.
 
         Returns:
-            OrderedDict containing complete scene state.
+            Dictionary containing complete scene state.
         """
         nodes = []
         edges = []
@@ -491,16 +505,14 @@ class Scene(Serializable):
             if not any(newedge["id"] == a["id"] for a in edges):
                 edges.append(newedge)
 
-        return OrderedDict(
-            [
-                ("version", "1.0.0"),
-                ("id", self.id),
-                ("scene_width", self.scene_width),
-                ("scene_height", self.scene_height),
-                ("nodes", nodes),
-                ("edges", edges),
-            ]
-        )
+        return {
+            "version": "1.0.0",
+            "id": self.id,
+            "scene_width": self.scene_width,
+            "scene_height": self.scene_height,
+            "nodes": nodes,
+            "edges": edges,
+        }
 
     def deserialize(
         self, data: dict, hashmap: dict | None = None, restore_id: bool = True, *args, **kwargs

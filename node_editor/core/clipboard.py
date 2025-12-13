@@ -20,7 +20,6 @@ Date:
 
 from __future__ import annotations
 
-from collections import OrderedDict
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -46,7 +45,7 @@ class SceneClipboard:
         """
         self.scene = scene
 
-    def serialize_selected(self, delete: bool = False) -> OrderedDict:
+    def serialize_selected(self, delete: bool = False) -> dict:
         """Serialize currently selected nodes and edges.
 
         Captures all selected nodes and edges that are fully contained
@@ -57,7 +56,7 @@ class SceneClipboard:
             delete: If True, delete selection after serializing (cut).
 
         Returns:
-            OrderedDict with 'nodes' and 'edges' lists of serialized data.
+            Dictionary with 'nodes' and 'edges' lists of serialized data.
         """
         sel_nodes = []
         sel_edges = []
@@ -88,12 +87,10 @@ class SceneClipboard:
         for edge in sel_edges:
             edges_final.append(edge.serialize())
 
-        data = OrderedDict(
-            [
-                ("nodes", sel_nodes),
-                ("edges", edges_final),
-            ]
-        )
+        data = {
+            "nodes": sel_nodes,
+            "edges": edges_final,
+        }
 
         if delete:
             self.scene.get_view().delete_selected()

@@ -20,7 +20,6 @@ Date:
     2025-12-11
 """
 
-from collections import OrderedDict
 from typing import TYPE_CHECKING
 
 from node_editor.core.serializable import Serializable
@@ -66,13 +65,13 @@ class Node(Serializable):
     Class Attributes:
         _graphics_node_class: Graphics class injected via node_editor.core._init_graphics_classes;
             override in subclasses for custom visuals.
-        NodeContent_class: Content widget class injected via node_editor.core._init_graphics_classes;
+        _content_widget_class: Content widget class injected via node_editor.core._init_graphics_classes;
             override in subclasses for custom UI widgets.
         Socket_class: Socket class for creating connections.
     """
 
     _graphics_node_class: type["QDMGraphicsNode"] | None = None
-    NodeContent_class: type["QDMNodeContentWidget"] | None = None
+    _content_widget_class: type["QDMNodeContentWidget"] | None = None
     Socket_class = Socket
 
     def __init__(
@@ -195,7 +194,7 @@ class Node(Serializable):
         Returns:
             Content widget class or None for no content.
         """
-        return self.__class__.NodeContent_class
+        return self.__class__._content_widget_class
 
     def get_graphics_node_class(self) -> type["QDMGraphicsNode"] | None:
         """Get factory class for graphics node.
@@ -478,16 +477,26 @@ class Node(Serializable):
             other_node.mark_dirty(new_value)
 
     def mark_descendants_dirty(self, new_value: bool = True) -> None:
-        """Recursively mark all downstream nodes as dirty.
+        """Mark all downstream nodes as needing re-evaluation.
 
-        Propagates dirty state through entire downstream subgraph.
+        Uses iterative BFS to avoid stack overflow on deep graphs
+        and prevent duplicate processing on diamond patterns.
 
         Args:
             new_value: True to mark dirty, False to clear.
         """
-        for other_node in self.get_children_nodes():
-            other_node.mark_dirty(new_value)
-            other_node.mark_descendants_dirty(new_value)
+        from collections import deque
+
+        visited: set[int] = {self.id}
+        queue: deque[Node] = deque(self.get_children_nodes())
+
+        while queue:
+            node = queue.popleft()
+            if node.id in visited:
+                continue
+            visited.add(node.id)
+            node.mark_dirty(new_value)
+            queue.extend(node.get_children_nodes())
 
     def is_invalid(self) -> bool:
         """Check if node is in an error state.
@@ -528,14 +537,26 @@ class Node(Serializable):
             other_node.mark_invalid(new_value)
 
     def mark_descendants_invalid(self, new_value: bool = True) -> None:
-        """Recursively mark all downstream nodes as invalid.
+        """Mark all downstream nodes as invalid.
+
+        Uses iterative BFS to avoid stack overflow on deep graphs
+        and prevent duplicate processing on diamond patterns.
 
         Args:
             new_value: True to mark invalid, False to clear.
         """
-        for other_node in self.get_children_nodes():
-            other_node.mark_invalid(new_value)
-            other_node.mark_descendants_invalid(new_value)
+        from collections import deque
+
+        visited: set[int] = {self.id}
+        queue: deque[Node] = deque(self.get_children_nodes())
+
+        while queue:
+            node = queue.popleft()
+            if node.id in visited:
+                continue
+            visited.add(node.id)
+            node.mark_invalid(new_value)
+            queue.extend(node.get_children_nodes())
 
     def eval(self, _index: int = 0):
         """Evaluate node and compute output value.
@@ -675,13 +696,13 @@ class Node(Serializable):
 
     # Serialization methods
 
-    def serialize(self) -> OrderedDict:
-        """Convert node state to ordered dictionary for persistence.
+    def serialize(self) -> dict:
+        """Convert node state to dictionary for persistence.
 
         Includes position, sockets, and content widget state.
 
         Returns:
-            OrderedDict containing complete node configuration.
+            Dictionary containing complete node configuration.
         """
         inputs, outputs = [], []
         for socket in self.inputs:
@@ -689,17 +710,15 @@ class Node(Serializable):
         for socket in self.outputs:
             outputs.append(socket.serialize())
         ser_content = self.content.serialize() if isinstance(self.content, Serializable) else {}
-        return OrderedDict(
-            [
-                ("id", self.id),
-                ("title", self.title),
-                ("pos_x", self.graphics_node.scenePos().x()),
-                ("pos_y", self.graphics_node.scenePos().y()),
-                ("inputs", inputs),
-                ("outputs", outputs),
-                ("content", ser_content),
-            ]
-        )
+        return {
+            "id": self.id,
+            "title": self.title,
+            "pos_x": self.graphics_node.scenePos().x(),
+            "pos_y": self.graphics_node.scenePos().y(),
+            "inputs": inputs,
+            "outputs": outputs,
+            "content": ser_content,
+        }
 
     def deserialize(
         self,

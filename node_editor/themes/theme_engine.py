@@ -22,6 +22,7 @@ Date:
 
 from __future__ import annotations
 
+import logging
 import os
 from typing import TYPE_CHECKING
 
@@ -30,6 +31,8 @@ from PyQt5.QtWidgets import QApplication
 
 if TYPE_CHECKING:
     from node_editor.themes.base_theme import BaseTheme
+
+logger = logging.getLogger(__name__)
 
 
 class ThemeEngine:

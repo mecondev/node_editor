@@ -8,6 +8,10 @@ Classes:
     - Edge: Connection between sockets
     - Scene: Container for nodes and edges (to be migrated)
 
+Enums:
+    - SocketPosition: Socket position constants
+    - EdgeType: Edge path style constants
+
 Author: Michael Economou
 Date: 2025-12-11
 """
@@ -20,6 +24,7 @@ from node_editor.core.edge import (
     EDGE_TYPE_IMPROVED_SHARP,
     EDGE_TYPE_SQUARE,
     Edge,
+    EdgeType,
 )
 from node_editor.core.node import Node
 from node_editor.core.serializable import Serializable
@@ -31,6 +36,7 @@ from node_editor.core.socket import (
     RIGHT_CENTER,
     RIGHT_TOP,
     Socket,
+    SocketPosition,
 )
 
 
@@ -42,9 +48,9 @@ def _init_graphics_classes():
     from node_editor.graphics.socket import QDMGraphicsSocket
     from node_editor.widgets.content_widget import QDMNodeContentWidget
 
-    Socket.Socket_Graphics_Class = QDMGraphicsSocket
+    Socket._graphics_socket_class = QDMGraphicsSocket
     Node._graphics_node_class = QDMGraphicsNode
-    Node.NodeContent_class = QDMNodeContentWidget
+    Node._content_widget_class = QDMNodeContentWidget
     Edge._graphics_edge_class = QDMGraphicsEdge
 
 
@@ -57,6 +63,8 @@ __all__ = [
     "Socket",
     "Node",
     "Edge",
+    "SocketPosition",
+    "EdgeType",
     "LEFT_TOP",
     "LEFT_CENTER",
     "LEFT_BOTTOM",

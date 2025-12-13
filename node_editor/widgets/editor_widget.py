@@ -19,6 +19,7 @@ Date:
 
 from __future__ import annotations
 
+import logging
 import os
 from typing import TYPE_CHECKING
 
@@ -30,6 +31,8 @@ from node_editor.utils.helpers import dump_exception
 
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QGraphicsItem
+
+logger = logging.getLogger(__name__)
 
 
 class NodeEditorWidget(QWidget):

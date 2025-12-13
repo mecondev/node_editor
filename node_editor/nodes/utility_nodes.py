@@ -86,7 +86,7 @@ class ConstantNode(Node):
     content_label_objname = "utility_constant"
 
     _graphics_node_class = UtilityGraphicsNode
-    NodeContent_class = ConstantContent
+    _content_widget_class = ConstantContent
 
     def __init__(self, scene, inputs=None, outputs=None):
         """Create a constant node.
@@ -199,7 +199,7 @@ class PrintNode(Node):
     content_label_objname = "utility_print"
 
     _graphics_node_class = UtilityGraphicsNode
-    NodeContent_class = UtilityContent
+    _content_widget_class = UtilityContent
 
     def __init__(self, scene, inputs=None, outputs=None):
         """Create a print node.
@@ -281,7 +281,7 @@ class CommentNode(Node):
     content_label_objname = "utility_comment"
 
     _graphics_node_class = UtilityGraphicsNode
-    NodeContent_class = CommentContent
+    _content_widget_class = CommentContent
 
     def __init__(self, scene, inputs=None, outputs=None):
         """Create a comment node.
@@ -353,7 +353,7 @@ class ClampNode(Node):
     content_label_objname = "utility_clamp"
 
     _graphics_node_class = UtilityGraphicsNode
-    NodeContent_class = UtilityContent
+    _content_widget_class = UtilityContent
 
     def __init__(self, scene, inputs=None, outputs=None):
         """Create a clamp node.
@@ -440,7 +440,7 @@ class RandomNode(Node):
     content_label_objname = "utility_random"
 
     _graphics_node_class = UtilityGraphicsNode
-    NodeContent_class = UtilityContent
+    _content_widget_class = UtilityContent
 
     def __init__(self, scene, inputs=None, outputs=None):
         """Create a random node.

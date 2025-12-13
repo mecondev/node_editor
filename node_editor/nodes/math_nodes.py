@@ -60,7 +60,7 @@ class MathNode(Node):
     content_label_objname = "math_node"
 
     _graphics_node_class = MathGraphicsNode
-    NodeContent_class = MathContent
+    _content_widget_class = MathContent
 
     def __init__(self, scene, inputs=None, outputs=None):
         """Create a math operation node.
@@ -285,7 +285,7 @@ class PowerNode(Node):
     content_label_objname = "math_power"
 
     _graphics_node_class = MathGraphicsNode
-    NodeContent_class = MathContent
+    _content_widget_class = MathContent
 
     def __init__(self, scene, inputs=None, outputs=None):
         """Create a power node.
@@ -365,7 +365,7 @@ class SqrtNode(Node):
     content_label_objname = "math_sqrt"
 
     _graphics_node_class = MathGraphicsNode
-    NodeContent_class = MathContent
+    _content_widget_class = MathContent
 
     def __init__(self, scene, inputs=None, outputs=None):
         """Create a square root node.
@@ -448,7 +448,7 @@ class AbsNode(Node):
     content_label_objname = "math_abs"
 
     _graphics_node_class = MathGraphicsNode
-    NodeContent_class = MathContent
+    _content_widget_class = MathContent
 
     def __init__(self, scene, inputs=None, outputs=None):
         """Create an absolute value node.
@@ -525,7 +525,7 @@ class MinNode(Node):
     content_label_objname = "math_min"
 
     _graphics_node_class = MathGraphicsNode
-    NodeContent_class = MathContent
+    _content_widget_class = MathContent
 
     def __init__(self, scene, inputs=None, outputs=None):
         """Create a minimum node.
@@ -605,7 +605,7 @@ class MaxNode(Node):
     content_label_objname = "math_max"
 
     _graphics_node_class = MathGraphicsNode
-    NodeContent_class = MathContent
+    _content_widget_class = MathContent
 
     def __init__(self, scene, inputs=None, outputs=None):
         """Create a maximum node.
@@ -685,7 +685,7 @@ class RoundNode(Node):
     content_label_objname = "math_round"
 
     _graphics_node_class = MathGraphicsNode
-    NodeContent_class = MathContent
+    _content_widget_class = MathContent
 
     def __init__(self, scene, inputs=None, outputs=None):
         """Create a round node.
@@ -765,7 +765,7 @@ class ModuloNode(Node):
     content_label_objname = "math_modulo"
 
     _graphics_node_class = MathGraphicsNode
-    NodeContent_class = MathContent
+    _content_widget_class = MathContent
 
     def __init__(self, scene, inputs=None, outputs=None):
         """Create a modulo node.

@@ -17,7 +17,7 @@ Date:
     2025-12-11
 """
 
-from collections import OrderedDict
+from enum import IntEnum
 from typing import TYPE_CHECKING
 
 from node_editor.core.serializable import Serializable
@@ -27,13 +27,28 @@ if TYPE_CHECKING:
     from node_editor.core.node import Node
     from node_editor.graphics.socket import QDMGraphicsSocket
 
-# Socket position constants for node layout
-LEFT_TOP = 1
-LEFT_CENTER = 2
-LEFT_BOTTOM = 3
-RIGHT_TOP = 4
-RIGHT_CENTER = 5
-RIGHT_BOTTOM = 6
+
+class SocketPosition(IntEnum):
+    """Socket position constants for node layout.
+
+    IntEnum provides type safety while maintaining backward compatibility
+    with integer comparisons and serialization.
+    """
+    LEFT_TOP = 1
+    LEFT_CENTER = 2
+    LEFT_BOTTOM = 3
+    RIGHT_TOP = 4
+    RIGHT_CENTER = 5
+    RIGHT_BOTTOM = 6
+
+
+# Backward compatibility: expose as module-level constants
+LEFT_TOP = SocketPosition.LEFT_TOP
+LEFT_CENTER = SocketPosition.LEFT_CENTER
+LEFT_BOTTOM = SocketPosition.LEFT_BOTTOM
+RIGHT_TOP = SocketPosition.RIGHT_TOP
+RIGHT_CENTER = SocketPosition.RIGHT_CENTER
+RIGHT_BOTTOM = SocketPosition.RIGHT_BOTTOM
 
 class Socket(Serializable):
     """Connection point on a node for attaching edges.
@@ -61,10 +76,10 @@ class Socket(Serializable):
         count_on_this_node_side: Total socket count on this side for layout.
 
     Class Attributes:
-        Socket_Graphics_Class: Graphics class for socket visualization (set at init).
+        _graphics_socket_class: Graphics class for socket visualization (set at init).
     """
 
-    Socket_Graphics_Class: type["QDMGraphicsSocket"] | None = None
+    _graphics_socket_class: type["QDMGraphicsSocket"] | None = None
 
     def __init__(
         self,
@@ -98,7 +113,7 @@ class Socket(Serializable):
         self.is_input = is_input
         self.is_output = not self.is_input
 
-        self.graphics_socket: QDMGraphicsSocket = self.__class__.Socket_Graphics_Class(self)
+        self.graphics_socket: QDMGraphicsSocket = self.__class__._graphics_socket_class(self)
         self.set_socket_position()
 
         self.edges: list[Edge] = []
@@ -214,19 +229,19 @@ class Socket(Serializable):
             else:
                 edge.remove()
 
-    def serialize(self) -> OrderedDict:
-        """Convert socket state to ordered dictionary for persistence.
+    def serialize(self) -> dict:
+        """Convert socket state to dictionary for persistence.
 
         Returns:
-            OrderedDict containing socket configuration and ID.
+            Dictionary containing socket configuration and ID.
         """
-        return OrderedDict([
-            ("id", self.id),
-            ("index", self.index),
-            ("multi_edges", self.is_multi_edges),
-            ("position", self.position),
-            ("socket_type", self.socket_type),
-        ])
+        return {
+            "id": self.id,
+            "index": self.index,
+            "multi_edges": self.is_multi_edges,
+            "position": self.position,
+            "socket_type": self.socket_type,
+        }
 
     def deserialize(
         self,

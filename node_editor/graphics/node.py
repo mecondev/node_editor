@@ -18,9 +18,10 @@ Date:
     2025-12-11
 """
 
+import logging
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import QRectF, Qt
+from PyQt5.QtCore import QRectF, Qt, QTimer
 from PyQt5.QtGui import QBrush, QFont, QPainterPath, QPen
 from PyQt5.QtWidgets import QGraphicsItem, QGraphicsTextItem, QWidget
 
@@ -30,6 +31,8 @@ if TYPE_CHECKING:
     from PyQt5.QtWidgets import QGraphicsSceneHoverEvent, QStyleOptionGraphicsItem
 
     from node_editor.core.node import Node
+
+logger = logging.getLogger(__name__)
 
 
 class QDMGraphicsNode(QGraphicsItem):
@@ -61,6 +64,8 @@ class QDMGraphicsNode(QGraphicsItem):
         self.hovered = False
         self._was_moved = False
         self._last_selected_state = False
+        self._edge_update_pending = False
+        self._edge_update_timer: QTimer | None = None
 
         self.init_sizes()
         self.init_assets()
@@ -164,6 +169,10 @@ class QDMGraphicsNode(QGraphicsItem):
     def mouseMoveEvent(self, event) -> None:
         """Handle mouse drag to move node and update edges.
 
+        Uses deferred batch updates to optimize performance when dragging
+        multiple nodes. Edge updates are scheduled via QTimer to run once
+        per frame instead of on every mouse move event.
+
         Args:
             event: Qt mouse move event.
         """
@@ -174,15 +183,40 @@ class QDMGraphicsNode(QGraphicsItem):
             if scene is None or not hasattr(scene, 'scene'):
                 return
 
-            # Update edges for all selected nodes
-            for node in list(scene.scene.nodes):  # Create copy to avoid iteration issues
-                if node.graphics_node and node.graphics_node.isSelected():
-                    node.update_connected_edges()
-        except (RuntimeError, AttributeError):
-            # Ignore errors from deleted Qt objects
-            pass
+            # Schedule batch edge update if not already pending
+            if not self._edge_update_pending:
+                self._edge_update_pending = True
+                if self._edge_update_timer is None:
+                    self._edge_update_timer = QTimer()
+                    self._edge_update_timer.timeout.connect(self._batch_update_edges)
+                    self._edge_update_timer.setSingleShot(True)
+                self._edge_update_timer.start(0)  # Run on next event loop iteration
+
+        except (RuntimeError, AttributeError) as e:
+            # Ignore errors from deleted Qt objects during cleanup
+            logger.debug("Ignoring Qt cleanup error during node move: %s", e)
 
         self._was_moved = True
+
+    def _batch_update_edges(self) -> None:
+        """Update edges for all selected nodes in a single batch.
+
+        Called by QTimer after mouseMoveEvent to batch multiple edge
+        updates into a single operation per frame.
+        """
+        self._edge_update_pending = False
+
+        try:
+            scene = self.scene()
+            if scene is None or not hasattr(scene, 'scene'):
+                return
+
+            # Update edges for all selected nodes once
+            for node in list(scene.scene.nodes):
+                if node.graphics_node and node.graphics_node.isSelected():
+                    node.update_connected_edges()
+        except (RuntimeError, AttributeError) as e:
+            logger.debug("Ignoring Qt cleanup error during batch edge update: %s", e)
 
     def mouseReleaseEvent(self, event) -> None:
         """Handle mouse release to store history and update selection.

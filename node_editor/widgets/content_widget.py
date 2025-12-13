@@ -14,7 +14,6 @@ Date:
     2025-12-11
 """
 
-from collections import OrderedDict
 from typing import TYPE_CHECKING
 
 from PyQt5.QtWidgets import QLabel, QTextEdit, QVBoxLayout, QWidget
@@ -75,15 +74,15 @@ class QDMNodeContentWidget(QWidget, Serializable):
         """
         self.node.scene.get_view().editingFlag = value
 
-    def serialize(self) -> OrderedDict:
+    def serialize(self) -> dict:
         """Serialize content widget state.
 
         Override to save custom widget data.
 
         Returns:
-            OrderedDict with serialized state.
+            Dictionary with serialized state.
         """
-        return OrderedDict([])
+        return {}
 
     def deserialize(
         self, _data: dict, _hashmap: dict | None = None, _restore_id: bool = True

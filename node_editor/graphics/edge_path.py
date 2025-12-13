@@ -76,9 +76,9 @@ class GraphicsEdgePathDirect(GraphicsEdgePathBase):
             QPainterPath with single line segment.
         """
         path = QPainterPath(
-            QPointF(self.owner.posSource[0], self.owner.posSource[1])
+            QPointF(self.owner.pos_source[0], self.owner.pos_source[1])
         )
-        path.lineTo(self.owner.posDestination[0], self.owner.posDestination[1])
+        path.lineTo(self.owner.pos_destination[0], self.owner.pos_destination[1])
         return path
 
 
@@ -94,8 +94,8 @@ class GraphicsEdgePathBezier(GraphicsEdgePathBase):
         Returns:
             QPainterPath with smooth Bezier curve.
         """
-        s = self.owner.posSource
-        d = self.owner.posDestination
+        s = self.owner.pos_source
+        d = self.owner.pos_destination
         dist = (d[0] - s[0]) * 0.5
 
         cpx_s = +dist
@@ -121,15 +121,15 @@ class GraphicsEdgePathBezier(GraphicsEdgePathBase):
                 ) * EDGE_CP_ROUNDNESS
 
         path = QPainterPath(
-            QPointF(self.owner.posSource[0], self.owner.posSource[1])
+            QPointF(self.owner.pos_source[0], self.owner.pos_source[1])
         )
         path.cubicTo(
             s[0] + cpx_s,
             s[1] + cpy_s,
             d[0] + cpx_d,
             d[1] + cpy_d,
-            self.owner.posDestination[0],
-            self.owner.posDestination[1],
+            self.owner.pos_destination[0],
+            self.owner.pos_destination[1],
         )
 
         return path
@@ -158,8 +158,8 @@ class GraphicsEdgePathSquare(GraphicsEdgePathBase):
         Returns:
             QPainterPath with three connected line segments.
         """
-        s = self.owner.posSource
-        d = self.owner.posDestination
+        s = self.owner.pos_source
+        d = self.owner.pos_destination
 
         mid_x = s[0] + ((d[0] - s[0]) * self.handle_weight)
 
@@ -183,8 +183,8 @@ class GraphicsEdgePathImprovedSharp(GraphicsEdgePathBase):
         Returns:
             QPainterPath with horizontal segments and diagonal.
         """
-        sx, sy = self.owner.posSource
-        dx, dy = self.owner.posDestination
+        sx, sy = self.owner.pos_source
+        dx, dy = self.owner.pos_destination
         distx, disty = dx - sx, dy - sy
         dist = math.sqrt(distx * distx + disty * disty)
 
@@ -223,8 +223,8 @@ class GraphicsEdgePathImprovedBezier(GraphicsEdgePathBase):
         Returns:
             QPainterPath with horizontal ends and curved middle.
         """
-        sx, sy = self.owner.posSource
-        dx, dy = self.owner.posDestination
+        sx, sy = self.owner.pos_source
+        dx, dy = self.owner.pos_destination
         distx, disty = dx - sx, dy - sy
         dist = math.sqrt(distx * distx + disty * disty)
 
