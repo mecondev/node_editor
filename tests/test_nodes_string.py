@@ -42,11 +42,11 @@ class TestConcatenateNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result == "Hello World"
-        assert node.isInvalid() is False
+        assert node.is_invalid() is False
 
     def test_concatenate_numbers_as_strings(self, scene: Scene):
         """Test concatenating numbers (converted to strings)."""
@@ -59,7 +59,7 @@ class TestConcatenateNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result == "42.0100.0"
@@ -75,7 +75,7 @@ class TestConcatenateNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result == ""
@@ -104,7 +104,7 @@ class TestFormatNode:
         template.eval()
         value.eval()
 
-        node.getInput = lambda idx: template if idx == 0 else (value if idx == 1 else None)
+        node.get_input = lambda idx: template if idx == 0 else (value if idx == 1 else None)
 
         result = node.eval()
         assert result == "Value: 42.0"
@@ -120,7 +120,7 @@ class TestFormatNode:
         template.eval()
         value.eval()
 
-        node.getInput = lambda idx: template if idx == 0 else (value if idx == 1 else None)
+        node.get_input = lambda idx: template if idx == 0 else (value if idx == 1 else None)
 
         result = node.eval()
         assert result == "Result: 100.0"
@@ -136,7 +136,7 @@ class TestFormatNode:
         template.eval()
         value.eval()
 
-        node.getInput = lambda idx: template if idx == 0 else (value if idx == 1 else None)
+        node.get_input = lambda idx: template if idx == 0 else (value if idx == 1 else None)
 
         result = node.eval()
         assert result == "Hello, World!"
@@ -162,7 +162,7 @@ class TestLengthNode:
         input_node.content.edit.setText("Hello World")
         input_node.eval()
 
-        node.getInput = lambda idx: input_node if idx == 0 else None
+        node.get_input = lambda idx: input_node if idx == 0 else None
 
         result = node.eval()
         assert result == 11
@@ -175,7 +175,7 @@ class TestLengthNode:
         input_node.content.edit.setText("")
         input_node.eval()
 
-        node.getInput = lambda idx: input_node if idx == 0 else None
+        node.get_input = lambda idx: input_node if idx == 0 else None
 
         result = node.eval()
         assert result == 0
@@ -188,7 +188,7 @@ class TestLengthNode:
             def eval(self):
                 return ["a", "b", "c", "d"]
 
-        node.getInput = lambda idx: MockListNode() if idx == 0 else None
+        node.get_input = lambda idx: MockListNode() if idx == 0 else None
 
         result = node.eval()
         assert result == 4
@@ -220,7 +220,7 @@ class TestSubstringNode:
         start_node.eval()
         end_node.eval()
 
-        node.getInput = lambda idx: (
+        node.get_input = lambda idx: (
             string_node if idx == 0 else (
                 start_node if idx == 1 else (
                     end_node if idx == 2 else None
@@ -245,7 +245,7 @@ class TestSubstringNode:
         start_node.eval()
         end_node.eval()
 
-        node.getInput = lambda idx: (
+        node.get_input = lambda idx: (
             string_node if idx == 0 else (
                 start_node if idx == 1 else (
                     end_node if idx == 2 else None
@@ -270,7 +270,7 @@ class TestSubstringNode:
         start_node.eval()
         end_node.eval()
 
-        node.getInput = lambda idx: (
+        node.get_input = lambda idx: (
             string_node if idx == 0 else (
                 start_node if idx == 1 else (
                     end_node if idx == 2 else None
@@ -305,7 +305,7 @@ class TestSplitNode:
         string_node.eval()
         delimiter_node.eval()
 
-        node.getInput = lambda idx: string_node if idx == 0 else (delimiter_node if idx == 1 else None)
+        node.get_input = lambda idx: string_node if idx == 0 else (delimiter_node if idx == 1 else None)
 
         result = node.eval()
         assert result == ["Hello", "World", "Test"]
@@ -321,7 +321,7 @@ class TestSplitNode:
         string_node.eval()
         delimiter_node.eval()
 
-        node.getInput = lambda idx: string_node if idx == 0 else (delimiter_node if idx == 1 else None)
+        node.get_input = lambda idx: string_node if idx == 0 else (delimiter_node if idx == 1 else None)
 
         result = node.eval()
         assert result == ["a", "b", "c", "d"]
@@ -337,7 +337,7 @@ class TestSplitNode:
         string_node.eval()
         delimiter_node.eval()
 
-        node.getInput = lambda idx: string_node if idx == 0 else (delimiter_node if idx == 1 else None)
+        node.get_input = lambda idx: string_node if idx == 0 else (delimiter_node if idx == 1 else None)
 
         result = node.eval()
         assert result == ["Hello", "World"]
@@ -353,7 +353,7 @@ class TestSplitNode:
         string_node.eval()
         delimiter_node.eval()
 
-        node.getInput = lambda idx: string_node if idx == 0 else (delimiter_node if idx == 1 else None)
+        node.get_input = lambda idx: string_node if idx == 0 else (delimiter_node if idx == 1 else None)
 
         result = node.eval()
         assert result == ["HelloWorld"]

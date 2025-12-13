@@ -99,8 +99,8 @@ class Node(Serializable):
         self.content: QDMNodeContentWidget | None = None
         self.graphics_node: QDMGraphicsNode | None = None
 
-        self.initInnerClasses()
-        self.initSettings()
+        self.init_inner_classes()
+        self.init_settings()
 
         self.title = title
 
@@ -109,7 +109,7 @@ class Node(Serializable):
 
         self.inputs: list[Socket] = []
         self.outputs: list[Socket] = []
-        self.initSockets(inputs or [], outputs or [])
+        self.init_sockets(inputs or [], outputs or [])
 
         self._is_dirty = False
         self._is_invalid = False
@@ -152,7 +152,7 @@ class Node(Serializable):
         """
         return self.graphics_node.pos()
 
-    def setPos(self, x: float, y: float) -> None:
+    def set_pos(self, x: float, y: float) -> None:
         """Move node to specified scene position.
 
         Updates graphics position and recalculates all connected
@@ -166,26 +166,26 @@ class Node(Serializable):
         for socket in self.inputs:
             for edge in socket.edges:
                 edge.graphics_edge.calcPath()
-                edge.updatePositions()
+                edge.update_positions()
         for socket in self.outputs:
             for edge in socket.edges:
                 edge.graphics_edge.calcPath()
-                edge.updatePositions()
+                edge.update_positions()
 
-    def initInnerClasses(self) -> None:
+    def init_inner_classes(self) -> None:
         """Instantiate graphics node and content widget.
 
         Creates instances using class-level factory classes. Override
-        getNodeContentClass() and getGraphicsNodeClass() to customize.
+        get_node_content_class() and get_graphics_node_class() to customize.
         """
-        node_content_class = self.getNodeContentClass()
-        graphics_node_class = self.getGraphicsNodeClass()
+        node_content_class = self.get_node_content_class()
+        graphics_node_class = self.get_graphics_node_class()
         if node_content_class is not None:
             self.content = node_content_class(self)
         if graphics_node_class is not None:
             self.graphics_node = graphics_node_class(self)
 
-    def getNodeContentClass(self) -> type["QDMNodeContentWidget"] | None:
+    def get_node_content_class(self) -> type["QDMNodeContentWidget"] | None:
         """Get factory class for content widget.
 
         Override in subclasses to provide custom content widgets.
@@ -195,7 +195,7 @@ class Node(Serializable):
         """
         return self.__class__.NodeContent_class
 
-    def getGraphicsNodeClass(self) -> type["QDMGraphicsNode"] | None:
+    def get_graphics_node_class(self) -> type["QDMGraphicsNode"] | None:
         """Get factory class for graphics node.
 
         Override in subclasses to provide custom graphics.
@@ -205,7 +205,7 @@ class Node(Serializable):
         """
         return self.__class__._graphics_node_class
 
-    def initSettings(self) -> None:
+    def init_settings(self) -> None:
         """Configure socket layout properties.
 
         Sets socket spacing, positions, and multi-edge defaults.
@@ -226,7 +226,7 @@ class Node(Serializable):
             RIGHT_TOP: 1,
         }
 
-    def initSockets(self, inputs: list[int], outputs: list[int], reset: bool = True) -> None:
+    def init_sockets(self, inputs: list[int], outputs: list[int], reset: bool = True) -> None:
         """Create input and output sockets from type lists.
 
         Optionally removes existing sockets first. Each element in
@@ -314,7 +314,7 @@ class Node(Serializable):
             event: Qt mouse event with click details.
         """
 
-    def doSelect(self, new_state: bool = True) -> None:
+    def do_select(self, new_state: bool = True) -> None:
         """Programmatically select or deselect this node.
 
         Args:
@@ -322,7 +322,7 @@ class Node(Serializable):
         """
         self.graphics_node.doSelect(new_state)
 
-    def isSelected(self) -> bool:
+    def is_selected(self) -> bool:
         """Check if node is currently selected.
 
         Returns:
@@ -330,7 +330,7 @@ class Node(Serializable):
         """
         return self.graphics_node.isSelected()
 
-    def hasConnectedEdge(self, edge: "Edge") -> bool:
+    def has_connected_edge(self, edge: "Edge") -> bool:
         """Check if specified edge connects to this node.
 
         Args:
@@ -395,7 +395,7 @@ class Node(Serializable):
 
         return (x, y)
 
-    def getSocketScenePosition(self, socket: Socket) -> tuple[float, float]:
+    def get_socket_scene_position(self, socket: Socket) -> tuple[float, float]:
         """Calculate socket position in scene coordinates.
 
         Combines node position with socket offset for absolute placement.
@@ -412,14 +412,14 @@ class Node(Serializable):
         )
         return (nodepos.x() + socketpos[0], nodepos.y() + socketpos[1])
 
-    def updateConnectedEdges(self) -> None:
+    def update_connected_edges(self) -> None:
         """Refresh positions of all edges connected to this node.
 
         Call after moving node to update edge path calculations.
         """
         for socket in self.inputs + self.outputs:
             for edge in socket.edges:
-                edge.updatePositions()
+                edge.update_positions()
 
     def remove(self) -> None:
         """Delete node and clean up all references.
@@ -437,7 +437,7 @@ class Node(Serializable):
 
     # Node evaluation methods
 
-    def isDirty(self) -> bool:
+    def is_dirty(self) -> bool:
         """Check if node requires re-evaluation.
 
         Returns:
@@ -472,7 +472,7 @@ class Node(Serializable):
         Args:
             new_value: True to mark dirty, False to clear.
         """
-        for other_node in self.getChildrenNodes():
+        for other_node in self.get_children_nodes():
             other_node.mark_dirty(new_value)
 
     def mark_descendants_dirty(self, new_value: bool = True) -> None:
@@ -483,11 +483,11 @@ class Node(Serializable):
         Args:
             new_value: True to mark dirty, False to clear.
         """
-        for other_node in self.getChildrenNodes():
+        for other_node in self.get_children_nodes():
             other_node.mark_dirty(new_value)
             other_node.mark_descendants_dirty(new_value)
 
-    def isInvalid(self) -> bool:
+    def is_invalid(self) -> bool:
         """Check if node is in an error state.
 
         Returns:
@@ -522,7 +522,7 @@ class Node(Serializable):
         Args:
             new_value: True to mark invalid, False to clear.
         """
-        for other_node in self.getChildrenNodes():
+        for other_node in self.get_children_nodes():
             other_node.mark_invalid(new_value)
 
     def mark_descendants_invalid(self, new_value: bool = True) -> None:
@@ -531,7 +531,7 @@ class Node(Serializable):
         Args:
             new_value: True to mark invalid, False to clear.
         """
-        for other_node in self.getChildrenNodes():
+        for other_node in self.get_children_nodes():
             other_node.mark_invalid(new_value)
             other_node.mark_descendants_invalid(new_value)
 
@@ -551,17 +551,17 @@ class Node(Serializable):
         self.mark_invalid(False)
         return 0
 
-    def evalChildren(self) -> None:
+    def eval_children(self) -> None:
         """Evaluate all immediate downstream nodes.
 
         Calls eval() on each node connected to this node's outputs.
         """
-        for node in self.getChildrenNodes():
+        for node in self.get_children_nodes():
             node.eval()
 
     # Node traversal methods
 
-    def getChildrenNodes(self) -> list["Node"]:
+    def get_children_nodes(self) -> list["Node"]:
         """Get nodes connected to this node's outputs.
 
         Returns:
@@ -572,11 +572,11 @@ class Node(Serializable):
         other_nodes = []
         for output_socket in self.outputs:
             for edge in output_socket.edges:
-                other_node = edge.getOtherSocket(output_socket).node
+                other_node = edge.get_other_socket(output_socket).node
                 other_nodes.append(other_node)
         return other_nodes
 
-    def getInput(self, index: int = 0) -> "Node | None":
+    def get_input(self, index: int = 0) -> "Node | None":
         """Get node connected to specified input socket.
 
         Returns only the first connected node if multiple exist.
@@ -592,13 +592,13 @@ class Node(Serializable):
             if len(input_socket.edges) == 0:
                 return None
             connecting_edge = input_socket.edges[0]
-            other_socket = connecting_edge.getOtherSocket(self.inputs[index])
+            other_socket = connecting_edge.get_other_socket(self.inputs[index])
             return other_socket.node
         except Exception as e:
             dump_exception(e)
             return None
 
-    def getInputWithSocket(self, index: int = 0) -> tuple["Node | None", "Socket | None"]:
+    def get_input_with_socket(self, index: int = 0) -> tuple["Node | None", "Socket | None"]:
         """Get node and socket connected to specified input.
 
         Returns first connection if multiple exist.
@@ -614,13 +614,13 @@ class Node(Serializable):
             if len(input_socket.edges) == 0:
                 return None, None
             connecting_edge = input_socket.edges[0]
-            other_socket = connecting_edge.getOtherSocket(self.inputs[index])
+            other_socket = connecting_edge.get_other_socket(self.inputs[index])
             return other_socket.node, other_socket
         except Exception as e:
             dump_exception(e)
             return None, None
 
-    def getInputWithSocketIndex(self, index: int = 0) -> tuple["Node | None", int | None]:
+    def get_input_with_socket_index(self, index: int = 0) -> tuple["Node | None", int | None]:
         """Get node and output socket index connected to specified input.
 
         Args:
@@ -631,7 +631,7 @@ class Node(Serializable):
         """
         try:
             edge = self.inputs[index].edges[0]
-            socket = edge.getOtherSocket(self.inputs[index])
+            socket = edge.get_other_socket(self.inputs[index])
             return socket.node, socket.index
         except IndexError:
             return None, None
@@ -639,7 +639,7 @@ class Node(Serializable):
             dump_exception(e)
             return None, None
 
-    def getInputs(self, index: int = 0) -> list["Node"]:
+    def get_inputs(self, index: int = 0) -> list["Node"]:
         """Get all nodes connected to specified input socket.
 
         Useful for multi-edge input sockets.
@@ -652,11 +652,11 @@ class Node(Serializable):
         """
         ins = []
         for edge in self.inputs[index].edges:
-            other_socket = edge.getOtherSocket(self.inputs[index])
+            other_socket = edge.get_other_socket(self.inputs[index])
             ins.append(other_socket.node)
         return ins
 
-    def getOutputs(self, index: int = 0) -> list["Node"]:
+    def get_outputs(self, index: int = 0) -> list["Node"]:
         """Get all nodes connected to specified output socket.
 
         Args:
@@ -667,7 +667,7 @@ class Node(Serializable):
         """
         outs = []
         for edge in self.outputs[index].edges:
-            other_socket = edge.getOtherSocket(self.outputs[index])
+            other_socket = edge.get_other_socket(self.outputs[index])
             outs.append(other_socket.node)
         return outs
 
@@ -728,7 +728,7 @@ class Node(Serializable):
                 self.id = data["id"]
             hashmap[data["id"]] = self
 
-            self.setPos(data["pos_x"], data["pos_y"])
+            self.set_pos(data["pos_x"], data["pos_y"])
             self.title = data["title"]
 
             data["inputs"].sort(key=lambda socket: socket["index"] + socket["position"] * 10000)

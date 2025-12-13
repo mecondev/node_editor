@@ -204,7 +204,7 @@ class TestIfNode:
         node = IfNode(scene)
         result = node.eval()
         assert result is None
-        assert node.isInvalid() is True
+        assert node.is_invalid() is True
 
     def test_if_condition_true(self, scene: Scene):
         """Test if node returns true_value when condition is True."""
@@ -223,7 +223,7 @@ class TestIfNode:
             def eval(self):
                 return 200
 
-        node.getInput = lambda idx: (
+        node.get_input = lambda idx: (
             MockCondition() if idx == 0 else (
                 MockTrueValue() if idx == 1 else (
                     MockFalseValue() if idx == 2 else None
@@ -233,7 +233,7 @@ class TestIfNode:
 
         result = node.eval()
         assert result == 100
-        assert node.isInvalid() is False
+        assert node.is_invalid() is False
 
     def test_if_condition_false(self, scene: Scene):
         """Test if node returns false_value when condition is False."""
@@ -252,7 +252,7 @@ class TestIfNode:
             def eval(self):
                 return 200
 
-        node.getInput = lambda idx: (
+        node.get_input = lambda idx: (
             MockCondition() if idx == 0 else (
                 MockTrueValue() if idx == 1 else (
                     MockFalseValue() if idx == 2 else None
@@ -262,7 +262,7 @@ class TestIfNode:
 
         result = node.eval()
         assert result == 200
-        assert node.isInvalid() is False
+        assert node.is_invalid() is False
 
     def test_if_with_zero_as_false(self, scene: Scene):
         """Test if node treats 0 as False."""
@@ -280,7 +280,7 @@ class TestIfNode:
             def eval(self):
                 return "false"
 
-        node.getInput = lambda idx: (
+        node.get_input = lambda idx: (
             MockCondition() if idx == 0 else (
                 MockTrueValue() if idx == 1 else (
                     MockFalseValue() if idx == 2 else None
@@ -307,7 +307,7 @@ class TestIfNode:
             def eval(self):
                 return "false"
 
-        node.getInput = lambda idx: (
+        node.get_input = lambda idx: (
             MockCondition() if idx == 0 else (
                 MockTrueValue() if idx == 1 else (
                     MockFalseValue() if idx == 2 else None
@@ -334,11 +334,11 @@ class TestLogicNodeIntegration:
         input2.eval()
 
         # Mock connections
-        lt_node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        lt_node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = lt_node.eval()
         assert result is True
-        assert lt_node.isInvalid() is False
+        assert lt_node.is_invalid() is False
 
     def test_compare_strings(self, scene: Scene):
         """Test comparing two text inputs."""
@@ -352,7 +352,7 @@ class TestLogicNodeIntegration:
         input2.eval()
 
         # Mock connections
-        eq_node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        eq_node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = eq_node.eval()
         assert result is True
@@ -378,12 +378,12 @@ class TestLogicNodeIntegration:
         false_val.eval()
 
         # Mock connections for lt_node
-        lt_node.getInput = lambda idx: num1 if idx == 0 else (num2 if idx == 1 else None)
+        lt_node.get_input = lambda idx: num1 if idx == 0 else (num2 if idx == 1 else None)
         lt_result = lt_node.eval()
         assert lt_result is True
 
         # Mock connections for if_node
-        if_node.getInput = lambda idx: (
+        if_node.get_input = lambda idx: (
             lt_node if idx == 0 else (
                 true_val if idx == 1 else (
                     false_val if idx == 2 else None
@@ -418,7 +418,7 @@ class TestAndNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result is True
@@ -434,7 +434,7 @@ class TestAndNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result is False
@@ -450,7 +450,7 @@ class TestAndNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result is False
@@ -466,7 +466,7 @@ class TestAndNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result is False
@@ -482,7 +482,7 @@ class TestAndNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result is True
@@ -498,7 +498,7 @@ class TestAndNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result is False
@@ -527,7 +527,7 @@ class TestOrNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result is True
@@ -543,7 +543,7 @@ class TestOrNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result is True
@@ -559,7 +559,7 @@ class TestOrNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result is True
@@ -575,7 +575,7 @@ class TestOrNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result is False
@@ -591,7 +591,7 @@ class TestOrNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result is True
@@ -617,7 +617,7 @@ class TestNotNode:
         input_node.content.edit.setText("1")
         input_node.eval()
 
-        node.getInput = lambda idx: input_node if idx == 0 else None
+        node.get_input = lambda idx: input_node if idx == 0 else None
 
         result = node.eval()
         assert result is False
@@ -630,7 +630,7 @@ class TestNotNode:
         input_node.content.edit.setText("0")
         input_node.eval()
 
-        node.getInput = lambda idx: input_node if idx == 0 else None
+        node.get_input = lambda idx: input_node if idx == 0 else None
 
         result = node.eval()
         assert result is True
@@ -643,7 +643,7 @@ class TestNotNode:
         input_node.content.edit.setText("42")
         input_node.eval()
 
-        node.getInput = lambda idx: input_node if idx == 0 else None
+        node.get_input = lambda idx: input_node if idx == 0 else None
 
         result = node.eval()
         assert result is False
@@ -656,7 +656,7 @@ class TestNotNode:
         input_node.content.edit.setText("")
         input_node.eval()
 
-        node.getInput = lambda idx: input_node if idx == 0 else None
+        node.get_input = lambda idx: input_node if idx == 0 else None
 
         result = node.eval()
         assert result is True
@@ -669,7 +669,7 @@ class TestNotNode:
         input_node.content.edit.setText("hello")
         input_node.eval()
 
-        node.getInput = lambda idx: input_node if idx == 0 else None
+        node.get_input = lambda idx: input_node if idx == 0 else None
 
         result = node.eval()
         assert result is False
@@ -698,7 +698,7 @@ class TestXorNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result is False
@@ -714,7 +714,7 @@ class TestXorNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result is True
@@ -730,7 +730,7 @@ class TestXorNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result is True
@@ -746,7 +746,7 @@ class TestXorNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result is False
@@ -762,7 +762,7 @@ class TestXorNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result is False
@@ -778,7 +778,7 @@ class TestXorNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result is True

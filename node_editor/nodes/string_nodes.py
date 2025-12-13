@@ -91,8 +91,8 @@ class ConcatenateNode(Node):
         Returns:
             str: Concatenated string, or None if inputs are invalid.
         """
-        i1 = self.getInput(0)
-        i2 = self.getInput(1)
+        i1 = self.get_input(0)
+        i2 = self.get_input(1)
 
         if i1 is None or i2 is None:
             self.mark_invalid()
@@ -110,7 +110,7 @@ class ConcatenateNode(Node):
             self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 
@@ -171,8 +171,8 @@ class FormatNode(Node):
         Returns:
             str: Formatted string, or None if inputs are invalid.
         """
-        i1 = self.getInput(0)
-        i2 = self.getInput(1)
+        i1 = self.get_input(0)
+        i2 = self.get_input(1)
 
         if i1 is None or i2 is None:
             self.mark_invalid()
@@ -195,7 +195,7 @@ class FormatNode(Node):
             self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 
@@ -255,7 +255,7 @@ class LengthNode(Node):
         Returns:
             int: Length of input, or None if input is invalid.
         """
-        i1 = self.getInput(0)
+        i1 = self.get_input(0)
 
         if i1 is None:
             self.mark_invalid()
@@ -274,7 +274,7 @@ class LengthNode(Node):
             self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 
@@ -334,9 +334,9 @@ class SubstringNode(Node):
         Returns:
             str: Extracted substring, or None if inputs are invalid.
         """
-        string_node = self.getInput(0)
-        start_node = self.getInput(1)
-        end_node = self.getInput(2)
+        string_node = self.get_input(0)
+        start_node = self.get_input(1)
+        end_node = self.get_input(2)
 
         if string_node is None or start_node is None or end_node is None:
             self.mark_invalid()
@@ -356,7 +356,7 @@ class SubstringNode(Node):
             self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 
@@ -416,8 +416,8 @@ class SplitNode(Node):
         Returns:
             list: List of string parts, or None if inputs are invalid.
         """
-        string_node = self.getInput(0)
-        delimiter_node = self.getInput(1)
+        string_node = self.get_input(0)
+        delimiter_node = self.get_input(1)
 
         if string_node is None or delimiter_node is None:
             self.mark_invalid()
@@ -440,7 +440,7 @@ class SplitNode(Node):
             self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 

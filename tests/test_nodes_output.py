@@ -35,7 +35,7 @@ class TestOutputNode:
         node = OutputNode(scene)
         result = node.eval()
         assert result is None
-        assert node.isInvalid() is True
+        assert node.is_invalid() is True
         assert node.content.label.text() == "---"
 
     def test_output_number_input(self, scene: Scene):
@@ -49,13 +49,13 @@ class TestOutputNode:
         output_node = OutputNode(scene)
 
         # Mock connection (simplified)
-        output_node.getInput = lambda idx: input_node if idx == 0 else None
+        output_node.get_input = lambda idx: input_node if idx == 0 else None
 
         # Evaluate
         result = output_node.eval()
         assert result == 42.5
         assert output_node.value == 42.5
-        assert output_node.isInvalid() is False
+        assert output_node.is_invalid() is False
 
     def test_output_text_input(self, scene: Scene):
         """Test output displaying text."""
@@ -68,7 +68,7 @@ class TestOutputNode:
         output_node = OutputNode(scene)
 
         # Mock connection
-        output_node.getInput = lambda idx: input_node if idx == 0 else None
+        output_node.get_input = lambda idx: input_node if idx == 0 else None
 
         # Evaluate
         result = output_node.eval()
@@ -86,7 +86,7 @@ class TestOutputNode:
         output_node = OutputNode(scene)
 
         # Mock connection
-        output_node.getInput = lambda idx: input_node if idx == 0 else None
+        output_node.get_input = lambda idx: input_node if idx == 0 else None
 
         # Evaluate
         result = output_node.eval()
@@ -104,7 +104,7 @@ class TestOutputNode:
         output_node = OutputNode(scene)
 
         # Mock connection
-        output_node.getInput = lambda idx: input_node if idx == 0 else None
+        output_node.get_input = lambda idx: input_node if idx == 0 else None
 
         # Evaluate
         result = output_node.eval()
@@ -119,7 +119,7 @@ class TestOutputNode:
             def eval(self):
                 return True
 
-        output_node.getInput = lambda idx: MockNode() if idx == 0 else None
+        output_node.get_input = lambda idx: MockNode() if idx == 0 else None
 
         result = output_node.eval()
         assert result is True
@@ -134,7 +134,7 @@ class TestOutputNode:
             def eval(self):
                 return False
 
-        output_node.getInput = lambda idx: MockNode() if idx == 0 else None
+        output_node.get_input = lambda idx: MockNode() if idx == 0 else None
 
         result = output_node.eval()
         assert result is False
@@ -162,7 +162,7 @@ class TestOutputNode:
         output_node = OutputNode(scene)
 
         # Mock connection
-        output_node.getInput = lambda idx: input_node if idx == 0 else None
+        output_node.get_input = lambda idx: input_node if idx == 0 else None
 
         # First value
         input_node.content.edit.setText("10")

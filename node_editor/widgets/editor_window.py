@@ -355,14 +355,14 @@ class NodeEditorWindow(QMainWindow):
     def on_edit_cut(self) -> None:
         """Cut selected items to clipboard."""
         if self.get_current_node_editor_widget():
-            data = self.get_current_node_editor_widget().scene.clipboard.serializeSelected(delete=True)
+            data = self.get_current_node_editor_widget().scene.clipboard.serialize_selected(delete=True)
             str_data = json.dumps(data, indent=4)
             QApplication.instance().clipboard().setText(str_data)
 
     def on_edit_copy(self) -> None:
         """Copy selected items to clipboard."""
         if self.get_current_node_editor_widget():
-            data = self.get_current_node_editor_widget().scene.clipboard.serializeSelected(delete=False)
+            data = self.get_current_node_editor_widget().scene.clipboard.serialize_selected(delete=False)
             str_data = json.dumps(data, indent=4)
             QApplication.instance().clipboard().setText(str_data)
 
@@ -379,7 +379,7 @@ class NodeEditorWindow(QMainWindow):
             if 'nodes' not in data:
                 return
 
-            self.get_current_node_editor_widget().scene.clipboard.deserializeFromClipboard(data)
+            self.get_current_node_editor_widget().scene.clipboard.deserialize_from_clipboard(data)
 
     def read_settings(self) -> None:
         """Restore window geometry from persistent settings."""

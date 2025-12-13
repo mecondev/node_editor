@@ -139,8 +139,8 @@ class TestEdgeConnections:
         edge = Edge(node1.scene, node1.outputs[0], node2.inputs[0])
 
         # Move node
-        node1.setPos(200, 200)
-        edge.updatePositions()
+        node1.set_pos(200, 200)
+        edge.update_positions()
 
         # Edge should have updated graphics
         assert edge.graphics_edge is not None
@@ -156,7 +156,7 @@ class TestEdgeValidation:
 
         # Validation might always return True if no validators set
         # Just verify method exists and is callable
-        result = edge.validateEdge(node1.outputs[0], node2.inputs[0])
+        result = edge.validate_edge(node1.outputs[0], node2.inputs[0])
         assert isinstance(result, bool)
 
 

@@ -102,7 +102,7 @@ class Socket(Serializable):
         self.is_output = not self.is_input
 
         self.graphics_socket: QDMGraphicsSocket = self.__class__.Socket_GR_Class(self)
-        self.setSocketPosition()
+        self.set_socket_position()
 
         self.edges: list[Edge] = []
 
@@ -125,7 +125,7 @@ class Socket(Serializable):
         self.node.scene.graphics_scene.removeItem(self.graphics_socket)
         del self.graphics_socket
 
-    def changeSocketType(self, new_socket_type: int) -> bool:
+    def change_socket_type(self, new_socket_type: int) -> bool:
         """Update socket type and refresh visual appearance.
 
         Args:
@@ -140,7 +140,7 @@ class Socket(Serializable):
             return True
         return False
 
-    def setSocketPosition(self) -> None:
+    def set_socket_position(self) -> None:
         """Update graphics socket position based on current node layout.
 
         Queries the parent node for this socket's position and updates
@@ -219,7 +219,7 @@ class Socket(Serializable):
             else:
                 edge.remove()
 
-    def determineMultiEdges(self, data: dict) -> bool:
+    def determine_multi_edges(self, data: dict) -> bool:
         """Determine multi-edge capability from serialized data.
 
         Handles backward compatibility with older file formats that didn't
@@ -271,8 +271,8 @@ class Socket(Serializable):
 
         if restore_id:
             self.id = data["id"]
-        self.is_multi_edges = self.determineMultiEdges(data)
-        self.changeSocketType(data["socket_type"])
+        self.is_multi_edges = self.determine_multi_edges(data)
+        self.change_socket_type(data["socket_type"])
         hashmap[data["id"]] = self
         return True
 

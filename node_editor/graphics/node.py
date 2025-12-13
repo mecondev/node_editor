@@ -324,7 +324,7 @@ class QDMGraphicsNode(QGraphicsItem):
         painter.setBrush(Qt.BrushStyle.NoBrush)
 
         # Check if node is in error state
-        if self.node and self.node.isInvalid():
+        if self.node and self.node.is_invalid():
             painter.setPen(self._pen_error)
             painter.drawPath(path_outline.simplified())
         elif self.hovered:

@@ -99,7 +99,7 @@ class Edge(Serializable):
         self.end_socket = end_socket
         self._edge_type = edge_type
 
-        self.graphics_edge = self.createEdgeClassInstance()
+        self.graphics_edge = self.create_edge_class_instance()
 
         self.scene.add_edge(self)
 
@@ -189,10 +189,10 @@ class Edge(Serializable):
         self.graphics_edge.createEdgePathCalculator()
 
         if self.start_socket is not None:
-            self.updatePositions()
+            self.update_positions()
 
     @classmethod
-    def getEdgeValidators(cls) -> list:
+    def get_edge_validators(cls) -> list:
         """Retrieve registered edge validator callbacks.
 
         Returns:
@@ -201,7 +201,7 @@ class Edge(Serializable):
         return cls.edge_validators
 
     @classmethod
-    def registerEdgeValidator(cls, validator_callback) -> None:
+    def register_edge_validator(cls, validator_callback) -> None:
         """Register a callback to validate edge connections.
 
         Validators receive (start_socket, end_socket) and return True
@@ -213,7 +213,7 @@ class Edge(Serializable):
         cls.edge_validators.append(validator_callback)
 
     @classmethod
-    def validateEdge(cls, start_socket: "Socket", end_socket: "Socket") -> bool:
+    def validate_edge(cls, start_socket: "Socket", end_socket: "Socket") -> bool:
         """Check if connection is allowed by all validators.
 
         Args:
@@ -223,7 +223,7 @@ class Edge(Serializable):
         Returns:
             True if all validators approve the connection.
         """
-        return all(validator(start_socket, end_socket) for validator in cls.getEdgeValidators())
+        return all(validator(start_socket, end_socket) for validator in cls.get_edge_validators())
 
     def reconnect(self, from_socket: "Socket", to_socket: "Socket") -> None:
         """Move one endpoint to a different socket.
@@ -237,7 +237,7 @@ class Edge(Serializable):
         elif self.end_socket == from_socket:
             self.end_socket = to_socket
 
-    def getGraphicsEdgeClass(self) -> type["QDMGraphicsEdge"]:
+    def get_graphics_edge_class(self) -> type["QDMGraphicsEdge"]:
         """Get graphics class for edge visualization.
 
         Returns:
@@ -245,7 +245,7 @@ class Edge(Serializable):
         """
         return self.__class__._graphics_edge_class
 
-    def createEdgeClassInstance(self) -> "QDMGraphicsEdge":
+    def create_edge_class_instance(self) -> "QDMGraphicsEdge":
         """Instantiate and configure graphics edge.
 
         Creates the visual representation, adds it to the scene,
@@ -254,13 +254,13 @@ class Edge(Serializable):
         Returns:
             Configured QDMGraphicsEdge instance.
         """
-        self.graphics_edge = self.getGraphicsEdgeClass()(self)
+        self.graphics_edge = self.get_graphics_edge_class()(self)
         self.scene.graphics_scene.addItem(self.graphics_edge)
         if self.start_socket is not None:
-            self.updatePositions()
+            self.update_positions()
         return self.graphics_edge
 
-    def getOtherSocket(self, known_socket: "Socket") -> "Socket | None":
+    def get_other_socket(self, known_socket: "Socket") -> "Socket | None":
         """Get the opposite socket on this edge.
 
         Given one endpoint, returns the other. Useful for traversing
@@ -274,7 +274,7 @@ class Edge(Serializable):
         """
         return self.start_socket if known_socket == self.end_socket else self.end_socket
 
-    def doSelect(self, new_state: bool = True) -> None:
+    def do_select(self, new_state: bool = True) -> None:
         """Programmatically select or deselect this edge.
 
         Args:
@@ -282,7 +282,7 @@ class Edge(Serializable):
         """
         self.graphics_edge.doSelect(new_state)
 
-    def updatePositions(self) -> None:
+    def update_positions(self) -> None:
         """Recalculate edge path based on current socket positions.
 
         Queries both sockets for their scene positions and updates

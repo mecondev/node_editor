@@ -80,13 +80,13 @@ class SimpleNodeEditorWindow(NodeEditorWindow):
 
         try:
             node1 = Node(scene, "Input Node", inputs=[], outputs=[1])
-            node1.setPos(-250, -100)
+            node1.set_pos(-250, -100)
 
             node2 = Node(scene, "Process Node", inputs=[1, 1], outputs=[1])
-            node2.setPos(0, -50)
+            node2.set_pos(0, -50)
 
             node3 = Node(scene, "Output Node", inputs=[1], outputs=[])
-            node3.setPos(250, -100)
+            node3.set_pos(250, -100)
 
             logger.info("Created %d demo nodes", 3)
             self.statusBar().showMessage("Demo nodes created - drag to connect!")

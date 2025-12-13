@@ -107,7 +107,7 @@ class CalculatorSubWindow(NodeEditorWidget):
 
             try:
                 node = get_class_from_opcode(op_code)(self.scene)
-                node.setPos(scene_position.x(), scene_position.y())
+                node.set_pos(scene_position.x(), scene_position.y())
                 self.scene.history.storeHistory(f"Created node {node.__class__.__name__}")
             except Exception as e:
                 dump_exception(e)
@@ -226,7 +226,7 @@ class CalculatorSubWindow(NodeEditorWidget):
         if action is not None:
             new_calc_node = get_class_from_opcode(action.data())(self.scene)
             scene_pos = self.scene.getView().mapToScene(event.pos())
-            new_calc_node.setPos(scene_pos.x(), scene_pos.y())
+            new_calc_node.set_pos(scene_pos.x(), scene_pos.y())
             if DEBUG_CONTEXT:
                 print("Selected node:", new_calc_node)
 

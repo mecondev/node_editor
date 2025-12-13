@@ -156,7 +156,7 @@ class NodeEditorWidget(QWidget):
         """
         QApplication.setOverrideCursor(Qt.WaitCursor)
         try:
-            self.scene.loadFromFile(filename)
+            self.scene.load_from_file(filename)
             self.filename = filename
             self.scene.history.clear()
             self.scene.history.store_initial_history_stamp()
@@ -187,7 +187,7 @@ class NodeEditorWidget(QWidget):
             self.filename = filename
 
         QApplication.setOverrideCursor(Qt.WaitCursor)
-        self.scene.saveToFile(self.filename)
+        self.scene.save_to_file(self.filename)
         QApplication.restoreOverrideCursor()
 
         return True

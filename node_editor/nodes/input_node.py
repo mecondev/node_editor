@@ -161,7 +161,7 @@ class NumberInputNode(Node):
             self.graphics_node.setToolTip("Invalid number format")
 
         self.mark_descendants_dirty()
-        self.evalChildren()
+        self.eval_children()
 
         return self.value
 
@@ -221,6 +221,6 @@ class TextInputNode(Node):
         self.graphics_node.setToolTip("")
 
         self.mark_descendants_dirty()
-        self.evalChildren()
+        self.eval_children()
 
         return self.value

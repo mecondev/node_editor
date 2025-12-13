@@ -168,7 +168,7 @@ class EdgeRerouting:
 
             for edge in self.getAffectedEdges():
                 start_sock = edge.getOtherSocket(self.start_socket)
-                if not edge.validateEdge(start_sock, target):
+                if not edge.validate_edge(start_sock, target):
                     # Not valid edge
                     invalid_edges.append(edge)
 

@@ -70,7 +70,7 @@ class TestNumberInputNode:
         node.content.edit.setText("not a number")
         node.eval()
         assert node.value == 0.0
-        assert node.isInvalid() is True
+        assert node.is_invalid() is True
 
     def test_number_input_scientific_notation(self, scene: Scene):
         """Test scientific notation parsing."""
@@ -176,4 +176,4 @@ class TestTextInputNode:
         node = TextInputNode(scene)
         node.content.edit.setText("any text")
         node.eval()
-        assert node.isInvalid() is False
+        assert node.is_invalid() is False

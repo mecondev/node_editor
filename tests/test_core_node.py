@@ -68,7 +68,7 @@ class TestNodeProperties:
     def test_get_position(self, scene):
         """Test getting node position."""
         node = Node(scene, "Test Node")
-        node.setPos(100, 200)
+        node.set_pos(100, 200)
 
         pos = node.pos
         assert pos.x() == 100
@@ -77,7 +77,7 @@ class TestNodeProperties:
     def test_set_position(self, scene):
         """Test setting node position."""
         node = Node(scene, "Test Node")
-        node.setPos(150, 250)
+        node.set_pos(150, 250)
 
         assert node.graphics_node.pos().x() == 150
         assert node.graphics_node.pos().y() == 250
@@ -111,8 +111,8 @@ class TestNodeSockets:
         edge = Edge(scene, node1.outputs[0], node2.inputs[0])
 
         # Move node and update
-        node1.setPos(200, 200)
-        node1.updateConnectedEdges()
+        node1.set_pos(200, 200)
+        node1.update_connected_edges()
 
         # Edge should still be connected
         assert edge in node1.outputs[0].edges
@@ -125,22 +125,22 @@ class TestNodeState:
         """Test new nodes start in clean state."""
         node = Node(scene, "Test Node")
 
-        assert not node.isDirty()
-        assert not node.isInvalid()
+        assert not node.is_dirty()
+        assert not node.is_invalid()
 
     def test_mark_node_dirty(self, scene):
         """Test marking node as dirty."""
         node = Node(scene, "Test Node")
         node.mark_dirty()
 
-        assert node.isDirty()
+        assert node.is_dirty()
 
     def test_mark_node_invalid(self, scene):
         """Test marking node as invalid."""
         node = Node(scene, "Test Node")
         node.mark_invalid()
 
-        assert node.isInvalid()
+        assert node.is_invalid()
 
     def test_mark_descendants_dirty(self, scene):
         """Test marking descendant nodes dirty."""
@@ -156,8 +156,8 @@ class TestNodeState:
         node1.mark_dirty()
         node1.mark_descendants_dirty()
 
-        assert node2.isDirty()
-        assert node3.isDirty()
+        assert node2.is_dirty()
+        assert node3.is_dirty()
 
 
 class TestNodeRemoval:
@@ -202,7 +202,7 @@ class TestNodeSerialization:
     def test_serialize_node(self, scene):
         """Test serializing a node to dict."""
         node = Node(scene, "Test Node", inputs=[0, 1], outputs=[2])
-        node.setPos(100, 150)
+        node.set_pos(100, 150)
 
         data = node.serialize()
 
@@ -216,7 +216,7 @@ class TestNodeSerialization:
     def test_deserialize_node(self, scene):
         """Test deserializing a node from dict."""
         original = Node(scene, "Original Node", inputs=[0], outputs=[1])
-        original.setPos(200, 250)
+        original.set_pos(200, 250)
 
         data = original.serialize()
         original.remove()

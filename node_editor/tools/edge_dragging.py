@@ -117,7 +117,7 @@ class EdgeDragging:
             return False
 
         if isinstance(item, QDMGraphicsSocket):
-            if not self.drag_edge.validateEdge(self.drag_start_socket, item.socket):
+            if not self.drag_edge.validate_edge(self.drag_start_socket, item.socket):
                 return False
 
             self.grView.reset_mode()

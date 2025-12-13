@@ -46,7 +46,7 @@ class SceneClipboard:
         """
         self.scene = scene
 
-    def serializeSelected(self, delete: bool = False) -> OrderedDict:
+    def serialize_selected(self, delete: bool = False) -> OrderedDict:
         """Serialize currently selected nodes and edges.
 
         Captures all selected nodes and edges that are fully contained
@@ -101,7 +101,7 @@ class SceneClipboard:
 
         return data
 
-    def deserializeFromClipboard(self, data: dict, *args, **kwargs) -> None:
+    def deserialize_from_clipboard(self, data: dict, *args, **kwargs) -> None:
         """Paste clipboard data into the scene.
 
         Creates new nodes and edges from serialized data, positioning
@@ -109,7 +109,7 @@ class SceneClipboard:
         for all pasted elements.
 
         Args:
-            data: Dictionary with 'nodes' and 'edges' from serializeSelected.
+            data: Dictionary with 'nodes' and 'edges' from serialize_selected.
             *args: Additional arguments passed to deserialize methods.
             **kwargs: Additional keyword arguments.
         """
@@ -153,7 +153,7 @@ class SceneClipboard:
         created_nodes = []
 
         for node_data in data["nodes"]:
-            node_class = self.scene.getNodeClassFromData(node_data)
+            node_class = self.scene.get_node_class_from_data(node_data)
             new_node = node_class(self.scene)
             new_node.deserialize(node_data, hashmap, *args, restore_id=False, **kwargs)
             created_nodes.append(new_node)
@@ -168,8 +168,8 @@ class SceneClipboard:
                 newx = posx
                 newy = posy
 
-            new_node.setPos(newx, newy)
-            new_node.doSelect()
+            new_node.set_pos(newx, newy)
+            new_node.do_select()
 
         if "edges" in data:
             from node_editor.core.edge import Edge

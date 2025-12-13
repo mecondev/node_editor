@@ -57,12 +57,12 @@ class ToStringNode(Node):
         Returns:
             str: String representation of input value, or None if no input.
         """
-        if not self.isDirty() and not self.isInvalid():
+        if not self.is_dirty() and not self.is_invalid():
             return self.value
 
         try:
             # Get input value
-            input_socket = self.getInput(0)
+            input_socket = self.get_input(0)
             if not input_socket or not input_socket.hasEdges():
                 self.mark_invalid()
                 self.graphics_node.setToolTip("Missing input connection")
@@ -82,7 +82,7 @@ class ToStringNode(Node):
             self.graphics_node.setToolTip(f"Output: {self.value!r}")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 
@@ -132,12 +132,12 @@ class ToNumberNode(Node):
         Returns:
             float: Converted number, or None if conversion fails.
         """
-        if not self.isDirty() and not self.isInvalid():
+        if not self.is_dirty() and not self.is_invalid():
             return self.value
 
         try:
             # Get input value
-            input_socket = self.getInput(0)
+            input_socket = self.get_input(0)
             if not input_socket or not input_socket.hasEdges():
                 self.mark_invalid()
                 self.graphics_node.setToolTip("Missing input connection")
@@ -172,7 +172,7 @@ class ToNumberNode(Node):
             self.graphics_node.setToolTip(f"Output: {self.value}")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 
@@ -228,12 +228,12 @@ class ToBoolNode(Node):
         Returns:
             bool: Converted boolean, or None if no input.
         """
-        if not self.isDirty() and not self.isInvalid():
+        if not self.is_dirty() and not self.is_invalid():
             return self.value
 
         try:
             # Get input value
-            input_socket = self.getInput(0)
+            input_socket = self.get_input(0)
             if not input_socket or not input_socket.hasEdges():
                 self.mark_invalid()
                 self.graphics_node.setToolTip("Missing input connection")
@@ -261,7 +261,7 @@ class ToBoolNode(Node):
             self.graphics_node.setToolTip(f"Output: {self.value}")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 
@@ -311,12 +311,12 @@ class ToIntNode(Node):
         Returns:
             int: Converted integer, or None if conversion fails.
         """
-        if not self.isDirty() and not self.isInvalid():
+        if not self.is_dirty() and not self.is_invalid():
             return self.value
 
         try:
             # Get input value
-            input_socket = self.getInput(0)
+            input_socket = self.get_input(0)
             if not input_socket or not input_socket.hasEdges():
                 self.mark_invalid()
                 self.graphics_node.setToolTip("Missing input connection")
@@ -354,7 +354,7 @@ class ToIntNode(Node):
             self.graphics_node.setToolTip(f"Output: {self.value}")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 

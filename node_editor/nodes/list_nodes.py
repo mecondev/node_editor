@@ -57,14 +57,14 @@ class CreateListNode(Node):
         Returns:
             list: List of all input values, or empty list if no inputs.
         """
-        if not self.isDirty() and not self.isInvalid():
+        if not self.is_dirty() and not self.is_invalid():
             return self.value
 
         try:
             # Collect all connected input values
             result_list = []
             for i in range(len(self.inputs)):
-                input_socket = self.getInput(i)
+                input_socket = self.get_input(i)
                 if input_socket and input_socket.hasEdges():
                     value = input_socket.getValue()
                     result_list.append(value)
@@ -76,7 +76,7 @@ class CreateListNode(Node):
             self.graphics_node.setToolTip(f"List: {self.value}")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 
@@ -126,12 +126,12 @@ class GetItemNode(Node):
         Returns:
             any: Item at index, or None if error.
         """
-        if not self.isDirty() and not self.isInvalid():
+        if not self.is_dirty() and not self.is_invalid():
             return self.value
 
         try:
             # Get list input
-            list_socket = self.getInput(0)
+            list_socket = self.get_input(0)
             if not list_socket or not list_socket.hasEdges():
                 self.mark_invalid()
                 self.graphics_node.setToolTip("Missing list input")
@@ -141,7 +141,7 @@ class GetItemNode(Node):
             input_list = list_socket.getValue()
 
             # Get index input
-            index_socket = self.getInput(1)
+            index_socket = self.get_input(1)
             if not index_socket or not index_socket.hasEdges():
                 self.mark_invalid()
                 self.graphics_node.setToolTip("Missing index input")
@@ -186,7 +186,7 @@ class GetItemNode(Node):
             self.graphics_node.setToolTip(f"Item: {self.value!r}")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 
@@ -235,12 +235,12 @@ class ListLengthNode(Node):
         Returns:
             int: Length of the input, or None if error.
         """
-        if not self.isDirty() and not self.isInvalid():
+        if not self.is_dirty() and not self.is_invalid():
             return self.value
 
         try:
             # Get input
-            input_socket = self.getInput(0)
+            input_socket = self.get_input(0)
             if not input_socket or not input_socket.hasEdges():
                 self.mark_invalid()
                 self.graphics_node.setToolTip("Missing input connection")
@@ -266,7 +266,7 @@ class ListLengthNode(Node):
             self.graphics_node.setToolTip(f"Length: {self.value}")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 
@@ -316,12 +316,12 @@ class AppendNode(Node):
         Returns:
             list: New list with item appended, or None if error.
         """
-        if not self.isDirty() and not self.isInvalid():
+        if not self.is_dirty() and not self.is_invalid():
             return self.value
 
         try:
             # Get list input
-            list_socket = self.getInput(0)
+            list_socket = self.get_input(0)
             if not list_socket or not list_socket.hasEdges():
                 self.mark_invalid()
                 self.graphics_node.setToolTip("Missing list input")
@@ -331,7 +331,7 @@ class AppendNode(Node):
             input_list = list_socket.getValue()
 
             # Get item input
-            item_socket = self.getInput(1)
+            item_socket = self.get_input(1)
             if not item_socket or not item_socket.hasEdges():
                 self.mark_invalid()
                 self.graphics_node.setToolTip("Missing item input")
@@ -360,7 +360,7 @@ class AppendNode(Node):
             self.graphics_node.setToolTip(f"Result: {self.value}")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 
@@ -410,12 +410,12 @@ class JoinNode(Node):
         Returns:
             str: Joined string, or None if error.
         """
-        if not self.isDirty() and not self.isInvalid():
+        if not self.is_dirty() and not self.is_invalid():
             return self.value
 
         try:
             # Get list input
-            list_socket = self.getInput(0)
+            list_socket = self.get_input(0)
             if not list_socket or not list_socket.hasEdges():
                 self.mark_invalid()
                 self.graphics_node.setToolTip("Missing list input")
@@ -426,7 +426,7 @@ class JoinNode(Node):
 
             # Get separator input (optional)
             separator = ""
-            sep_socket = self.getInput(1)
+            sep_socket = self.get_input(1)
             if sep_socket and sep_socket.hasEdges():
                 sep_value = sep_socket.getValue()
                 if sep_value is not None:
@@ -449,7 +449,7 @@ class JoinNode(Node):
             self.graphics_node.setToolTip(f"Result: {self.value!r}")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 

@@ -108,8 +108,8 @@ class CompareNode(Node):
         Returns:
             bool: Comparison result, or None if inputs are invalid.
         """
-        i1 = self.getInput(0)
-        i2 = self.getInput(1)
+        i1 = self.get_input(0)
+        i2 = self.get_input(1)
 
         if i1 is None or i2 is None:
             self.mark_invalid()
@@ -127,7 +127,7 @@ class CompareNode(Node):
             self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 
@@ -359,9 +359,9 @@ class IfNode(Node):
             value from false_value input if condition is False,
             or None if inputs are invalid.
         """
-        condition_node = self.getInput(0)
-        true_node = self.getInput(1)
-        false_node = self.getInput(2)
+        condition_node = self.get_input(0)
+        true_node = self.get_input(1)
+        false_node = self.get_input(2)
 
         if condition_node is None or true_node is None or false_node is None:
             self.mark_invalid()
@@ -382,7 +382,7 @@ class IfNode(Node):
             self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 
@@ -447,8 +447,8 @@ class AndNode(Node):
         Returns:
             bool: True if both inputs are truthy, or None if invalid.
         """
-        i1 = self.getInput(0)
-        i2 = self.getInput(1)
+        i1 = self.get_input(0)
+        i2 = self.get_input(1)
 
         if i1 is None or i2 is None:
             self.mark_invalid()
@@ -467,7 +467,7 @@ class AndNode(Node):
             self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 
@@ -527,8 +527,8 @@ class OrNode(Node):
         Returns:
             bool: True if any input is truthy, or None if invalid.
         """
-        i1 = self.getInput(0)
-        i2 = self.getInput(1)
+        i1 = self.get_input(0)
+        i2 = self.get_input(1)
 
         if i1 is None or i2 is None:
             self.mark_invalid()
@@ -547,7 +547,7 @@ class OrNode(Node):
             self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 
@@ -607,7 +607,7 @@ class NotNode(Node):
         Returns:
             bool: Negation of input, or None if invalid.
         """
-        input_node = self.getInput(0)
+        input_node = self.get_input(0)
 
         if input_node is None:
             self.mark_invalid()
@@ -624,7 +624,7 @@ class NotNode(Node):
             self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 
@@ -684,8 +684,8 @@ class XorNode(Node):
         Returns:
             bool: True if exactly one input is truthy, or None if invalid.
         """
-        i1 = self.getInput(0)
-        i2 = self.getInput(1)
+        i1 = self.get_input(0)
+        i2 = self.get_input(1)
 
         if i1 is None or i2 is None:
             self.mark_invalid()
@@ -705,7 +705,7 @@ class XorNode(Node):
             self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 

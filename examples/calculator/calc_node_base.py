@@ -32,9 +32,9 @@ class CalcGraphicsNode(QDMGraphicsNode):
         super().paint(painter, option, widget)
 
         offset = 24.0
-        if self.node.isDirty():
+        if self.node.is_dirty():
             offset = 0.0
-        if self.node.isInvalid():
+        if self.node.is_invalid():
             offset = 48.0
 
         painter.drawImage(
@@ -115,7 +115,7 @@ class CalcNode(Node):
                 return None
 
     def eval(self):
-        if not self.isDirty() and not self.isInvalid():
+        if not self.is_dirty() and not self.is_invalid():
             print(f" _> returning cached {self.__class__.__name__} value:", self.value)
             return self.value
 

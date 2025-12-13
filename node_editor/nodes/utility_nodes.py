@@ -141,7 +141,7 @@ class ConstantNode(Node):
             self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 
@@ -232,7 +232,7 @@ class PrintNode(Node):
         Returns:
             Input value (pass-through).
         """
-        input_node = self.getInput(0)
+        input_node = self.get_input(0)
 
         if input_node is None:
             self.mark_invalid()
@@ -253,7 +253,7 @@ class PrintNode(Node):
             self.graphics_node.setToolTip(f"Output: {self.value}")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 
@@ -386,9 +386,9 @@ class ClampNode(Node):
         Returns:
             float: Value clamped to [min, max] range.
         """
-        value_node = self.getInput(0)
-        min_node = self.getInput(1)
-        max_node = self.getInput(2)
+        value_node = self.get_input(0)
+        min_node = self.get_input(1)
+        max_node = self.get_input(2)
 
         if value_node is None or min_node is None or max_node is None:
             self.mark_invalid()
@@ -413,7 +413,7 @@ class ClampNode(Node):
             self.graphics_node.setToolTip(f"Clamped: {self.value}")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 
@@ -473,8 +473,8 @@ class RandomNode(Node):
         Returns:
             float: Random number between min and max.
         """
-        min_node = self.getInput(0)
-        max_node = self.getInput(1)
+        min_node = self.get_input(0)
+        max_node = self.get_input(1)
 
         if min_node is None or max_node is None:
             self.mark_invalid()
@@ -498,7 +498,7 @@ class RandomNode(Node):
             self.graphics_node.setToolTip(f"Random: {self.value:.2f}")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 

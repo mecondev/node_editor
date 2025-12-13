@@ -109,8 +109,8 @@ class MathNode(Node):
         Returns:
             Computed result, or None if inputs are invalid.
         """
-        i1 = self.getInput(0)
-        i2 = self.getInput(1)
+        i1 = self.get_input(0)
+        i2 = self.get_input(1)
 
         if i1 is None or i2 is None:
             self.mark_invalid()
@@ -134,7 +134,7 @@ class MathNode(Node):
             self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 
@@ -316,8 +316,8 @@ class PowerNode(Node):
         Returns:
             float: Base raised to exponent, or None if inputs are invalid.
         """
-        base_node = self.getInput(0)
-        exp_node = self.getInput(1)
+        base_node = self.get_input(0)
+        exp_node = self.get_input(1)
 
         if base_node is None or exp_node is None:
             self.mark_invalid()
@@ -336,7 +336,7 @@ class PowerNode(Node):
             self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 
@@ -396,7 +396,7 @@ class SqrtNode(Node):
         Returns:
             float: Square root of input, or None if invalid.
         """
-        input_node = self.getInput(0)
+        input_node = self.get_input(0)
 
         if input_node is None:
             self.mark_invalid()
@@ -419,7 +419,7 @@ class SqrtNode(Node):
             self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 
@@ -479,7 +479,7 @@ class AbsNode(Node):
         Returns:
             float: Absolute value of input, or None if invalid.
         """
-        input_node = self.getInput(0)
+        input_node = self.get_input(0)
 
         if input_node is None:
             self.mark_invalid()
@@ -496,7 +496,7 @@ class AbsNode(Node):
             self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 
@@ -556,8 +556,8 @@ class MinNode(Node):
         Returns:
             float: Minimum of two inputs, or None if invalid.
         """
-        i1 = self.getInput(0)
-        i2 = self.getInput(1)
+        i1 = self.get_input(0)
+        i2 = self.get_input(1)
 
         if i1 is None or i2 is None:
             self.mark_invalid()
@@ -576,7 +576,7 @@ class MinNode(Node):
             self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 
@@ -636,8 +636,8 @@ class MaxNode(Node):
         Returns:
             float: Maximum of two inputs, or None if invalid.
         """
-        i1 = self.getInput(0)
-        i2 = self.getInput(1)
+        i1 = self.get_input(0)
+        i2 = self.get_input(1)
 
         if i1 is None or i2 is None:
             self.mark_invalid()
@@ -656,7 +656,7 @@ class MaxNode(Node):
             self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 
@@ -716,8 +716,8 @@ class RoundNode(Node):
         Returns:
             float: Rounded number, or None if invalid.
         """
-        number_node = self.getInput(0)
-        places_node = self.getInput(1)
+        number_node = self.get_input(0)
+        places_node = self.get_input(1)
 
         if number_node is None or places_node is None:
             self.mark_invalid()
@@ -736,7 +736,7 @@ class RoundNode(Node):
             self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 
@@ -796,8 +796,8 @@ class ModuloNode(Node):
         Returns:
             float: Remainder of division, or None if invalid.
         """
-        i1 = self.getInput(0)
-        i2 = self.getInput(1)
+        i1 = self.get_input(0)
+        i2 = self.get_input(1)
 
         if i1 is None or i2 is None:
             self.mark_invalid()
@@ -819,7 +819,7 @@ class ModuloNode(Node):
             self.graphics_node.setToolTip("")
 
             self.mark_descendants_dirty()
-            self.evalChildren()
+            self.eval_children()
 
             return self.value
 

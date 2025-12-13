@@ -108,7 +108,7 @@ class OutputNode(Node):
         Returns:
             The input value, or None if not connected.
         """
-        input_node = self.getInput(0)
+        input_node = self.get_input(0)
 
         if input_node is None:
             self.value = None

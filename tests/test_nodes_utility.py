@@ -99,7 +99,7 @@ class TestPrintNode:
         input_node.content.edit.setText("42")
         input_node.eval()
 
-        print_node.getInput = lambda idx: input_node if idx == 0 else None
+        print_node.get_input = lambda idx: input_node if idx == 0 else None
 
         result = print_node.eval()
         assert result == 42.0
@@ -112,7 +112,7 @@ class TestPrintNode:
         constant_node.content.edit.setText("hello")
         constant_node.eval()
 
-        print_node.getInput = lambda idx: constant_node if idx == 0 else None
+        print_node.get_input = lambda idx: constant_node if idx == 0 else None
 
         result = print_node.eval()
         assert result == "hello"
@@ -123,7 +123,7 @@ class TestPrintNode:
 
         result = node.eval()
         assert result is None
-        assert node.isInvalid() is True
+        assert node.is_invalid() is True
 
 
 class TestCommentNode:
@@ -193,7 +193,7 @@ class TestClampNode:
         min_node.eval()
         max_node.eval()
 
-        clamp_node.getInput = lambda idx: (
+        clamp_node.get_input = lambda idx: (
             value_node if idx == 0 else (min_node if idx == 1 else (max_node if idx == 2 else None))
         )
 
@@ -214,7 +214,7 @@ class TestClampNode:
         min_node.eval()
         max_node.eval()
 
-        clamp_node.getInput = lambda idx: (
+        clamp_node.get_input = lambda idx: (
             value_node if idx == 0 else (min_node if idx == 1 else (max_node if idx == 2 else None))
         )
 
@@ -235,7 +235,7 @@ class TestClampNode:
         min_node.eval()
         max_node.eval()
 
-        clamp_node.getInput = lambda idx: (
+        clamp_node.get_input = lambda idx: (
             value_node if idx == 0 else (min_node if idx == 1 else (max_node if idx == 2 else None))
         )
 
@@ -256,7 +256,7 @@ class TestClampNode:
         min_node.eval()
         max_node.eval()
 
-        clamp_node.getInput = lambda idx: (
+        clamp_node.get_input = lambda idx: (
             value_node if idx == 0 else (min_node if idx == 1 else (max_node if idx == 2 else None))
         )
 
@@ -269,7 +269,7 @@ class TestClampNode:
 
         result = node.eval()
         assert result is None
-        assert node.isInvalid() is True
+        assert node.is_invalid() is True
 
 
 class TestRandomNode:
@@ -295,7 +295,7 @@ class TestRandomNode:
         min_node.eval()
         max_node.eval()
 
-        random_node.getInput = lambda idx: min_node if idx == 0 else (max_node if idx == 1 else None)
+        random_node.get_input = lambda idx: min_node if idx == 0 else (max_node if idx == 1 else None)
 
         result = random_node.eval()
         assert result is not None
@@ -312,7 +312,7 @@ class TestRandomNode:
         min_node.eval()
         max_node.eval()
 
-        random_node.getInput = lambda idx: min_node if idx == 0 else (max_node if idx == 1 else None)
+        random_node.get_input = lambda idx: min_node if idx == 0 else (max_node if idx == 1 else None)
 
         results = [random_node.eval() for _ in range(10)]
         # Very unlikely all 10 values are the same
@@ -329,7 +329,7 @@ class TestRandomNode:
         min_node.eval()
         max_node.eval()
 
-        random_node.getInput = lambda idx: min_node if idx == 0 else (max_node if idx == 1 else None)
+        random_node.get_input = lambda idx: min_node if idx == 0 else (max_node if idx == 1 else None)
 
         result = random_node.eval()
         assert result is not None
@@ -341,4 +341,4 @@ class TestRandomNode:
 
         result = node.eval()
         assert result is None
-        assert node.isInvalid() is True
+        assert node.is_invalid() is True

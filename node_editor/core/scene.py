@@ -392,7 +392,7 @@ class Scene(Serializable):
 
     # File operations
 
-    def saveToFile(self, filename: str) -> None:
+    def save_to_file(self, filename: str) -> None:
         """Persist scene to JSON file.
 
         Serializes all nodes and edges and writes to disk. Updates
@@ -407,7 +407,7 @@ class Scene(Serializable):
         self.has_been_modified = False
         self.filename = filename
 
-    def loadFromFile(self, filename: str) -> None:
+    def load_from_file(self, filename: str) -> None:
         """Load scene from JSON file.
 
         Clears existing content and deserializes from file. Updates
@@ -435,7 +435,7 @@ class Scene(Serializable):
 
     # Node/Edge class selection
 
-    def getEdgeClass(self) -> type[Edge]:
+    def get_edge_class(self) -> type[Edge]:
         """Get factory class for creating edges.
 
         Override to use custom Edge subclass for this scene.
@@ -447,7 +447,7 @@ class Scene(Serializable):
 
         return Edge
 
-    def setNodeClassSelector(self, class_selecting_function: Callable[[dict], type[Node]]) -> None:
+    def set_node_class_selector(self, class_selecting_function: Callable[[dict], type[Node]]) -> None:
         """Set callback for dynamic node class selection.
 
         During deserialization, the callback receives serialized node data
@@ -459,7 +459,7 @@ class Scene(Serializable):
         """
         self.node_class_selector = class_selecting_function
 
-    def getNodeClassFromData(self, data: dict) -> type[Node]:
+    def get_node_class_from_data(self, data: dict) -> type[Node]:
         """Determine Node class from serialized data.
 
         Uses registered selector callback if available, otherwise
@@ -546,7 +546,7 @@ class Scene(Serializable):
 
             if not found:
                 try:
-                    node_class = self.getNodeClassFromData(node_data)
+                    node_class = self.get_node_class_from_data(node_data)
                     new_node = node_class(self)
                     new_node.deserialize(node_data, hashmap, restore_id, *args, **kwargs)
                     new_node.on_deserialized(node_data)
@@ -574,7 +574,7 @@ class Scene(Serializable):
                     break
 
             if not found:
-                edge_class = self.getEdgeClass()
+                edge_class = self.get_edge_class()
                 new_edge = edge_class(self)
                 new_edge.deserialize(edge_data, hashmap, restore_id, *args, **kwargs)
             else:

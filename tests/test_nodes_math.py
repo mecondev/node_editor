@@ -239,7 +239,7 @@ class TestMathNodeIntegration:
         node = AddNode(scene)
         result = node.eval()
         assert result is None
-        assert node.isInvalid() is True
+        assert node.is_invalid() is True
 
     def test_math_one_input_missing(self, scene: Scene):
         """Test math node with only one input connected."""
@@ -249,11 +249,11 @@ class TestMathNodeIntegration:
         input1.eval()
 
         # Mock one connection
-        node.getInput = lambda idx: input1 if idx == 0 else None
+        node.get_input = lambda idx: input1 if idx == 0 else None
 
         result = node.eval()
         assert result is None
-        assert node.isInvalid() is True
+        assert node.is_invalid() is True
 
     def test_add_with_connected_inputs(self, scene: Scene):
         """Test add node with two connected inputs."""
@@ -267,11 +267,11 @@ class TestMathNodeIntegration:
         input2.eval()
 
         # Mock connections
-        add_node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        add_node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = add_node.eval()
         assert result == 15.0
-        assert add_node.isInvalid() is False
+        assert add_node.is_invalid() is False
 
     def test_divide_by_zero_marks_invalid(self, scene: Scene):
         """Test divide node handles division by zero gracefully."""
@@ -285,11 +285,11 @@ class TestMathNodeIntegration:
         input2.eval()
 
         # Mock connections
-        div_node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        div_node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = div_node.eval()
         assert result is None
-        assert div_node.isInvalid() is True
+        assert div_node.is_invalid() is True
 
     def test_chain_math_operations(self, scene: Scene):
         """Test chaining multiple math operations."""
@@ -308,12 +308,12 @@ class TestMathNodeIntegration:
         input3.eval()
 
         # Mock connections for add_node
-        add_node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        add_node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
         add_result = add_node.eval()
         assert add_result == 15.0
 
         # Mock connections for mul_node
-        mul_node.getInput = lambda idx: add_node if idx == 0 else (input3 if idx == 1 else None)
+        mul_node.get_input = lambda idx: add_node if idx == 0 else (input3 if idx == 1 else None)
         mul_result = mul_node.eval()
         assert mul_result == 30.0
 
@@ -346,7 +346,7 @@ class TestPowerNode:
         base.eval()
         exponent.eval()
 
-        node.getInput = lambda idx: base if idx == 0 else (exponent if idx == 1 else None)
+        node.get_input = lambda idx: base if idx == 0 else (exponent if idx == 1 else None)
 
         result = node.eval()
         assert result == 8.0
@@ -362,7 +362,7 @@ class TestPowerNode:
         base.eval()
         exponent.eval()
 
-        node.getInput = lambda idx: base if idx == 0 else (exponent if idx == 1 else None)
+        node.get_input = lambda idx: base if idx == 0 else (exponent if idx == 1 else None)
 
         result = node.eval()
         assert result == 1.0
@@ -378,7 +378,7 @@ class TestPowerNode:
         base.eval()
         exponent.eval()
 
-        node.getInput = lambda idx: base if idx == 0 else (exponent if idx == 1 else None)
+        node.get_input = lambda idx: base if idx == 0 else (exponent if idx == 1 else None)
 
         result = node.eval()
         assert result == pytest.approx(0.25)
@@ -394,7 +394,7 @@ class TestPowerNode:
         base.eval()
         exponent.eval()
 
-        node.getInput = lambda idx: base if idx == 0 else (exponent if idx == 1 else None)
+        node.get_input = lambda idx: base if idx == 0 else (exponent if idx == 1 else None)
 
         result = node.eval()
         assert result == pytest.approx(4.0)
@@ -420,7 +420,7 @@ class TestSqrtNode:
         input_node.content.edit.setText("16")
         input_node.eval()
 
-        node.getInput = lambda idx: input_node if idx == 0 else None
+        node.get_input = lambda idx: input_node if idx == 0 else None
 
         result = node.eval()
         assert result == 4.0
@@ -433,7 +433,7 @@ class TestSqrtNode:
         input_node.content.edit.setText("2")
         input_node.eval()
 
-        node.getInput = lambda idx: input_node if idx == 0 else None
+        node.get_input = lambda idx: input_node if idx == 0 else None
 
         result = node.eval()
         assert result == pytest.approx(1.414213562)
@@ -446,7 +446,7 @@ class TestSqrtNode:
         input_node.content.edit.setText("0")
         input_node.eval()
 
-        node.getInput = lambda idx: input_node if idx == 0 else None
+        node.get_input = lambda idx: input_node if idx == 0 else None
 
         result = node.eval()
         assert result == 0.0
@@ -459,11 +459,11 @@ class TestSqrtNode:
         input_node.content.edit.setText("-4")
         input_node.eval()
 
-        node.getInput = lambda idx: input_node if idx == 0 else None
+        node.get_input = lambda idx: input_node if idx == 0 else None
 
         result = node.eval()
         assert result is None
-        assert node.isInvalid() is True
+        assert node.is_invalid() is True
 
 
 class TestAbsNode:
@@ -486,7 +486,7 @@ class TestAbsNode:
         input_node.content.edit.setText("42")
         input_node.eval()
 
-        node.getInput = lambda idx: input_node if idx == 0 else None
+        node.get_input = lambda idx: input_node if idx == 0 else None
 
         result = node.eval()
         assert result == 42.0
@@ -499,7 +499,7 @@ class TestAbsNode:
         input_node.content.edit.setText("-42")
         input_node.eval()
 
-        node.getInput = lambda idx: input_node if idx == 0 else None
+        node.get_input = lambda idx: input_node if idx == 0 else None
 
         result = node.eval()
         assert result == 42.0
@@ -512,7 +512,7 @@ class TestAbsNode:
         input_node.content.edit.setText("0")
         input_node.eval()
 
-        node.getInput = lambda idx: input_node if idx == 0 else None
+        node.get_input = lambda idx: input_node if idx == 0 else None
 
         result = node.eval()
         assert result == 0.0
@@ -541,7 +541,7 @@ class TestMinNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result == 5.0
@@ -557,7 +557,7 @@ class TestMinNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result == 5.0
@@ -573,7 +573,7 @@ class TestMinNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result == 7.0
@@ -589,7 +589,7 @@ class TestMinNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result == -10.0
@@ -618,7 +618,7 @@ class TestMaxNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result == 10.0
@@ -634,7 +634,7 @@ class TestMaxNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result == 10.0
@@ -650,7 +650,7 @@ class TestMaxNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result == -5.0
@@ -679,7 +679,7 @@ class TestRoundNode:
         number.eval()
         places.eval()
 
-        node.getInput = lambda idx: number if idx == 0 else (places if idx == 1 else None)
+        node.get_input = lambda idx: number if idx == 0 else (places if idx == 1 else None)
 
         result = node.eval()
         assert result == 4.0
@@ -695,7 +695,7 @@ class TestRoundNode:
         number.eval()
         places.eval()
 
-        node.getInput = lambda idx: number if idx == 0 else (places if idx == 1 else None)
+        node.get_input = lambda idx: number if idx == 0 else (places if idx == 1 else None)
 
         result = node.eval()
         assert result == 3.14
@@ -711,7 +711,7 @@ class TestRoundNode:
         number.eval()
         places.eval()
 
-        node.getInput = lambda idx: number if idx == 0 else (places if idx == 1 else None)
+        node.get_input = lambda idx: number if idx == 0 else (places if idx == 1 else None)
 
         result = node.eval()
         assert result == -4.0
@@ -740,7 +740,7 @@ class TestModuloNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result == 0.0
@@ -756,7 +756,7 @@ class TestModuloNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result == 1.0
@@ -772,11 +772,11 @@ class TestModuloNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result is None
-        assert node.isInvalid() is True
+        assert node.is_invalid() is True
 
     def test_modulo_negative_numbers(self, scene: Scene):
         """Test modulo with negative numbers."""
@@ -789,7 +789,7 @@ class TestModuloNode:
         input1.eval()
         input2.eval()
 
-        node.getInput = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
+        node.get_input = lambda idx: input1 if idx == 0 else (input2 if idx == 1 else None)
 
         result = node.eval()
         assert result == pytest.approx(2.0)  # Python modulo behavior

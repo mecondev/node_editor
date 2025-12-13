@@ -195,7 +195,7 @@ class TestSceneFileOperations:
             filename = f.name
 
         try:
-            scene.saveToFile(filename)
+            scene.save_to_file(filename)
 
             assert os.path.exists(filename)
 
@@ -218,11 +218,11 @@ class TestSceneFileOperations:
             filename = f.name
 
         try:
-            scene.saveToFile(filename)
+            scene.save_to_file(filename)
 
             # Load into new scene
             new_scene = Scene()
-            new_scene.loadFromFile(filename)
+            new_scene.load_from_file(filename)
 
             assert len(new_scene.nodes) == 2
             assert len(new_scene.edges) == 1
@@ -270,7 +270,7 @@ class TestSceneView:
     def test_get_items_at_position(self, scene):
         """Test getting items at position."""
         node = Node(scene, "Test Node")
-        node.setPos(100, 100)
+        node.set_pos(100, 100)
 
         # Get items near node position
         items = scene.graphics_scene.items()
