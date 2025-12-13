@@ -84,7 +84,7 @@ class NodeEditorWidget(QWidget):
         Returns:
             True if scene has been modified.
         """
-        return self.scene.isModified()
+        return self.scene.is_modified()
 
     def is_filename_set(self) -> bool:
         """Check if file has been saved.
@@ -109,7 +109,7 @@ class NodeEditorWidget(QWidget):
         Returns:
             List of selected QGraphicsItem instances.
         """
-        return self.scene.getSelectedItems()
+        return self.scene.get_selected_items()
 
     def has_selected_items(self) -> bool:
         """Check if any items are selected.
@@ -125,7 +125,7 @@ class NodeEditorWidget(QWidget):
         Returns:
             True if undo stack has entries.
         """
-        return self.scene.history.canUndo()
+        return self.scene.history.can_undo()
 
     def can_redo(self) -> bool:
         """Check if redo operation is available.
@@ -133,7 +133,7 @@ class NodeEditorWidget(QWidget):
         Returns:
             True if redo stack has entries.
         """
-        return self.scene.history.canRedo()
+        return self.scene.history.can_redo()
 
     def file_new(self) -> None:
         """Create new empty scene.
@@ -143,7 +143,7 @@ class NodeEditorWidget(QWidget):
         self.scene.clear()
         self.filename = None
         self.scene.history.clear()
-        self.scene.history.storeInitialHistoryStamp()
+        self.scene.history.store_initial_history_stamp()
 
     def file_load(self, filename: str) -> bool:
         """Load graph from JSON file.
@@ -159,7 +159,7 @@ class NodeEditorWidget(QWidget):
             self.scene.loadFromFile(filename)
             self.filename = filename
             self.scene.history.clear()
-            self.scene.history.storeInitialHistoryStamp()
+            self.scene.history.store_initial_history_stamp()
             return True
         except FileNotFoundError as e:
             dump_exception(e)

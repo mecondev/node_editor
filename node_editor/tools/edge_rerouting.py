@@ -185,7 +185,7 @@ class EdgeRerouting:
                         affected_nodes.append((node, edge))
 
                 if target.is_input:
-                    target.removeAllEdges(silent=True)
+                    target.remove_all_edges(silent=True)
 
                 if edge.end_socket == self.start_socket:
                     edge.end_socket = target
@@ -207,7 +207,7 @@ class EdgeRerouting:
 
         # Store history stamp
         if self.start_socket:
-            self.start_socket.node.scene.history.storeHistory("Rerouted edges", set_modified=True)
+            self.start_socket.node.scene.history.store_history("Rerouted edges", set_modified=True)
 
         # Reset variables
         self.resetRerouting()

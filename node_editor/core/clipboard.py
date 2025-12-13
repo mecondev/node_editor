@@ -96,8 +96,8 @@ class SceneClipboard:
         )
 
         if delete:
-            self.scene.getView().deleteSelected()
-            self.scene.history.storeHistory("Cut out elements from scene", set_modified=True)
+            self.scene.get_view().delete_selected()
+            self.scene.history.store_history("Cut out elements from scene", set_modified=True)
 
         return data
 
@@ -115,7 +115,7 @@ class SceneClipboard:
         """
         hashmap = {}
 
-        view = self.scene.getView()
+        view = self.scene.get_view()
         mouse_scene_pos = view.last_scene_mouse_position
 
         minx = maxx = miny = maxy = None
@@ -147,8 +147,8 @@ class SceneClipboard:
         mousex = mouse_scene_pos.x()
         mousey = mouse_scene_pos.y()
 
-        self.scene.setSilentSelectionEvents()
-        self.scene.doDeselectItems()
+        self.scene.set_silent_selection_events()
+        self.scene.do_deselect_items()
 
         created_nodes = []
 
@@ -178,6 +178,6 @@ class SceneClipboard:
                 new_edge = Edge(self.scene)
                 new_edge.deserialize(edge_data, hashmap, *args, restore_id=False, **kwargs)
 
-        self.scene.setSilentSelectionEvents(False)
+        self.scene.set_silent_selection_events(False)
 
-        self.scene.history.storeHistory("Pasted elements in scene", set_modified=True)
+        self.scene.history.store_history("Pasted elements in scene", set_modified=True)

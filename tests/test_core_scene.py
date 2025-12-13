@@ -48,7 +48,7 @@ class TestSceneCreation:
         """Test new scene starts in unmodified state."""
         scene = Scene()
 
-        assert not scene.isModified()
+        assert not scene.is_modified()
 
 
 class TestSceneNodeManagement:
@@ -73,7 +73,7 @@ class TestSceneNodeManagement:
     def test_remove_node_from_scene(self, scene):
         """Test removing a node from scene."""
         node = Node(scene, "Test Node")
-        scene.removeNode(node)
+        scene.remove_node(node)
 
         assert node not in scene.nodes
         assert len(scene.nodes) == 0
@@ -83,7 +83,7 @@ class TestSceneNodeManagement:
         node = Node(scene, "Test Node")
         node_id = node.id
 
-        found = scene.getNodeByID(node_id)
+        found = scene.get_node_by_id(node_id)
 
         assert found == node
 
@@ -107,7 +107,7 @@ class TestSceneEdgeManagement:
         node2 = Node(scene, "Node 2", inputs=[0])
         edge = Edge(scene, node1.outputs[0], node2.inputs[0])
 
-        scene.removeEdge(edge)
+        scene.remove_edge(edge)
 
         assert edge not in scene.edges
         assert len(scene.edges) == 0
@@ -131,7 +131,7 @@ class TestSceneModificationState:
         Node(scene, "Test Node")
         scene.has_been_modified = False
 
-        assert not scene.isModified()
+        assert not scene.is_modified()
 
 
 class TestSceneSerialization:
@@ -260,7 +260,7 @@ class TestSceneView:
         """Test getting the graphics view."""
         # View might not be set in test environment
         try:
-            view = scene.getView()
+            view = scene.get_view()
             # If no exception, view exists or is None
             assert view is None or view is not None
         except IndexError:

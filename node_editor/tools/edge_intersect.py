@@ -92,7 +92,7 @@ class EdgeIntersect:
         if edge is None:
             return
 
-        if self.isConnected(node):
+        if self.is_connected(node):
             return
 
         if edge.start_socket.is_output:
@@ -104,7 +104,7 @@ class EdgeIntersect:
 
         edge_type = edge.edge_type
         edge.remove()
-        self.grView.graphics_scene.scene.history.storeHistory("Delete existing edge", set_modified=True)
+        self.grView.graphics_scene.scene.history.store_history("Delete existing edge", set_modified=True)
 
         new_node_socket_in = node.inputs[0]
         Edge(self.graphics_scene.scene, socket_start, new_node_socket_in, edge_type=edge_type)
@@ -112,7 +112,7 @@ class EdgeIntersect:
         new_node_socket_out = node.outputs[0]
         Edge(self.graphics_scene.scene, new_node_socket_out, socket_end, edge_type=edge_type)
 
-        self.grView.graphics_scene.scene.history.storeHistory(
+        self.grView.graphics_scene.scene.history.store_history(
             "Created new edges by dropping node", set_modified=True
         )
 
@@ -166,7 +166,7 @@ class EdgeIntersect:
                 return gr_item.edge
         return None
 
-    def isConnected(self, node: Node) -> bool:
+    def is_connected(self, node: Node) -> bool:
         """Check if node already has edge connections.
 
         Nodes without both inputs and outputs, or nodes with existing

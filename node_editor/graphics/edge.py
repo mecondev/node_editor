@@ -74,9 +74,9 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         self.posDestination = [200, 100]
 
         self.initAssets()
-        self.initUI()
+        self.init_ui()
 
-    def initUI(self) -> None:
+    def init_ui(self) -> None:
         """Configure item flags for selection and interaction."""
         self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable)
         self.setAcceptHoverEvents(True)
@@ -195,7 +195,7 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         """
         super().mouseReleaseEvent(event)
         if self._last_selected_state != self.isSelected():
-            self.edge.scene.resetLastSelectedStates()
+            self.edge.scene.reset_last_selected_states()
             self._last_selected_state = self.isSelected()
             self.on_selected()
 

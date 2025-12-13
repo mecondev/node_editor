@@ -3,15 +3,15 @@ Module description.
 Author: Michael Economou
 Date: 2025-12-11
 """
-from PyQt5.QtGui import QImage
 from PyQt5.QtCore import QRectF
+from PyQt5.QtGui import QImage
 from PyQt5.QtWidgets import QLabel
 
 from node_editor.core.node import Node
-from node_editor.widgets.content_widget import QDMNodeContentWidget
-from node_editor.graphics.node import QDMGraphicsNode
 from node_editor.core.socket import LEFT_CENTER, RIGHT_CENTER
+from node_editor.graphics.node import QDMGraphicsNode
 from node_editor.utils.helpers import dump_exception
+from node_editor.widgets.content_widget import QDMNodeContentWidget
 
 
 class CalcGraphicsNode(QDMGraphicsNode):
@@ -28,12 +28,14 @@ class CalcGraphicsNode(QDMGraphicsNode):
         super().initAssets()
         self.icons = QImage("icons/status_icons.png")
 
-    def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
-        super().paint(painter, QStyleOptionGraphicsItem, widget)
+    def paint(self, painter, option, widget=None):
+        super().paint(painter, option, widget)
 
         offset = 24.0
-        if self.node.isDirty(): offset = 0.0
-        if self.node.isInvalid(): offset = 48.0
+        if self.node.isDirty():
+            offset = 0.0
+        if self.node.isInvalid():
+            offset = 48.0
 
         painter.drawImage(
             QRectF(-10, -10, 24.0, 24.0),
@@ -43,7 +45,7 @@ class CalcGraphicsNode(QDMGraphicsNode):
 
 
 class CalcContent(QDMNodeContentWidget):
-    def initUI(self):
+    def init_ui(self):
         lbl = QLabel(self.node.content_label, self)
         lbl.setObjectName(self.node.content_label_objname)
 
@@ -58,7 +60,11 @@ class CalcNode(Node):
     _graphics_node_class = CalcGraphicsNode
     NodeContent_class = CalcContent
 
-    def __init__(self, scene, inputs=[2,2], outputs=[1]):
+    def __init__(self, scene, inputs=None, outputs=None):
+        if inputs is None:
+            inputs = [2, 2]
+        if outputs is None:
+            outputs = [1]
         super().__init__(scene, self.__class__.op_title, inputs, outputs)
 
         self.value = None
@@ -72,7 +78,7 @@ class CalcNode(Node):
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
-    def evalOperation(self, input1, input2):
+    def evalOperation(self, _input1, _input2):
         return 123
 
     def evalImplementation(self):
@@ -110,7 +116,7 @@ class CalcNode(Node):
 
     def eval(self):
         if not self.isDirty() and not self.isInvalid():
-            print(" _> returning cached %s value:" % self.__class__.__name__, self.value)
+            print(f" _> returning cached {self.__class__.__name__} value:", self.value)
             return self.value
 
         try:
@@ -128,8 +134,8 @@ class CalcNode(Node):
 
 
 
-    def onInputChanged(self, socket=None):
-        print("%s::__onInputChanged" % self.__class__.__name__)
+    def onInputChanged(self, _socket=None):
+        print(f"{self.__class__.__name__}::__onInputChanged")
         self.mark_dirty()
         self.eval()
 
@@ -139,7 +145,9 @@ class CalcNode(Node):
         res['op_code'] = self.__class__.op_code
         return res
 
-    def deserialize(self, data, hashmap={}, restore_id=True):
+    def deserialize(self, data, hashmap=None, restore_id=True):
+        if hashmap is None:
+            hashmap = {}
         res = super().deserialize(data, hashmap, restore_id)
-        print("Deserialized CalcNode '%s'" % self.__class__.__name__, "res:", res)
+        print(f"Deserialized CalcNode '{self.__class__.__name__}'", "res:", res)
         return res

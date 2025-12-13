@@ -17,16 +17,24 @@ CALC_NODES = {
 }
 
 
-class ConfException(Exception): pass
-class InvalidNodeRegistration(ConfException): pass
-class OpCodeNotRegistered(ConfException): pass
+class ConfError(Exception):
+    """Configuration exception base class."""
+
+
+class InvalidNodeRegistrationError(ConfError):
+    """Raised when node registration is invalid."""
+
+
+class OpCodeNotRegisteredError(ConfError):
+    """Raised when opcode is not registered."""
 
 
 def register_node_now(op_code, class_reference):
     if op_code in CALC_NODES:
-        raise InvalidNodeRegistration("Duplicate node registration of '%s'. There is already %s" %(
-            op_code, CALC_NODES[op_code]
-        ))
+        raise InvalidNodeRegistrationError(
+            f"Duplicate node registration of '{op_code}'. "
+            f"There is already {CALC_NODES[op_code]}"
+        )
     CALC_NODES[op_code] = class_reference
 
 
@@ -37,7 +45,8 @@ def register_node(op_code):
     return decorator
 
 def get_class_from_opcode(op_code):
-    if op_code not in CALC_NODES: raise OpCodeNotRegistered("OpCode '%d' is not registered" % op_code)
+    if op_code not in CALC_NODES:
+        raise OpCodeNotRegisteredError(f"OpCode '{op_code}' is not registered")
     return CALC_NODES[op_code]
 
 

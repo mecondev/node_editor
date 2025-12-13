@@ -3,20 +3,20 @@ Module description.
 Author: Michael Economou
 Date: 2025-12-11
 """
-from PyQt5.QtGui import QPixmap, QIcon, QDrag
-from PyQt5.QtCore import QSize, Qt, QByteArray, QDataStream, QMimeData, QIODevice, QPoint
-from PyQt5.QtWidgets import QListWidget, QAbstractItemView, QListWidgetItem
+from PyQt5.QtCore import QByteArray, QDataStream, QIODevice, QMimeData, QPoint, QSize, Qt
+from PyQt5.QtGui import QDrag, QIcon, QPixmap
+from PyQt5.QtWidgets import QAbstractItemView, QListWidget, QListWidgetItem
 
-from examples.calculator.calc_conf import CALC_NODES, get_class_from_opcode, LISTBOX_MIMETYPE
+from examples.calculator.calc_conf import CALC_NODES, LISTBOX_MIMETYPE, get_class_from_opcode
 from node_editor.utils.helpers import dump_exception
 
 
 class QDMDragListbox(QListWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.initUI()
+        self.init_ui()
 
-    def initUI(self):
+    def init_ui(self):
         # init
         self.setIconSize(QSize(32, 32))
         self.setSelectionMode(QAbstractItemView.SingleSelection)
@@ -46,28 +46,28 @@ class QDMDragListbox(QListWidget):
         item.setData(Qt.UserRole + 1, op_code)
 
 
-    def startDrag(self, *args, **kwargs):
+    def startDrag(self, _event=None):
         try:
             item = self.currentItem()
             op_code = item.data(Qt.UserRole + 1)
 
             pixmap = QPixmap(item.data(Qt.UserRole))
 
+            item_data = QByteArray()
+            data_stream = QDataStream(item_data, QIODevice.WriteOnly)
+            data_stream << pixmap
+            data_stream.writeInt(op_code)
+            data_stream.writeQString(item.text())
 
-            itemData = QByteArray()
-            dataStream = QDataStream(itemData, QIODevice.WriteOnly)
-            dataStream << pixmap
-            dataStream.writeInt(op_code)
-            dataStream.writeQString(item.text())
-
-            mimeData = QMimeData()
-            mimeData.setData(LISTBOX_MIMETYPE, itemData)
+            mime_data = QMimeData()
+            mime_data.setData(LISTBOX_MIMETYPE, item_data)
 
             drag = QDrag(self)
-            drag.setMimeData(mimeData)
+            drag.setMimeData(mime_data)
             drag.setHotSpot(QPoint(pixmap.width() // 2, pixmap.height() // 2))
             drag.setPixmap(pixmap)
 
             drag.exec_(Qt.MoveAction)
 
-        except Exception as e: dump_exception(e)
+        except Exception as e:
+            dump_exception(e)

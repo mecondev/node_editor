@@ -105,7 +105,7 @@ class Scene(Serializable):
 
         self.node_class_selector: Callable[[dict], type[Node]] | None = None
 
-        self.initUI()
+        self.init_ui()
 
         from node_editor.core.clipboard import SceneClipboard
         from node_editor.core.history import SceneHistory
@@ -142,7 +142,7 @@ class Scene(Serializable):
 
         self._has_been_modified = value
 
-    def initUI(self) -> None:
+    def init_ui(self) -> None:
         """Create and configure the graphics scene.
 
         Instantiates QDMGraphicsScene and sets its dimensions.
@@ -154,7 +154,7 @@ class Scene(Serializable):
 
     # Node and edge management
 
-    def addNode(self, node: Node) -> None:
+    def add_node(self, node: Node) -> None:
         """Register a node with this scene.
 
         Called automatically by Node.__init__. Manual calls are rarely needed.
@@ -164,7 +164,7 @@ class Scene(Serializable):
         """
         self.nodes.append(node)
 
-    def addEdge(self, edge: Edge) -> None:
+    def add_edge(self, edge: Edge) -> None:
         """Register an edge with this scene.
 
         Called automatically by Edge.__init__. Manual calls are rarely needed.
@@ -174,7 +174,7 @@ class Scene(Serializable):
         """
         self.edges.append(edge)
 
-    def removeNode(self, node: Node) -> None:
+    def remove_node(self, node: Node) -> None:
         """Unregister a node from this scene.
 
         Does not delete the node object or its edges. Use node.remove()
@@ -188,7 +188,7 @@ class Scene(Serializable):
         elif DEBUG_REMOVE_WARNINGS:
             pass
 
-    def removeEdge(self, edge: Edge) -> None:
+    def remove_edge(self, edge: Edge) -> None:
         """Unregister an edge from this scene.
 
         Does not delete the edge object. Use edge.remove() for complete cleanup.
@@ -212,7 +212,7 @@ class Scene(Serializable):
 
         self.has_been_modified = False
 
-    def getNodeByID(self, node_id: int) -> Node | None:
+    def get_node_by_id(self, node_id: int) -> Node | None:
         """Find a node by its unique identifier.
 
         Args:
@@ -228,7 +228,7 @@ class Scene(Serializable):
 
     # Selection management
 
-    def setSilentSelectionEvents(self, value: bool = True) -> None:
+    def set_silent_selection_events(self, value: bool = True) -> None:
         """Enable or disable selection event callbacks.
 
         Useful during batch operations like clipboard paste to avoid
@@ -239,7 +239,7 @@ class Scene(Serializable):
         """
         self._silent_selection_events = value
 
-    def getSelectedItems(self) -> list:
+    def get_selected_items(self) -> list:
         """Get all currently selected graphics items.
 
         Returns:
@@ -247,18 +247,18 @@ class Scene(Serializable):
         """
         return self.graphics_scene.selectedItems()
 
-    def doDeselectItems(self, silent: bool = False) -> None:
+    def do_deselect_items(self, silent: bool = False) -> None:
         """Clear selection from all items.
 
         Args:
             silent: If True, skip onItemsDeselected callback.
         """
-        for item in self.getSelectedItems():
+        for item in self.get_selected_items():
             item.setSelected(False)
         if not silent:
             self.on_items_deselected()
 
-    def resetLastSelectedStates(self) -> None:
+    def reset_last_selected_states(self) -> None:
         """Clear internal selection state flags on all graphics items.
 
         Ensures proper detection of selection changes on next interaction.
@@ -280,13 +280,13 @@ class Scene(Serializable):
         if self._silent_selection_events:
             return
 
-        current_selected_items = self.getSelectedItems()
+        current_selected_items = self.get_selected_items()
         if current_selected_items != self._last_selected_items:
             self._last_selected_items = current_selected_items
             if not silent:
                 for callback in self._item_selected_listeners:
                     callback()
-                self.history.storeHistory("Selection Changed")
+                self.history.store_history("Selection Changed")
 
     def on_items_deselected(self, silent: bool = False) -> None:
         """Handle complete deselection events.
@@ -297,21 +297,21 @@ class Scene(Serializable):
         Args:
             silent: If True, skip callbacks and history storage.
         """
-        current_selected_items = self.getSelectedItems()
+        current_selected_items = self.get_selected_items()
         if current_selected_items == self._last_selected_items:
             return
 
-        self.resetLastSelectedStates()
+        self.reset_last_selected_states()
         if current_selected_items == []:
             self._last_selected_items = []
             if not silent:
-                self.history.storeHistory("Deselected Everything")
+                self.history.store_history("Deselected Everything")
                 for callback in self._items_deselected_listeners:
                     callback()
 
     # Modification state
 
-    def isModified(self) -> bool:
+    def is_modified(self) -> bool:
         """Check if scene has unsaved changes.
 
         Alias for has_been_modified property for compatibility.
@@ -323,7 +323,7 @@ class Scene(Serializable):
 
     # Event listener management
 
-    def addHasBeenModifiedListener(self, callback: Callable) -> None:
+    def add_has_been_modified_listener(self, callback: Callable) -> None:
         """Register callback for modification state changes.
 
         Callback receives no arguments, triggered on first modification.
@@ -333,7 +333,7 @@ class Scene(Serializable):
         """
         self._has_been_modified_listeners.append(callback)
 
-    def addItemSelectedListener(self, callback: Callable) -> None:
+    def add_item_selected_listener(self, callback: Callable) -> None:
         """Register callback for selection events.
 
         Callback receives no arguments, triggered when selection changes.
@@ -343,7 +343,7 @@ class Scene(Serializable):
         """
         self._item_selected_listeners.append(callback)
 
-    def addItemsDeselectedListener(self, callback: Callable) -> None:
+    def add_items_deselected_listener(self, callback: Callable) -> None:
         """Register callback for deselection events.
 
         Callback receives no arguments, triggered when selection clears.
@@ -353,25 +353,25 @@ class Scene(Serializable):
         """
         self._items_deselected_listeners.append(callback)
 
-    def addDragEnterListener(self, callback: Callable) -> None:
+    def add_drag_enter_listener(self, callback: Callable) -> None:
         """Register callback for drag-enter events on the view.
 
         Args:
             callback: Function to call when drag enters the view.
         """
-        self.getView().addDragEnterListener(callback)
+        self.get_view().add_drag_enter_listener(callback)
 
-    def addDropListener(self, callback: Callable) -> None:
+    def add_drop_listener(self, callback: Callable) -> None:
         """Register callback for drop events on the view.
 
         Args:
             callback: Function to call when drop occurs.
         """
-        self.getView().addDropListener(callback)
+        self.get_view().add_drop_listener(callback)
 
     # View access
 
-    def getView(self) -> QGraphicsView:
+    def get_view(self) -> QGraphicsView:
         """Get the graphics view displaying this scene.
 
         Returns:
@@ -379,7 +379,7 @@ class Scene(Serializable):
         """
         return self.graphics_scene.views()[0]
 
-    def getItemAt(self, pos: QPointF):
+    def get_item_at(self, pos: QPointF):
         """Find graphics item at scene position.
 
         Args:
@@ -388,7 +388,7 @@ class Scene(Serializable):
         Returns:
             QGraphicsItem at position or None.
         """
-        return self.getView().itemAt(pos)
+        return self.get_view().itemAt(pos)
 
     # File operations
 

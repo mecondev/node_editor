@@ -4,31 +4,32 @@ Author: Michael Economou
 Date: 2025-12-11
 """
 import os
-from PyQt5.QtGui import QIcon, QKeySequence
-from PyQt5.QtWidgets import QMdiArea, QWidget, QDockWidget, QAction, QMessageBox, QFileDialog
-from PyQt5.QtCore import Qt, QSignalMapper
 
-from node_editor.utils.qt_helpers import loadStylesheets
-from node_editor.widgets.editor_window import NodeEditorWindow
-from examples.calculator.calc_sub_window import CalculatorSubWindow
-from examples.calculator.calc_drag_listbox import QDMDragListbox
-from node_editor.utils.helpers import dump_exception, pp
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIcon, QKeySequence
+from PyQt5.QtWidgets import QAction, QDockWidget, QFileDialog, QMdiArea, QMessageBox
+
 from examples.calculator.calc_conf import CALC_NODES
+from examples.calculator.calc_drag_listbox import QDMDragListbox
+from examples.calculator.calc_sub_window import CalculatorSubWindow
 
 # Enabling edge validators
 from node_editor.core.edge import Edge
 from node_editor.tools.edge_validators import (
-    edge_validator_debug,
+    edge_cannot_connect_input_and_output_of_same_node,
     edge_cannot_connect_two_outputs_or_two_inputs,
-    edge_cannot_connect_input_and_output_of_same_node
+    edge_validator_debug,
 )
+from node_editor.utils.helpers import dump_exception, pp
+from node_editor.utils.qt_helpers import loadStylesheets
+from node_editor.widgets.editor_window import NodeEditorWindow
+
 Edge.registerEdgeValidator(edge_validator_debug)
 Edge.registerEdgeValidator(edge_cannot_connect_two_outputs_or_two_inputs)
 Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_same_node)
 
 
 # images for the dark skin
-import examples.calculator.qss.nodeeditor_dark_resources
 
 
 DEBUG = False
@@ -105,9 +106,9 @@ class CalculatorWindow(NodeEditorWindow):
 
     def get_current_node_editor_widget(self):
         """ we're returning NodeEditorWidget here... """
-        activeSubWindow = self.mdiArea.activeSubWindow()
-        if activeSubWindow:
-            return activeSubWindow.widget()
+        active_sub_window = self.mdiArea.activeSubWindow()
+        if active_sub_window:
+            return active_sub_window.widget()
         return None
 
     def on_file_new(self):
@@ -115,7 +116,8 @@ class CalculatorWindow(NodeEditorWindow):
             subwnd = self.create_mdi_child()
             subwnd.widget().file_new()
             subwnd.show()
-        except Exception as e: dump_exception(e)
+        except Exception as e:
+            dump_exception(e)
 
 
     def on_file_open(self):
@@ -136,13 +138,14 @@ class CalculatorWindow(NodeEditorWindow):
                         # we need to create new subWindow and open the file
                         nodeeditor = CalculatorSubWindow()
                         if nodeeditor.file_load(fname):
-                            self.statusBar().showMessage("File %s loaded" % fname, 5000)
+                            self.statusBar().showMessage(f"File {fname} loaded", 5000)
                             nodeeditor.set_title()
                             subwnd = self.create_mdi_child(nodeeditor)
                             subwnd.show()
                         else:
                             nodeeditor.close()
-        except Exception as e: dump_exception(e)
+        except Exception as e:
+            dump_exception(e)
 
 
     def about(self):
@@ -168,17 +171,17 @@ class CalculatorWindow(NodeEditorWindow):
     def update_menus(self):
         # print("update Menus")
         active = self.get_current_node_editor_widget()
-        hasMdiChild = (active is not None)
+        has_mdi_child = (active is not None)
 
-        self.actSave.setEnabled(hasMdiChild)
-        self.actSaveAs.setEnabled(hasMdiChild)
-        self.actClose.setEnabled(hasMdiChild)
-        self.actCloseAll.setEnabled(hasMdiChild)
-        self.actTile.setEnabled(hasMdiChild)
-        self.actCascade.setEnabled(hasMdiChild)
-        self.actNext.setEnabled(hasMdiChild)
-        self.actPrevious.setEnabled(hasMdiChild)
-        self.actSeparator.setVisible(hasMdiChild)
+        self.actSave.setEnabled(has_mdi_child)
+        self.actSaveAs.setEnabled(has_mdi_child)
+        self.actClose.setEnabled(has_mdi_child)
+        self.actCloseAll.setEnabled(has_mdi_child)
+        self.actTile.setEnabled(has_mdi_child)
+        self.actCascade.setEnabled(has_mdi_child)
+        self.actNext.setEnabled(has_mdi_child)
+        self.actPrevious.setEnabled(has_mdi_child)
+        self.actSeparator.setVisible(has_mdi_child)
 
         self.update_edit_menu()
 
@@ -186,17 +189,18 @@ class CalculatorWindow(NodeEditorWindow):
         try:
             # print("update Edit Menu")
             active = self.get_current_node_editor_widget()
-            hasMdiChild = (active is not None)
+            has_mdi_child = (active is not None)
 
-            self.actPaste.setEnabled(hasMdiChild)
+            self.actPaste.setEnabled(has_mdi_child)
 
-            self.actCut.setEnabled(hasMdiChild and active.has_selected_items())
-            self.actCopy.setEnabled(hasMdiChild and active.has_selected_items())
-            self.actDelete.setEnabled(hasMdiChild and active.has_selected_items())
+            self.actCut.setEnabled(has_mdi_child and active.has_selected_items())
+            self.actCopy.setEnabled(has_mdi_child and active.has_selected_items())
+            self.actDelete.setEnabled(has_mdi_child and active.has_selected_items())
 
-            self.actUndo.setEnabled(hasMdiChild and active.can_undo())
-            self.actRedo.setEnabled(hasMdiChild and active.can_redo())
-        except Exception as e: dump_exception(e)
+            self.actUndo.setEnabled(has_mdi_child and active.can_undo())
+            self.actRedo.setEnabled(has_mdi_child and active.can_redo())
+        except Exception as e:
+            dump_exception(e)
 
 
 
@@ -226,7 +230,7 @@ class CalculatorWindow(NodeEditorWindow):
         for i, window in enumerate(windows):
             child = window.widget()
 
-            text = "%d %s" % (i + 1, child.get_user_friendly_filename())
+            text = f"{i + 1} {child.get_user_friendly_filename()}"
             if i < 9:
                 text = '&' + text
 

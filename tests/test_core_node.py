@@ -91,7 +91,7 @@ class TestNodeSockets:
         node = Node(scene, "Test Node", inputs=[0, 1])
 
         # Should return valid position tuples
-        pos = node.getSocketPosition(0, 1, 2)
+        pos = node.get_socket_position(0, 1, 2)
         assert isinstance(pos, tuple)
         assert len(pos) == 2
 

@@ -3,15 +3,15 @@ Module description.
 Author: Michael Economou
 Date: 2025-12-11
 """
-from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtCore import QDataStream, QIODevice, Qt
+from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
 
-from examples.calculator.calc_conf import CALC_NODES, get_class_from_opcode, LISTBOX_MIMETYPE
-from node_editor.widgets.editor_widget import NodeEditorWidget
-from node_editor.core.edge import EDGE_TYPE_DIRECT, EDGE_TYPE_BEZIER, EDGE_TYPE_SQUARE
+from examples.calculator.calc_conf import CALC_NODES, LISTBOX_MIMETYPE, get_class_from_opcode
+from node_editor.core.edge import EDGE_TYPE_BEZIER, EDGE_TYPE_DIRECT, EDGE_TYPE_SQUARE
 from node_editor.graphics.view import MODE_EDGE_DRAG
 from node_editor.utils.helpers import dump_exception
+from node_editor.widgets.editor_widget import NodeEditorWidget
 
 DEBUG = False
 DEBUG_CONTEXT = False
@@ -35,7 +35,9 @@ class CalculatorSubWindow(NodeEditorWidget):
         self._close_event_listeners = []
 
     def getNodeClassFromData(self, data):
-        if 'op_code' not in data: return Node
+        if 'op_code' not in data:
+            from node_editor.core.node import Node
+            return Node
         return get_class_from_opcode(data['op_code'])
 
     def doEvalOutputs(self):
@@ -67,7 +69,8 @@ class CalculatorSubWindow(NodeEditorWidget):
         context_menu = QMenu(self)
         keys = list(CALC_NODES.keys())
         keys.sort()
-        for key in keys: context_menu.addAction(self.node_actions[key])
+        for key in keys:
+            context_menu.addAction(self.node_actions[key])
         return context_menu
 
     def set_title(self):
@@ -77,7 +80,8 @@ class CalculatorSubWindow(NodeEditorWidget):
         self._close_event_listeners.append(callback)
 
     def closeEvent(self, event):
-        for callback in self._close_event_listeners: callback(self, event)
+        for callback in self._close_event_listeners:
+            callback(self, event)
 
     def onDragEnter(self, event):
         if event.mimeData().hasFormat(LISTBOX_MIMETYPE):
@@ -88,23 +92,25 @@ class CalculatorSubWindow(NodeEditorWidget):
 
     def onDrop(self, event):
         if event.mimeData().hasFormat(LISTBOX_MIMETYPE):
-            eventData = event.mimeData().data(LISTBOX_MIMETYPE)
-            dataStream = QDataStream(eventData, QIODevice.ReadOnly)
+            event_data = event.mimeData().data(LISTBOX_MIMETYPE)
+            data_stream = QDataStream(event_data, QIODevice.ReadOnly)
             pixmap = QPixmap()
-            dataStream >> pixmap
-            op_code = dataStream.readInt()
-            text = dataStream.readQString()
+            data_stream >> pixmap
+            op_code = data_stream.readInt()
+            text = data_stream.readQString()
 
             mouse_position = event.pos()
             scene_position = self.scene.graphics_scene.views()[0].mapToScene(mouse_position)
 
-            if DEBUG: print("GOT DROP: [%d] '%s'" % (op_code, text), "mouse:", mouse_position, "scene:", scene_position)
+            if DEBUG:
+                print(f"GOT DROP: [{op_code}] '{text}'", "mouse:", mouse_position, "scene:", scene_position)
 
             try:
                 node = get_class_from_opcode(op_code)(self.scene)
                 node.setPos(scene_position.x(), scene_position.y())
-                self.scene.history.storeHistory("Created node %s" % node.__class__.__name__)
-            except Exception as e: dump_exception(e)
+                self.scene.history.storeHistory(f"Created node {node.__class__.__name__}")
+            except Exception as e:
+                dump_exception(e)
 
 
             event.setDropAction(Qt.MoveAction)
@@ -117,9 +123,10 @@ class CalculatorSubWindow(NodeEditorWidget):
     def contextMenuEvent(self, event):
         try:
             item = self.scene.getItemAt(event.pos())
-            if DEBUG_CONTEXT: print(item)
+            if DEBUG_CONTEXT:
+                print(item)
 
-            if type(item) == QGraphicsProxyWidget:
+            if isinstance(item, QGraphicsProxyWidget):
                 item = item.widget()
 
             if hasattr(item, 'node') or hasattr(item, 'socket'):
@@ -131,21 +138,23 @@ class CalculatorSubWindow(NodeEditorWidget):
                 self.handleNewNodeContextMenu(event)
 
             return super().contextMenuEvent(event)
-        except Exception as e: dump_exception(e)
+        except Exception as e:
+            dump_exception(e)
 
     def handleNodeContextMenu(self, event):
-        if DEBUG_CONTEXT: print("CONTEXT: NODE")
+        if DEBUG_CONTEXT:
+            print("CONTEXT: NODE")
         context_menu = QMenu(self)
-        markDirtyAct = context_menu.addAction("Mark Dirty")
-        markDirtyDescendantsAct = context_menu.addAction("Mark Descendant Dirty")
-        markInvalidAct = context_menu.addAction("Mark Invalid")
-        unmarkInvalidAct = context_menu.addAction("Unmark Invalid")
-        evalAct = context_menu.addAction("Eval")
+        mark_dirty_act = context_menu.addAction("Mark Dirty")
+        mark_dirty_descendants_act = context_menu.addAction("Mark Descendant Dirty")
+        mark_invalid_act = context_menu.addAction("Mark Invalid")
+        unmark_invalid_act = context_menu.addAction("Unmark Invalid")
+        eval_act = context_menu.addAction("Eval")
         action = context_menu.exec_(self.mapToGlobal(event.pos()))
 
         selected = None
         item = self.scene.getItemAt(event.pos())
-        if type(item) == QGraphicsProxyWidget:
+        if isinstance(item, QGraphicsProxyWidget):
             item = item.widget()
 
         if hasattr(item, 'node'):
@@ -153,22 +162,29 @@ class CalculatorSubWindow(NodeEditorWidget):
         if hasattr(item, 'socket'):
             selected = item.socket.node
 
-        if DEBUG_CONTEXT: print("got item:", selected)
-        if selected and action == markDirtyAct: selected.mark_dirty()
-        if selected and action == markDirtyDescendantsAct: selected.mark_descendants_dirty()
-        if selected and action == markInvalidAct: selected.mark_invalid()
-        if selected and action == unmarkInvalidAct: selected.mark_invalid(False)
-        if selected and action == evalAct:
+        if DEBUG_CONTEXT:
+            print("got item:", selected)
+        if selected and action == mark_dirty_act:
+            selected.mark_dirty()
+        if selected and action == mark_dirty_descendants_act:
+            selected.mark_descendants_dirty()
+        if selected and action == mark_invalid_act:
+            selected.mark_invalid()
+        if selected and action == unmark_invalid_act:
+            selected.mark_invalid(False)
+        if selected and action == eval_act:
             val = selected.eval()
-            if DEBUG_CONTEXT: print("EVALUATED:", val)
+            if DEBUG_CONTEXT:
+                print("EVALUATED:", val)
 
 
     def handleEdgeContextMenu(self, event):
-        if DEBUG_CONTEXT: print("CONTEXT: EDGE")
+        if DEBUG_CONTEXT:
+            print("CONTEXT: EDGE")
         context_menu = QMenu(self)
-        bezierAct = context_menu.addAction("Bezier Edge")
-        directAct = context_menu.addAction("Direct Edge")
-        squareAct = context_menu.addAction("Square Edge")
+        bezier_act = context_menu.addAction("Bezier Edge")
+        direct_act = context_menu.addAction("Direct Edge")
+        square_act = context_menu.addAction("Square Edge")
         action = context_menu.exec_(self.mapToGlobal(event.pos()))
 
         selected = None
@@ -176,17 +192,22 @@ class CalculatorSubWindow(NodeEditorWidget):
         if hasattr(item, 'edge'):
             selected = item.edge
 
-        if selected and action == bezierAct: selected.edge_type = EDGE_TYPE_BEZIER
-        if selected and action == directAct: selected.edge_type = EDGE_TYPE_DIRECT
-        if selected and action == squareAct: selected.edge_type = EDGE_TYPE_SQUARE
+        if selected and action == bezier_act:
+            selected.edge_type = EDGE_TYPE_BEZIER
+        if selected and action == direct_act:
+            selected.edge_type = EDGE_TYPE_DIRECT
+        if selected and action == square_act:
+            selected.edge_type = EDGE_TYPE_SQUARE
 
     # helper functions
     def determine_target_socket_of_node(self, was_dragged_flag, new_calc_node):
         target_socket = None
         if was_dragged_flag:
-            if len(new_calc_node.inputs) > 0: target_socket = new_calc_node.inputs[0]
+            if len(new_calc_node.inputs) > 0:
+                target_socket = new_calc_node.inputs[0]
         else:
-            if len(new_calc_node.outputs) > 0: target_socket = new_calc_node.outputs[0]
+            if len(new_calc_node.outputs) > 0:
+                target_socket = new_calc_node.outputs[0]
         return target_socket
 
     def finish_new_node_state(self, new_calc_node):
@@ -197,7 +218,8 @@ class CalculatorSubWindow(NodeEditorWidget):
 
     def handleNewNodeContextMenu(self, event):
 
-        if DEBUG_CONTEXT: print("CONTEXT: EMPTY SPACE")
+        if DEBUG_CONTEXT:
+            print("CONTEXT: EMPTY SPACE")
         context_menu = self.initNodesContextMenu()
         action = context_menu.exec_(self.mapToGlobal(event.pos()))
 
@@ -205,7 +227,8 @@ class CalculatorSubWindow(NodeEditorWidget):
             new_calc_node = get_class_from_opcode(action.data())(self.scene)
             scene_pos = self.scene.getView().mapToScene(event.pos())
             new_calc_node.setPos(scene_pos.x(), scene_pos.y())
-            if DEBUG_CONTEXT: print("Selected node:", new_calc_node)
+            if DEBUG_CONTEXT:
+                print("Selected node:", new_calc_node)
 
             if self.scene.getView().mode == MODE_EDGE_DRAG:
                 # if we were dragging an edge...
@@ -215,4 +238,4 @@ class CalculatorSubWindow(NodeEditorWidget):
                     self.finish_new_node_state(new_calc_node)
 
             else:
-                self.scene.history.storeHistory("Created %s" % new_calc_node.__class__.__name__)
+                self.scene.history.storeHistory(f"Created {new_calc_node.__class__.__name__}")

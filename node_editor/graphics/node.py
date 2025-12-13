@@ -64,7 +64,7 @@ class QDMGraphicsNode(QGraphicsItem):
 
         self.initSizes()
         self.initAssets()
-        self.initUI()
+        self.init_ui()
 
     @property
     def content(self):
@@ -94,7 +94,7 @@ class QDMGraphicsNode(QGraphicsItem):
         self._title = value
         self.title_item.setPlainText(self._title)
 
-    def initUI(self) -> None:
+    def init_ui(self) -> None:
         """Configure item flags and initialize visual components."""
         self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable)
         self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable)
@@ -194,19 +194,19 @@ class QDMGraphicsNode(QGraphicsItem):
 
         if self._was_moved:
             self._was_moved = False
-            self.node.scene.history.storeHistory("Node moved", set_modified=True)
+            self.node.scene.history.store_history("Node moved", set_modified=True)
 
-            self.node.scene.resetLastSelectedStates()
+            self.node.scene.reset_last_selected_states()
             self.doSelect()
 
-            self.node.scene._last_selected_items = self.node.scene.getSelectedItems()
+            self.node.scene._last_selected_items = self.node.scene.get_selected_items()
             return
 
         if (
             self._last_selected_state != self.isSelected()
-            or self.node.scene._last_selected_items != self.node.scene.getSelectedItems()
+            or self.node.scene._last_selected_items != self.node.scene.get_selected_items()
         ):
-            self.node.scene.resetLastSelectedStates()
+            self.node.scene.reset_last_selected_states()
             self._last_selected_state = self.isSelected()
             self.on_selected()
 

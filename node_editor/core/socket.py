@@ -146,23 +146,23 @@ class Socket(Serializable):
         Queries the parent node for this socket's position and updates
         the graphics socket accordingly.
         """
-        pos = self.node.getSocketPosition(
+        pos = self.node.get_socket_position(
             self.index, self.position, self.count_on_this_node_side
         )
         self.graphics_socket.setPos(*pos)
 
-    def getSocketPosition(self) -> tuple[float, float]:
+    def get_socket_position(self) -> tuple[float, float]:
         """Calculate socket position in node-local coordinates.
 
         Returns:
             Tuple of (x, y) position relative to parent node.
         """
-        result = self.node.getSocketPosition(
+        result = self.node.get_socket_position(
             self.index, self.position, self.count_on_this_node_side
         )
         return result
 
-    def hasAnyEdge(self) -> bool:
+    def has_any_edge(self) -> bool:
         """Check if socket has any connected edges.
 
         Returns:
@@ -170,7 +170,7 @@ class Socket(Serializable):
         """
         return len(self.edges) > 0
 
-    def isConnected(self, edge: "Edge") -> bool:
+    def is_connected(self, edge: "Edge") -> bool:
         """Check if a specific edge is connected to this socket.
 
         Args:
@@ -181,7 +181,7 @@ class Socket(Serializable):
         """
         return edge in self.edges
 
-    def addEdge(self, edge: "Edge") -> None:
+    def add_edge(self, edge: "Edge") -> None:
         """Register an edge as connected to this socket.
 
         Args:
@@ -189,7 +189,7 @@ class Socket(Serializable):
         """
         self.edges.append(edge)
 
-    def removeEdge(self, edge: "Edge") -> None:
+    def remove_edge(self, edge: "Edge") -> None:
         """Unregister an edge from this socket.
 
         Args:
@@ -203,7 +203,7 @@ class Socket(Serializable):
         elif DEBUG_REMOVE_WARNINGS:
             pass
 
-    def removeAllEdges(self, silent: bool = False) -> None:
+    def remove_all_edges(self, silent: bool = False) -> None:
         """Disconnect and remove all edges from this socket.
 
         Iterates through all connected edges and removes them. Each edge

@@ -110,7 +110,7 @@ class EdgeDragging:
         from node_editor.graphics.socket import QDMGraphicsSocket
 
         if not isinstance(item, QDMGraphicsSocket):
-            self.grView.resetMode()
+            self.grView.reset_mode()
             if self.drag_edge:
                 self.drag_edge.remove(silent=True)
             self.drag_edge = None
@@ -120,7 +120,7 @@ class EdgeDragging:
             if not self.drag_edge.validateEdge(self.drag_start_socket, item.socket):
                 return False
 
-            self.grView.resetMode()
+            self.grView.reset_mode()
 
             if self.drag_edge:
                 self.drag_edge.remove(silent=True)
@@ -131,9 +131,9 @@ class EdgeDragging:
                     for socket in (item.socket, self.drag_start_socket):
                         if not socket.is_multi_edges:
                             if socket.is_input:
-                                socket.removeAllEdges(silent=True)
+                                socket.remove_all_edges(silent=True)
                             else:
-                                socket.removeAllEdges(silent=False)
+                                socket.remove_all_edges(silent=False)
 
                     edge_class = self.getEdgeClass()
                     new_edge = edge_class(
@@ -148,7 +148,7 @@ class EdgeDragging:
                         if socket.is_input:
                             socket.node.on_input_changed(socket)
 
-                    self.grView.graphics_scene.scene.history.storeHistory(
+                    self.grView.graphics_scene.scene.history.store_history(
                         "Created new edge by dragging", set_modified=True
                     )
                     return True

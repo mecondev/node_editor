@@ -101,7 +101,7 @@ class Edge(Serializable):
 
         self.graphics_edge = self.createEdgeClassInstance()
 
-        self.scene.addEdge(self)
+        self.scene.add_edge(self)
 
     def __str__(self) -> str:
         """Return human-readable edge representation.
@@ -134,11 +134,11 @@ class Edge(Serializable):
             value: New source socket, or None to disconnect.
         """
         if self._start_socket is not None:
-            self._start_socket.removeEdge(self)
+            self._start_socket.remove_edge(self)
 
         self._start_socket = value
         if self.start_socket is not None:
-            self.start_socket.addEdge(self)
+            self.start_socket.add_edge(self)
 
     @property
     def end_socket(self) -> "Socket | None":
@@ -160,11 +160,11 @@ class Edge(Serializable):
             value: New target socket, or None to disconnect.
         """
         if self._end_socket is not None:
-            self._end_socket.removeEdge(self)
+            self._end_socket.remove_edge(self)
 
         self._end_socket = value
         if self.end_socket is not None:
-            self.end_socket.addEdge(self)
+            self.end_socket.add_edge(self)
 
     @property
     def edge_type(self) -> int:
@@ -288,13 +288,13 @@ class Edge(Serializable):
         Queries both sockets for their scene positions and updates
         the graphics edge endpoints. Called automatically when nodes move.
         """
-        source_pos = list(self.start_socket.getSocketPosition())
+        source_pos = list(self.start_socket.get_socket_position())
         source_pos[0] += self.start_socket.node.graphics_node.pos().x()
         source_pos[1] += self.start_socket.node.graphics_node.pos().y()
         self.graphics_edge.setSource(*source_pos)
 
         if self.end_socket is not None:
-            end_pos = list(self.end_socket.getSocketPosition())
+            end_pos = list(self.end_socket.get_socket_position())
             end_pos[0] += self.end_socket.node.graphics_node.pos().x()
             end_pos[1] += self.end_socket.node.graphics_node.pos().y()
             self.graphics_edge.setDestination(*end_pos)
@@ -333,7 +333,7 @@ class Edge(Serializable):
         self.remove_from_sockets()
 
         with contextlib.suppress(ValueError):
-            self.scene.removeEdge(self)
+            self.scene.remove_edge(self)
 
         try:
             for socket in old_sockets:

@@ -91,7 +91,7 @@ class QDMGraphicsView(QGraphicsView):
         super().__init__(parent)
         self.graphics_scene = gr_scene
 
-        self.initUI()
+        self.init_ui()
         self.setScene(self.graphics_scene)
 
         self.mode: int = MODE_NOOP
@@ -131,7 +131,7 @@ class QDMGraphicsView(QGraphicsView):
         self._drag_enter_listeners: list = []
         self._drop_listeners: list = []
 
-    def initUI(self) -> None:
+    def init_ui(self) -> None:
         """Configure rendering hints and viewport behavior."""
         self.setRenderHints(
             QPainter.Antialiasing | QPainter.TextAntialiasing | QPainter.SmoothPixmapTransform
@@ -147,7 +147,7 @@ class QDMGraphicsView(QGraphicsView):
 
         self.setAcceptDrops(True)
 
-    def isSnappingEnabled(self, event: QMouseEvent | None = None) -> bool:
+    def is_snapping_enabled(self, event: QMouseEvent | None = None) -> bool:
         """Check if socket snapping is active.
 
         Args:
@@ -158,11 +158,11 @@ class QDMGraphicsView(QGraphicsView):
         """
         return EDGE_SNAPPING and is_ctrl_pressed(event) if event else True
 
-    def resetMode(self) -> None:
+    def reset_mode(self) -> None:
         """Reset state machine to default NOOP mode."""
         self.mode = MODE_NOOP
 
-    def addDragEnterListener(self, callback) -> None:
+    def add_drag_enter_listener(self, callback) -> None:
         """Register callback for drag enter events.
 
         Args:
@@ -170,7 +170,7 @@ class QDMGraphicsView(QGraphicsView):
         """
         self._drag_enter_listeners.append(callback)
 
-    def addDropListener(self, callback) -> None:
+    def add_drop_listener(self, callback) -> None:
         """Register callback for drop events.
 
         Args:
@@ -342,13 +342,13 @@ class QDMGraphicsView(QGraphicsView):
                 if DEBUG_EDGE_INTERSECT:
                     pass
 
-        if self.isSnappingEnabled(event):
+        if self.is_snapping_enabled(event):
             item = self.snapping.getSnappedSocketItem(event)
 
         if isinstance(item, QDMGraphicsSocket):
             if self.mode == MODE_NOOP and is_ctrl_pressed(event):
                 socket = item.socket
-                if socket.hasAnyEdge():
+                if socket.has_any_edge():
                     self.mode = MODE_EDGES_REROUTING
                     self.rerouting.startRerouting(socket)
                     return
@@ -413,7 +413,7 @@ class QDMGraphicsView(QGraphicsView):
 
             if self.mode == MODE_EDGE_DRAG:
                 if self.distanceBetweenClickAndReleaseIsOff(event):
-                    if self.isSnappingEnabled(event):
+                    if self.is_snapping_enabled(event):
                         item = self.snapping.getSnappedSocketItem(event)
 
                     res = self.dragging.edgeDragEnd(item)
@@ -421,7 +421,7 @@ class QDMGraphicsView(QGraphicsView):
                         return
 
             if self.mode == MODE_EDGES_REROUTING:
-                if self.isSnappingEnabled(event):
+                if self.is_snapping_enabled(event):
                     item = self.snapping.getSnappedSocketItem(event)
 
                 if not EDGE_REROUTING_UE:
@@ -504,7 +504,7 @@ class QDMGraphicsView(QGraphicsView):
             modified = self.setSocketHighlights(
                 scenepos, highlighted=False, radius=EDGE_SNAPPING_RADIUS + 100
             )
-            if self.isSnappingEnabled(event):
+            if self.is_snapping_enabled(event):
                 _, scenepos = self.snapping.getSnappedToSocketPosition(scenepos)
             if modified:
                 self.update()
@@ -557,7 +557,7 @@ class QDMGraphicsView(QGraphicsView):
                 if edge.graphics_edge.intersectsWith(p1, p2):
                     edge.remove()
 
-        self.graphics_scene.scene.history.storeHistory("Delete cutted edges", set_modified=True)
+        self.graphics_scene.scene.history.store_history("Delete cutted edges", set_modified=True)
 
     def setSocketHighlights(
         self, scenepos: QPointF, highlighted: bool = True, radius: float = 50
@@ -583,7 +583,7 @@ class QDMGraphicsView(QGraphicsView):
 
         return items
 
-    def deleteSelected(self) -> None:
+    def delete_selected(self) -> None:
         """Delete all currently selected nodes and edges.
 
         Removes selected items and stores undo history.
@@ -596,7 +596,7 @@ class QDMGraphicsView(QGraphicsView):
             elif hasattr(item, "node"):
                 item.node.remove()
 
-        self.graphics_scene.scene.history.storeHistory("Delete selected", set_modified=True)
+        self.graphics_scene.scene.history.store_history("Delete selected", set_modified=True)
 
     def getItemAtClick(self, event: QEvent):
         """Get graphics item at event position.

@@ -3,16 +3,17 @@ Module description.
 Author: Michael Economou
 Date: 2025-12-11
 """
-from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtCore import Qt
-from examples.calculator.calc_conf import register_node, OP_NODE_INPUT
-from examples.calculator.calc_node_base import CalcNode, CalcGraphicsNode
-from node_editor.widgets.content_widget import QDMNodeContentWidget
+from PyQt5.QtWidgets import QLineEdit
+
+from examples.calculator.calc_conf import OP_NODE_INPUT, register_node
+from examples.calculator.calc_node_base import CalcGraphicsNode, CalcNode
 from node_editor.utils.helpers import dump_exception
+from node_editor.widgets.content_widget import QDMNodeContentWidget
 
 
 class CalcInputContent(QDMNodeContentWidget):
-    def initUI(self):
+    def init_ui(self):
         self.edit = QLineEdit("1", self)
         self.edit.setAlignment(Qt.AlignRight)
         self.edit.setObjectName(self.node.content_label_objname)
@@ -22,7 +23,9 @@ class CalcInputContent(QDMNodeContentWidget):
         res['value'] = self.edit.text()
         return res
 
-    def deserialize(self, data, hashmap={}):
+    def deserialize(self, data, hashmap=None):
+        if hashmap is None:
+            hashmap = {}
         res = super().deserialize(data, hashmap)
         try:
             value = data['value']
@@ -34,7 +37,7 @@ class CalcInputContent(QDMNodeContentWidget):
 
 
 @register_node(OP_NODE_INPUT)
-class CalcNode_Input(CalcNode):
+class CalcNodeInput(CalcNode):
     icon = "icons/in.png"
     op_code = OP_NODE_INPUT
     op_title = "Input"
@@ -42,7 +45,7 @@ class CalcNode_Input(CalcNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[], outputs=[3])
-        self.eval()
+        self.eval()  # noqa: A001
 
     def initInnerClasses(self):
         self.content = CalcInputContent(self)

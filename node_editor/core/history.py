@@ -68,17 +68,17 @@ class SceneHistory:
         self.history_stack = []
         self.history_current_step = -1
 
-    def storeInitialHistoryStamp(self) -> None:
+    def store_initial_history_stamp(self) -> None:
         """Create baseline history entry for new or loaded file.
 
         Call after creating or loading a scene to establish the initial
         state for undo operations.
         """
-        self.storeHistory("Initial History Stamp")
+        self.store_history("Initial History Stamp")
 
     # Event listener management
 
-    def addHistoryModifiedListener(self, callback: Callable) -> None:
+    def add_history_modified_listener(self, callback: Callable) -> None:
         """Register callback for any history stack change.
 
         Called on store, undo, or redo operations.
@@ -88,7 +88,7 @@ class SceneHistory:
         """
         self._history_modified_listeners.append(callback)
 
-    def addHistoryStoredListener(self, callback: Callable) -> None:
+    def add_history_stored_listener(self, callback: Callable) -> None:
         """Register callback for new history entries.
 
         Args:
@@ -96,7 +96,7 @@ class SceneHistory:
         """
         self._history_stored_listeners.append(callback)
 
-    def addHistoryRestoredListener(self, callback: Callable) -> None:
+    def add_history_restored_listener(self, callback: Callable) -> None:
         """Register callback for undo/redo operations.
 
         Args:
@@ -104,7 +104,7 @@ class SceneHistory:
         """
         self._history_restored_listeners.append(callback)
 
-    def removeHistoryStoredListener(self, callback: Callable) -> None:
+    def remove_history_stored_listener(self, callback: Callable) -> None:
         """Unregister history stored callback.
 
         Args:
@@ -113,7 +113,7 @@ class SceneHistory:
         if callback in self._history_stored_listeners:
             self._history_stored_listeners.remove(callback)
 
-    def removeHistoryRestoredListener(self, callback: Callable) -> None:
+    def remove_history_restored_listener(self, callback: Callable) -> None:
         """Unregister history restored callback.
 
         Args:
@@ -124,7 +124,7 @@ class SceneHistory:
 
     # Undo/Redo capabilities
 
-    def canUndo(self) -> bool:
+    def can_undo(self) -> bool:
         """Check if undo operation is available.
 
         Returns:
@@ -132,7 +132,7 @@ class SceneHistory:
         """
         return self.history_current_step > 0
 
-    def canRedo(self) -> bool:
+    def can_redo(self) -> bool:
         """Check if redo operation is available.
 
         Returns:
@@ -148,9 +148,9 @@ class SceneHistory:
         Moves back one step in history and restores that snapshot.
         Marks scene as modified.
         """
-        if self.canUndo():
+        if self.can_undo():
             self.history_current_step -= 1
-            self.restoreHistory()
+            self.restore_history()
             self.scene.has_been_modified = True
 
     def redo(self) -> None:
@@ -159,14 +159,14 @@ class SceneHistory:
         Moves forward one step in history and restores that snapshot.
         Marks scene as modified.
         """
-        if self.canRedo():
+        if self.can_redo():
             self.history_current_step += 1
-            self.restoreHistory()
+            self.restore_history()
             self.scene.has_been_modified = True
 
     # History management
 
-    def storeHistory(self, desc: str, set_modified: bool = False) -> None:
+    def store_history(self, desc: str, set_modified: bool = False) -> None:
         """Save current scene state to history stack.
 
         Creates a snapshot of the scene including all nodes, edges, and
@@ -188,7 +188,7 @@ class SceneHistory:
             self.history_stack = self.history_stack[1:]
             self.history_current_step -= 1
 
-        hs = self.createHistoryStamp(desc)
+        hs = self.create_history_stamp(desc)
         self.history_stack.append(hs)
         self.history_current_step += 1
 
@@ -197,14 +197,14 @@ class SceneHistory:
         for callback in self._history_stored_listeners:
             callback()
 
-    def restoreHistory(self) -> None:
+    def restore_history(self) -> None:
         """Apply history snapshot at current position.
 
         Deserializes the scene from the current history stamp and
         restores selection state. Triggers history modified and
         restored callbacks.
         """
-        self.restoreHistoryStamp(self.history_stack[self.history_current_step])
+        self.restore_history_stamp(self.history_stack[self.history_current_step])
 
         for callback in self._history_modified_listeners:
             callback()
@@ -213,7 +213,7 @@ class SceneHistory:
 
     # History stamp creation and restoration
 
-    def captureCurrentSelection(self) -> dict:
+    def capture_current_selection(self) -> dict:
         """Record currently selected nodes and edges.
 
         Returns:
@@ -232,7 +232,7 @@ class SceneHistory:
 
         return sel_obj
 
-    def createHistoryStamp(self, desc: str) -> dict:
+    def create_history_stamp(self, desc: str) -> dict:
         """Create complete history snapshot.
 
         Serializes entire scene state and current selection into a
@@ -247,12 +247,12 @@ class SceneHistory:
         history_stamp = {
             "desc": desc,
             "snapshot": self.scene.serialize(),
-            "selection": self.captureCurrentSelection(),
+            "selection": self.capture_current_selection(),
         }
 
         return history_stamp
 
-    def restoreHistoryStamp(self, history_stamp: dict) -> None:
+    def restore_history_stamp(self, history_stamp: dict) -> None:
         """Apply a history snapshot to the scene.
 
         Deserializes the scene graph and restores selection state.
@@ -264,7 +264,7 @@ class SceneHistory:
         """
         try:
             self.undo_selection_has_changed = False
-            previous_selection = self.captureCurrentSelection()
+            previous_selection = self.capture_current_selection()
 
             self.scene.deserialize(history_stamp["snapshot"])
 
@@ -286,9 +286,9 @@ class SceneHistory:
                         node.graphics_node.setSelected(True)
                         break
 
-            current_selection = self.captureCurrentSelection()
+            current_selection = self.capture_current_selection()
 
-            self.scene._last_selected_items = self.scene.getSelectedItems()
+            self.scene._last_selected_items = self.scene.get_selected_items()
 
             if (
                 current_selection["nodes"] != previous_selection["nodes"]

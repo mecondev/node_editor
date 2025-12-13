@@ -60,7 +60,7 @@ class NodeEditorWindow(QMainWindow):
         self.create_menus()
 
         self.nodeeditor = self.__class__.node_editor_widget_class(self)
-        self.nodeeditor.scene.addHasBeenModifiedListener(self.set_title)
+        self.nodeeditor.scene.add_has_been_modified_listener(self.set_title)
         self.setCentralWidget(self.nodeeditor)
 
         self.create_status_bar()
@@ -191,7 +191,7 @@ class NodeEditorWindow(QMainWindow):
         if hasattr(nodeeditor, "is_modified"):
             return nodeeditor.is_modified()
 
-        return nodeeditor.scene.isModified()
+        return nodeeditor.scene.is_modified()
 
     def get_current_node_editor_widget(self) -> NodeEditorWidget:
         """Get the active node editor widget.
@@ -350,7 +350,7 @@ class NodeEditorWindow(QMainWindow):
     def on_edit_delete(self) -> None:
         """Delete selected items."""
         if self.get_current_node_editor_widget():
-            self.get_current_node_editor_widget().scene.getView().deleteSelected()
+            self.get_current_node_editor_widget().scene.get_view().delete_selected()
 
     def on_edit_cut(self) -> None:
         """Cut selected items to clipboard."""

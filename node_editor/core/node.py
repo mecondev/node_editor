@@ -104,7 +104,7 @@ class Node(Serializable):
 
         self.title = title
 
-        self.scene.addNode(self)
+        self.scene.add_node(self)
         self.scene.graphics_scene.addItem(self.graphics_node)
 
         self.inputs: list[Socket] = []
@@ -339,9 +339,9 @@ class Node(Serializable):
         Returns:
             True if edge is connected to any socket on this node.
         """
-        return any(socket.isConnected(edge) for socket in self.inputs + self.outputs)
+        return any(socket.is_connected(edge) for socket in self.inputs + self.outputs)
 
-    def getSocketPosition(
+    def get_socket_position(
         self, index: int, position: int, num_out_of: int = 1
     ) -> tuple[float, float]:
         """Calculate socket position in node-local coordinates.
@@ -407,7 +407,7 @@ class Node(Serializable):
             Tuple of (x, y) in scene coordinates.
         """
         nodepos = self.graphics_node.pos()
-        socketpos = self.getSocketPosition(
+        socketpos = self.get_socket_position(
             socket.index, socket.position, socket.count_on_this_node_side
         )
         return (nodepos.x() + socketpos[0], nodepos.y() + socketpos[1])
@@ -433,7 +433,7 @@ class Node(Serializable):
 
         self.scene.graphics_scene.removeItem(self.graphics_node)
         self.graphics_node = None
-        self.scene.removeNode(self)
+        self.scene.remove_node(self)
 
     # Node evaluation methods
 
