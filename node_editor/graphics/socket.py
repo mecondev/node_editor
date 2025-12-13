@@ -67,7 +67,7 @@ class QDMGraphicsSocket(QGraphicsItem):
         """
         return self.socket.socket_type
 
-    def getSocketColor(self, key: int | str) -> QColor:
+    def get_socket_color(self, key: int | str) -> QColor:
         """Resolve color for a socket type.
 
         Looks up socket type in theme color list. Falls back to
@@ -88,12 +88,12 @@ class QDMGraphicsSocket(QGraphicsItem):
             return QColor(key)
         return Qt.GlobalColor.transparent
 
-    def changeSocketType(self) -> None:
+    def change_socket_type(self) -> None:
         """Update visual appearance after socket type change.
 
         Refreshes background color and brush from current type.
         """
-        self._color_background = self.getSocketColor(self.socket_type)
+        self._color_background = self.get_socket_color(self.socket_type)
         self._brush = QBrush(self._color_background)
         self.update()
 
@@ -104,7 +104,7 @@ class QDMGraphicsSocket(QGraphicsItem):
         """
         theme = ThemeEngine.current_theme()
 
-        self._color_background = self.getSocketColor(self.socket_type)
+        self._color_background = self.get_socket_color(self.socket_type)
         self._color_outline = theme.socket_outline_color
         self._color_highlight = theme.socket_highlight_color
 

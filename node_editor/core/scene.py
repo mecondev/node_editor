@@ -150,7 +150,7 @@ class Scene(Serializable):
         from node_editor.graphics.scene import QDMGraphicsScene
 
         self.graphics_scene: QDMGraphicsScene = QDMGraphicsScene(self)
-        self.graphics_scene.setGrScene(self.scene_width, self.scene_height)
+        self.graphics_scene.set_gr_scene(self.scene_width, self.scene_height)
 
     # Node and edge management
 

@@ -165,11 +165,11 @@ class Node(Serializable):
         self.graphics_node.setPos(x, y)
         for socket in self.inputs:
             for edge in socket.edges:
-                edge.graphics_edge.calcPath()
+                edge.graphics_edge.calc_path()
                 edge.update_positions()
         for socket in self.outputs:
             for edge in socket.edges:
-                edge.graphics_edge.calcPath()
+                edge.graphics_edge.calc_path()
                 edge.update_positions()
 
     def init_inner_classes(self) -> None:
@@ -320,7 +320,7 @@ class Node(Serializable):
         Args:
             new_state: True to select, False to deselect.
         """
-        self.graphics_node.doSelect(new_state)
+        self.graphics_node.do_select(new_state)
 
     def is_selected(self) -> bool:
         """Check if node is currently selected.

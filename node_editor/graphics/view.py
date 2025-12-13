@@ -554,7 +554,7 @@ class QDMGraphicsView(QGraphicsView):
             p2 = self.cutline.line_points[ix + 1]
 
             for edge in self.graphics_scene.scene.edges.copy():
-                if edge.graphics_edge.intersectsWith(p1, p2):
+                if edge.graphics_edge.intersects_with(p1, p2):
                     edge.remove()
 
         self.graphics_scene.scene.history.store_history("Delete cutted edges", set_modified=True)

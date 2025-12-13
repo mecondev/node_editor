@@ -55,7 +55,7 @@ class GraphicsEdgePathBase:
         """
         self.owner = owner
 
-    def calcPath(self) -> QPainterPath | None:
+    def calc_path(self) -> QPainterPath | None:
         """Calculate path from source to destination.
 
         Override in subclasses to implement specific path styles.
@@ -69,7 +69,7 @@ class GraphicsEdgePathBase:
 class GraphicsEdgePathDirect(GraphicsEdgePathBase):
     """Straight line path between source and destination."""
 
-    def calcPath(self) -> QPainterPath:
+    def calc_path(self) -> QPainterPath:
         """Calculate direct line connection.
 
         Returns:
@@ -85,7 +85,7 @@ class GraphicsEdgePathDirect(GraphicsEdgePathBase):
 class GraphicsEdgePathBezier(GraphicsEdgePathBase):
     """Cubic Bezier curve path with adaptive control points."""
 
-    def calcPath(self) -> QPainterPath:
+    def calc_path(self) -> QPainterPath:
         """Calculate cubic Bezier curve with two control points.
 
         Adjusts control points based on socket positions and
@@ -150,7 +150,7 @@ class GraphicsEdgePathSquare(GraphicsEdgePathBase):
         self.rand = None
         self.handle_weight = handle_weight
 
-    def calcPath(self) -> QPainterPath:
+    def calc_path(self) -> QPainterPath:
         """Calculate right-angle stepped path.
 
         Creates path with horizontal-vertical-horizontal segments.
@@ -174,7 +174,7 @@ class GraphicsEdgePathSquare(GraphicsEdgePathBase):
 class GraphicsEdgePathImprovedSharp(GraphicsEdgePathBase):
     """Sharp-cornered path with horizontal exit segments."""
 
-    def calcPath(self) -> QPainterPath:
+    def calc_path(self) -> QPainterPath:
         """Calculate sharp path with horizontal ends.
 
         Creates path that exits horizontally from both sockets
@@ -214,7 +214,7 @@ class GraphicsEdgePathImprovedSharp(GraphicsEdgePathBase):
 class GraphicsEdgePathImprovedBezier(GraphicsEdgePathBase):
     """Bezier curve path with horizontal exit segments."""
 
-    def calcPath(self) -> QPainterPath:
+    def calc_path(self) -> QPainterPath:
         """Calculate Bezier path with adaptive curvature.
 
         Creates path with horizontal segments near sockets and

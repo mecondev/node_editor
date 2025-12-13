@@ -136,7 +136,7 @@ class Socket(Serializable):
         """
         if self.socket_type != new_socket_type:
             self.socket_type = new_socket_type
-            self.graphics_socket.changeSocketType()
+            self.graphics_socket.change_socket_type()
             return True
         return False
 

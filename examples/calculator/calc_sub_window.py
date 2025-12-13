@@ -212,7 +212,7 @@ class CalculatorSubWindow(NodeEditorWidget):
 
     def finish_new_node_state(self, new_calc_node):
         self.scene.doDeselectItems()
-        new_calc_node.graphics_node.doSelect(True)
+        new_calc_node.graphics_node.do_select(True)
         new_calc_node.graphics_node.on_selected()
 
 

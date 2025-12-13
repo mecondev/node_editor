@@ -186,7 +186,7 @@ class Edge(Serializable):
         """
         self._edge_type = value
 
-        self.graphics_edge.createEdgePathCalculator()
+        self.graphics_edge.create_edge_path_calculator()
 
         if self.start_socket is not None:
             self.update_positions()
@@ -280,7 +280,7 @@ class Edge(Serializable):
         Args:
             new_state: True to select, False to deselect.
         """
-        self.graphics_edge.doSelect(new_state)
+        self.graphics_edge.do_select(new_state)
 
     def update_positions(self) -> None:
         """Recalculate edge path based on current socket positions.
@@ -291,15 +291,15 @@ class Edge(Serializable):
         source_pos = list(self.start_socket.get_socket_position())
         source_pos[0] += self.start_socket.node.graphics_node.pos().x()
         source_pos[1] += self.start_socket.node.graphics_node.pos().y()
-        self.graphics_edge.setSource(*source_pos)
+        self.graphics_edge.set_source(*source_pos)
 
         if self.end_socket is not None:
             end_pos = list(self.end_socket.get_socket_position())
             end_pos[0] += self.end_socket.node.graphics_node.pos().x()
             end_pos[1] += self.end_socket.node.graphics_node.pos().y()
-            self.graphics_edge.setDestination(*end_pos)
+            self.graphics_edge.set_destination(*end_pos)
         else:
-            self.graphics_edge.setDestination(*source_pos)
+            self.graphics_edge.set_destination(*source_pos)
 
         self.graphics_edge.update()
 

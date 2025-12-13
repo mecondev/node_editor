@@ -69,7 +69,7 @@ class EdgeDragging:
             y: Scene Y coordinate.
         """
         if self.drag_edge is not None and self.drag_edge.graphics_edge is not None:
-            self.drag_edge.graphics_edge.setDestination(x, y)
+            self.drag_edge.graphics_edge.set_destination(x, y)
             self.drag_edge.graphics_edge.update()
 
     def edgeDragStart(self, item: QDMGraphicsSocket) -> None:
@@ -89,7 +89,7 @@ class EdgeDragging:
                 None,
                 EDGE_TYPE_DEFAULT
             )
-            self.drag_edge.graphics_edge.makeUnselectable()
+            self.drag_edge.graphics_edge.make_unselectable()
 
         except Exception as e:
             dump_exception(e)

@@ -148,7 +148,7 @@ class QDMGraphicsNode(QGraphicsItem):
         """
         self.node.scene.graphics_scene.item_selected.emit()
 
-    def doSelect(self, new_state: bool = True) -> None:
+    def do_select(self, new_state: bool = True) -> None:
         """Programmatically select or deselect this node.
 
         Updates internal state tracking and emits signal if selecting.
@@ -197,7 +197,7 @@ class QDMGraphicsNode(QGraphicsItem):
             self.node.scene.history.store_history("Node moved", set_modified=True)
 
             self.node.scene.reset_last_selected_states()
-            self.doSelect()
+            self.do_select()
 
             self.node.scene._last_selected_items = self.node.scene.get_selected_items()
             return
