@@ -53,12 +53,15 @@ _init_graphics_classes()
 # Public API
 # Core classes
 from node_editor.core import Edge, Node, Socket
+from node_editor.core.scene import Scene
 
 # Node system
 from node_editor.nodes import NodeRegistry
 
 # Theme engine
 from node_editor.themes import ThemeEngine
+from node_editor.themes.dark import DarkTheme
+from node_editor.themes.light import LightTheme
 
 # Widgets
 from node_editor.widgets import NodeEditorWidget, NodeEditorWindow
@@ -69,6 +72,7 @@ __all__ = [
     "Node",
     "Edge",
     "Socket",
+    "Scene",
     # Widgets
     "NodeEditorWidget",
     "NodeEditorWindow",
@@ -76,4 +80,6 @@ __all__ = [
     "NodeRegistry",
     # Themes
     "ThemeEngine",
+    "DarkTheme",
+    "LightTheme",
 ]

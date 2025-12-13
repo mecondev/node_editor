@@ -265,15 +265,22 @@ def eval(self):
 ### Changing Themes at Runtime
 
 ```python
+from node_editor.themes.theme_engine import ThemeEngine
+
+# Change the theme
 ThemeEngine.set_theme("light")
-# This:
-# 1. Instantiates theme class
-# 2. Loads QSS file from themes/light/style.qss
-# 3. Applies QSS to QApplication
-# Note: Graphics items cache colors at init - they won't update automatically
+
+# Refresh existing graphics items to apply new colors
+ThemeEngine.refresh_graphics_items(scene)
 ```
 
-For full runtime theme switching, graphics items would need to re-call `initAssets()`.
+**Process**:
+1. `set_theme()` instantiates the new theme class
+2. Loads QSS file from `themes/{theme_name}/style.qss`
+3. Applies QSS to QApplication (affects widgets)
+4. `refresh_graphics_items()` calls `initAssets()` on all nodes/edges/sockets
+
+**Note**: Graphics items cache theme colors at initialization. Without calling `refresh_graphics_items()`, existing items retain the previous theme's colors.
 
 ---
 
@@ -285,6 +292,7 @@ The framework uses JSON for persistence. All serializable classes inherit from `
 
 ```
 Scene
+  ├─ version: str (format version, e.g. "1.0.0")
   ├─ id: int (Python object id)
   ├─ scene_width: int
   ├─ scene_height: int
@@ -336,24 +344,43 @@ class ConstantNode(Node):
 
 ### Versioning Strategy
 
-Currently no explicit version field. Recommended addition:
+Scene serialization includes a version field for format migrations:
 
 ```json
 {
-    "version": "1.0",
+    "version": "1.0.0",
     "id": 12345,
     ...
 }
 ```
 
-Handle migration:
+**Implementation** (in `Scene.serialize/deserialize`):
+
 ```python
+def serialize(self):
+    return OrderedDict([
+        ("version", "1.0.0"),  # First field
+        ("id", self.id),
+        # ...
+    ])
+
 def deserialize(self, data, hashmap=None, restore_id=True):
-    version = data.get("version", "0.9")  # Legacy default
-    if version < "1.0":
-        data = self._migrate_0_9_to_1_0(data)
-    # ...
+    version = data.get("version", "0.9.0")  # Legacy files default to 0.9.0
+    data = self._migrate_to_current_version(version, data)
+    # ... restore nodes/edges ...
+
+def _migrate_to_current_version(self, version: str, data: dict) -> dict:
+    """Apply migrations for older format versions."""
+    # Future migrations go here
+    # Example: if version < "1.1.0": data = migrate_to_1_1_0(data)
+    return data
 ```
+
+**Guidelines**:
+- Bump version when changing serialization format (add/remove/rename fields)
+- Use semantic versioning: major.minor.patch
+- Keep `_migrate_to_current_version()` for backward compatibility
+- Test loading files from previous versions
 
 ---
 

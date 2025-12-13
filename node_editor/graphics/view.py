@@ -27,7 +27,16 @@ from contextlib import suppress
 from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import QEvent, QPoint, QPointF, QRectF, Qt, pyqtSignal
-from PyQt5.QtGui import QDragEnterEvent, QDragLeaveEvent, QDragMoveEvent, QDropEvent, QKeyEvent, QMouseEvent, QPainter, QWheelEvent
+from PyQt5.QtGui import (
+    QDragEnterEvent,
+    QDragLeaveEvent,
+    QDragMoveEvent,
+    QDropEvent,
+    QKeyEvent,
+    QMouseEvent,
+    QPainter,
+    QWheelEvent,
+)
 from PyQt5.QtWidgets import QApplication, QGraphicsView
 
 from node_editor.utils.helpers import dump_exception
@@ -202,7 +211,6 @@ class QDMGraphicsView(QGraphicsView):
         Args:
             event: Qt drag leave event.
         """
-        pass
 
     def dropEvent(self, event: QDropEvent) -> None:
         """Dispatch drop to registered listeners.

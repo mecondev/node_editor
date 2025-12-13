@@ -502,6 +502,7 @@ class Scene(Serializable):
 
         return OrderedDict(
             [
+                ("version", "1.0.0"),
                 ("id", self.id),
                 ("scene_width", self.scene_width),
                 ("scene_height", self.scene_height),
@@ -531,6 +532,11 @@ class Scene(Serializable):
         """
         if hashmap is None:
             hashmap = {}
+
+        # Handle versioning and migrations
+        version = data.get("version", "0.9.0")  # Legacy files have no version
+        if version != "1.0.0":
+            data = self._migrate_to_current_version(data, version)
 
         if restore_id:
             self.id = data["id"]
@@ -586,3 +592,21 @@ class Scene(Serializable):
             edge.remove()
 
         return True
+
+    def _migrate_to_current_version(self, data: dict, from_version: str) -> dict:  # noqa: ARG002
+        """Migrate serialized data from old version to current format.
+
+        Override this method in subclasses to handle version-specific migrations.
+
+        Args:
+            data: Serialized data in old format.
+            from_version: Version string of the data (unused placeholder for future migrations).
+
+        Returns:
+            Migrated data dictionary.
+        """
+        # Placeholder for future migrations
+        # Example:
+        # if from_version < "1.0.0":
+        #     data = self._migrate_0_9_to_1_0(data)
+        return data

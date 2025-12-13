@@ -65,9 +65,11 @@ class ThemeEngine:
             Currently active theme instance.
         """
         if cls._current_theme is None:
-            from node_editor.themes.dark.theme import DarkTheme
+            from node_editor.themes.dark import DarkTheme
+            from node_editor.themes.light import LightTheme
 
             cls.register_theme(DarkTheme)
+            cls.register_theme(LightTheme)
             cls.set_theme("dark")
         return cls._current_theme
 
@@ -116,11 +118,12 @@ class ThemeEngine:
 
         if os.path.exists(qss_path):
             file = QFile(qss_path)
-            file.open(QFile.ReadOnly | QFile.Text)
-            stylesheet = str(file.readAll(), encoding="utf-8")
-            app = QApplication.instance()
-            if app:
-                app.setStyleSheet(stylesheet)
+            if file.open(QFile.ReadOnly | QFile.Text):
+                stylesheet = str(file.readAll(), encoding="utf-8")
+                file.close()
+                app = QApplication.instance()
+                if app:
+                    app.setStyleSheet(stylesheet)
 
     @classmethod
     def available_themes(cls) -> list:
@@ -139,3 +142,35 @@ class ThemeEngine:
         """
         if cls._current_theme:
             cls.set_theme(cls._current_theme.name)
+
+    @classmethod
+    def refresh_graphics_items(cls, scene) -> None:
+        """Refresh theme assets on all graphics items in a scene.
+
+        Call after set_theme() to update colors/pens on existing items.
+
+        Args:
+            scene: Scene instance whose graphics items should refresh.
+        """
+        # Refresh scene
+        if hasattr(scene, 'graphics_scene') and hasattr(scene.graphics_scene, 'init_assets'):
+            scene.graphics_scene.init_assets()
+            scene.graphics_scene.update()
+
+        # Refresh all nodes
+        for node in scene.nodes:
+            if node.graphics_node and hasattr(node.graphics_node, 'init_assets'):
+                node.graphics_node.init_assets()
+                node.graphics_node.update()
+
+            # Refresh sockets
+            for socket in node.inputs + node.outputs:
+                if hasattr(socket.graphics_socket, 'init_assets'):
+                    socket.graphics_socket.init_assets()
+                    socket.graphics_socket.update()
+
+        # Refresh all edges
+        for edge in scene.edges:
+            if edge.graphics_edge and hasattr(edge.graphics_edge, 'init_assets'):
+                edge.graphics_edge.init_assets()
+                edge.graphics_edge.update()

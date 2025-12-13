@@ -116,7 +116,11 @@ class MyCustomNode(Node):
 ### Switching Themes
 
 ```python
-from node_editor.themes import ThemeEngine
+from node_editor.themes import ThemeEngine, DarkTheme, LightTheme
+
+# Register themes (done automatically on first use)
+ThemeEngine.register_theme(DarkTheme)
+ThemeEngine.register_theme(LightTheme)
 
 # List available themes
 print(ThemeEngine.available_themes())  # ['dark', 'light']
@@ -124,8 +128,11 @@ print(ThemeEngine.available_themes())  # ['dark', 'light']
 # Switch theme
 ThemeEngine.set_theme("light")
 
+# Refresh existing graphics items after theme change
+ThemeEngine.refresh_graphics_items(editor.scene)
+
 # Get current theme for accessing colors
-theme = ThemeEngine.get_theme()
+theme = ThemeEngine.current_theme()
 print(theme.node_background)  # QColor object
 ```
 
@@ -193,14 +200,15 @@ editor.scene.saveToFile("my_graph.json")
 editor.scene.loadFromFile("my_graph.json")
 
 # Manual serialization
-data = editor.scene.serialize()  # Returns OrderedDict
-editor.scene.deserialize(data)   # Restores state
+data = editor.scene.serialize()  # Returns OrderedDict with version field
+editor.scene.deserialize(data)   # Restores state, handles version migrations
 ```
 
 ### JSON Format
 
 ```json
 {
+    "version": "1.0.0",
     "id": 12345,
     "scene_width": 64000,
     "scene_height": 64000,
@@ -225,6 +233,8 @@ editor.scene.deserialize(data)   # Restores state
     ]
 }
 ```
+
+**Note:** The `version` field enables backward-compatible migrations when the format changes.
 
 ## Running Examples
 
