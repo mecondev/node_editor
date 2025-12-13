@@ -24,12 +24,12 @@ class CalculatorSubWindow(NodeEditorWidget):
 
         self.set_title()
 
-        self.initNewNodeActions()
+        self.init_new_node_actions()
 
-        self.scene.addHasBeenModifiedListener(self.set_title)
+        self.scene.add_has_been_modified_listener(self.set_title)
         self.scene.history.addHistoryRestoredListener(self.onHistoryRestored)
-        self.scene.addDragEnterListener(self.onDragEnter)
-        self.scene.addDropListener(self.onDrop)
+        self.scene.add_drag_enter_listener(self.onDragEnter)
+        self.scene.add_drop_listener(self.onDrop)
         self.scene.setNodeClassSelector(self.getNodeClassFromData)
 
         self._close_event_listeners = []
@@ -108,7 +108,7 @@ class CalculatorSubWindow(NodeEditorWidget):
             try:
                 node = get_class_from_opcode(op_code)(self.scene)
                 node.set_pos(scene_position.x(), scene_position.y())
-                self.scene.history.storeHistory(f"Created node {node.__class__.__name__}")
+                self.scene.history.store_history(f"Created node {node.__class__.__name__}")
             except Exception as e:
                 dump_exception(e)
 
@@ -220,22 +220,22 @@ class CalculatorSubWindow(NodeEditorWidget):
 
         if DEBUG_CONTEXT:
             print("CONTEXT: EMPTY SPACE")
-        context_menu = self.initNodesContextMenu()
+        context_menu = self.init_nodes_context_menu()
         action = context_menu.exec_(self.mapToGlobal(event.pos()))
 
         if action is not None:
             new_calc_node = get_class_from_opcode(action.data())(self.scene)
-            scene_pos = self.scene.getView().mapToScene(event.pos())
+            scene_pos = self.scene.get_view().mapToScene(event.pos())
             new_calc_node.set_pos(scene_pos.x(), scene_pos.y())
             if DEBUG_CONTEXT:
                 print("Selected node:", new_calc_node)
 
-            if self.scene.getView().mode == MODE_EDGE_DRAG:
+            if self.scene.get_view().mode == MODE_EDGE_DRAG:
                 # if we were dragging an edge...
-                target_socket = self.determine_target_socket_of_node(self.scene.getView().dragging.drag_start_socket.is_output, new_calc_node)
+                target_socket = self.determine_target_socket_of_node(self.scene.get_view().dragging.drag_start_socket.is_output, new_calc_node)
                 if target_socket is not None:
-                    self.scene.getView().dragging.edgeDragEnd(target_socket.graphics_socket)
+                    self.scene.get_view().dragging.edge_drag_end(target_socket.graphics_socket)
                     self.finish_new_node_state(new_calc_node)
 
             else:
-                self.scene.history.storeHistory(f"Created {new_calc_node.__class__.__name__}")
+                self.scene.history.store_history(f"Created {new_calc_node.__class__.__name__}")

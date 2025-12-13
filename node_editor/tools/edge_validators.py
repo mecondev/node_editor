@@ -12,8 +12,8 @@ Example:
             edge_cannot_connect_input_and_output_of_same_node,
         )
 
-        Edge.registerEdgeValidator(edge_cannot_connect_two_outputs_or_two_inputs)
-        Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_same_node)
+        Edge.register_edge_validator(edge_cannot_connect_two_outputs_or_two_inputs)
+        Edge.register_edge_validator(edge_cannot_connect_input_and_output_of_same_node)
 
 Available validators:
     - edge_validator_debug: Debug logging (always allows)

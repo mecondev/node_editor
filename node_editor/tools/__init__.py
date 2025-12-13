@@ -15,7 +15,7 @@ Validator Functions:
     edge_cannot_connect_input_and_output_of_same_node: Prevent self-loops.
     edge_cannot_connect_input_and_output_of_different_type: Enforce type matching.
 
-Register validators with Edge.registerEdgeValidator() to enable validation.
+Register validators with Edge.register_edge_validator() to enable validation.
 
 Author:
     Michael Economou

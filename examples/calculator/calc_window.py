@@ -24,9 +24,9 @@ from node_editor.utils.helpers import dump_exception, pp
 from node_editor.utils.qt_helpers import loadStylesheets
 from node_editor.widgets.editor_window import NodeEditorWindow
 
-Edge.registerEdgeValidator(edge_validator_debug)
-Edge.registerEdgeValidator(edge_cannot_connect_two_outputs_or_two_inputs)
-Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_same_node)
+Edge.register_edge_validator(edge_validator_debug)
+Edge.register_edge_validator(edge_cannot_connect_two_outputs_or_two_inputs)
+Edge.register_edge_validator(edge_cannot_connect_input_and_output_of_same_node)
 
 
 # images for the dark skin
@@ -265,10 +265,10 @@ class CalculatorWindow(NodeEditorWindow):
         nodeeditor = child_widget if child_widget is not None else CalculatorSubWindow()
         subwnd = self.mdiArea.addSubWindow(nodeeditor)
         subwnd.setWindowIcon(self.empty_icon)
-        # nodeeditor.scene.addItemSelectedListener(self.updateEditMenu)
-        # nodeeditor.scene.addItemsDeselectedListener(self.updateEditMenu)
-        nodeeditor.scene.history.addHistoryModifiedListener(self.update_edit_menu)
-        nodeeditor.addCloseEventListener(self.on_sub_wnd_close)
+        # nodeeditor.scene.add_item_selected_listener(self.updateEditMenu)
+        # nodeeditor.scene.add_items_deselected_listener(self.updateEditMenu)
+        nodeeditor.scene.history.add_history_modified_listener(self.update_edit_menu)
+        nodeeditor.add_close_event_listener(self.on_sub_wnd_close)
         return subwnd
 
     def on_sub_wnd_close(self, widget, event):
