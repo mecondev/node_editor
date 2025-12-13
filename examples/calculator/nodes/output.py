@@ -13,7 +13,7 @@ from node_editor.widgets.content_widget import QDMNodeContentWidget
 
 class CalcOutputContent(QDMNodeContentWidget):
     def init_ui(self):
-        self.lbl = QLabel("42", self)
+        self.lbl = QLabel("--", self)
         self.lbl.setAlignment(Qt.AlignLeft)
         self.lbl.setObjectName(self.node.content_label_objname)
 
@@ -27,6 +27,7 @@ class CalcNodeOutput(CalcNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[1], outputs=[])
+        self.graphics_node.setToolTip("Not connected")
 
     def init_inner_classes(self):
         self.content = CalcOutputContent(self)
@@ -35,20 +36,34 @@ class CalcNodeOutput(CalcNode):
     def eval_implementation(self):
         input_node = self.get_input(0)
         if not input_node:
+            self.content.lbl.setText("--")
             self.graphics_node.setToolTip("Input is not connected")
-            self.mark_invalid()
+            self.mark_dirty()
+            self.mark_invalid(False)
+            return
+
+        # If upstream node is already invalid, avoid calling eval() again.
+        # This prevents stale values and avoids recursion when upstream nodes
+        # propagate evaluation to children on errors.
+        if input_node.is_invalid():
+            self.content.lbl.setText("--")
+            self.graphics_node.setToolTip("Input has an error")
+            self.mark_dirty()
+            self.mark_invalid(False)
             return
 
         val = input_node.eval()
 
         if val is None:
-            self.graphics_node.setToolTip("Input is NaN")
-            self.mark_invalid()
+            self.content.lbl.setText("--")
+            self.graphics_node.setToolTip("Input is invalid")
+            self.mark_dirty()
+            self.mark_invalid(False)
             return
 
         self.content.lbl.setText(f"{val}")
         self.mark_invalid(False)
         self.mark_dirty(False)
-        self.graphics_node.setToolTip("")
+        self.graphics_node.setToolTip(f"Output: {val}")
 
         return val

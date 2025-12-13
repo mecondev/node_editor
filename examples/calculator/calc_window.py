@@ -129,7 +129,7 @@ class CalculatorWindow(NodeEditorWindow):
         try:
             for fname in fnames:
                 if fname:
-                    existing = self.findMdiChild(fname)
+                    existing = self.find_mdi_child(fname)
                     if existing:
                         self.mdiArea.setActiveSubWindow(existing)
                     else:

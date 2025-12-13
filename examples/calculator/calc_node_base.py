@@ -4,6 +4,7 @@ Author: Michael Economou
 Date: 2025-12-11
 """
 import logging
+import os
 
 from PyQt5.QtCore import QRectF
 from PyQt5.QtGui import QImage
@@ -28,7 +29,8 @@ class CalcGraphicsNode(QDMGraphicsNode):
 
     def init_assets(self):
         super().init_assets()
-        self.icons = QImage("icons/status_icons.png")
+        icon_path = os.path.join(os.path.dirname(__file__), "icons", "status_icons.png")
+        self.icons = QImage(icon_path)
 
     def paint(self, painter, option, widget=None):
         super().paint(painter, option, widget)
@@ -71,6 +73,9 @@ class CalcNode(Node):
 
         self.value = None
 
+        # Set default tooltip
+        self.graphics_node.setToolTip("Not evaluated yet")
+
         # it's really important to mark all nodes Dirty by default
         self.mark_dirty()
 
@@ -88,9 +93,11 @@ class CalcNode(Node):
         i2 = self.get_input(1)
 
         if i1 is None or i2 is None:
+            self.value = None
             self.mark_invalid()
             self.mark_descendants_dirty()
             self.graphics_node.setToolTip("Connect all inputs")
+            self.eval_children()
             return None
 
         else:
@@ -99,21 +106,25 @@ class CalcNode(Node):
                 self.value = val
                 self.mark_dirty(False)
                 self.mark_invalid(False)
-                self.graphics_node.setToolTip("")
+                self.graphics_node.setToolTip(f"Result: {val}")
 
                 self.mark_descendants_dirty()
                 self.eval_children()
 
                 return val
             except ZeroDivisionError:
+                self.value = None
                 self.mark_invalid()
-                self.graphics_node.setToolTip("⚠ Cannot divide by zero")
+                self.graphics_node.setToolTip("Cannot divide by zero")
                 self.mark_descendants_dirty()
+                self.eval_children()
                 return None
             except (ValueError, TypeError) as e:
+                self.value = None
                 self.mark_invalid()
-                self.graphics_node.setToolTip(f"⚠ Invalid input: {str(e)}")
+                self.graphics_node.setToolTip(f"Invalid input: {str(e)}")
                 self.mark_descendants_dirty()
+                self.eval_children()
                 return None
 
     def eval(self):
@@ -126,13 +137,18 @@ class CalcNode(Node):
             val = self.eval_implementation()
             return val
         except ValueError as e:
+            self.value = None
             self.mark_invalid()
             self.graphics_node.setToolTip(str(e))
             self.mark_descendants_dirty()
+            self.eval_children()
         except Exception as e:
+            self.value = None
             self.mark_invalid()
             self.graphics_node.setToolTip(str(e))
             dump_exception(e)
+            self.mark_descendants_dirty()
+            self.eval_children()
 
 
 
@@ -140,6 +156,9 @@ class CalcNode(Node):
         logging.getLogger(__name__).debug(f"{self.__class__.__name__}::on_input_changed")
         self.mark_dirty()
         self.eval()
+        # Trigger re-evaluation of all output nodes
+        self.mark_descendants_dirty()
+        self.eval_children()
 
 
     def serialize(self):

@@ -4,6 +4,7 @@ Author: Michael Economou
 Date: 2025-12-11
 """
 import logging
+import os
 
 from PyQt5.QtCore import QDataStream, QIODevice, Qt
 from PyQt5.QtGui import QIcon, QPixmap
@@ -16,6 +17,11 @@ from node_editor.utils.helpers import dump_exception
 from node_editor.widgets.editor_widget import NodeEditorWidget
 
 logger = logging.getLogger(__name__)
+
+
+def get_icon_path(relative_path):
+    """Get absolute path for icon file."""
+    return os.path.join(os.path.dirname(__file__), relative_path)
 
 
 class CalculatorSubWindow(NodeEditorWidget):
@@ -32,6 +38,7 @@ class CalculatorSubWindow(NodeEditorWidget):
         logger.info("CalculatorSubWindow.__init__: Node actions initialized")
 
         self.scene.add_has_been_modified_listener(self.set_title)
+        self.scene.add_has_been_modified_listener(self.on_scene_modified)
         self.scene.history.add_history_restored_listener(self.on_history_restored)
         # Add drag/drop listeners directly to the view to avoid premature view access
         self.view.add_drag_enter_listener(self.on_drag_enter)
@@ -40,6 +47,7 @@ class CalculatorSubWindow(NodeEditorWidget):
         logger.info("CalculatorSubWindow.__init__: Listeners registered")
 
         self._close_event_listeners = []
+        self._last_edge_count = 0
         logger.info("CalculatorSubWindow.__init__: Complete")
 
     def get_node_class_from_data(self, data):
@@ -51,10 +59,16 @@ class CalculatorSubWindow(NodeEditorWidget):
     def do_eval_outputs(self):
         # eval all output nodes
         for node in self.scene.nodes:
-            if node.__class__.__name__ == "CalcNode_Output":
+            if node.__class__.__name__ == "CalcNodeOutput":
+                node.mark_dirty()  # Force re-evaluation
+                node.value = None  # Clear cached value
                 node.eval()
 
     def on_history_restored(self):
+        self.do_eval_outputs()
+
+    def on_scene_modified(self):
+        """Called when scene is modified - re-evaluate outputs."""
         self.do_eval_outputs()
 
     def file_load(self, filename):
@@ -70,7 +84,8 @@ class CalculatorSubWindow(NodeEditorWidget):
         keys.sort()
         for key in keys:
             node = CALC_NODES[key]
-            self.node_actions[node.op_code] = QAction(QIcon(node.icon), node.op_title)
+            icon_path = get_icon_path(node.icon)
+            self.node_actions[node.op_code] = QAction(QIcon(icon_path), node.op_title)
             self.node_actions[node.op_code].setData(node.op_code)
 
     def init_nodes_context_menu(self):

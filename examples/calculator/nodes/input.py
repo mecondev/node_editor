@@ -45,6 +45,7 @@ class CalcNodeInput(CalcNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[], outputs=[3])
+        self.graphics_node.setToolTip("Not evaluated yet")
         self.eval()  # noqa: A001
 
     def init_inner_classes(self):
@@ -62,7 +63,7 @@ class CalcNodeInput(CalcNode):
         self.mark_descendants_invalid(False)
         self.mark_descendants_dirty()
 
-        self.graphics_node.setToolTip("")
+        self.graphics_node.setToolTip(f"Value: {self.value}")
 
         self.eval_children()
 
