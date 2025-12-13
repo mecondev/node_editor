@@ -45,13 +45,13 @@ class EdgeRerouting:
         first_mb_release: Flag for first mouse button release detection.
     """
 
-    def __init__(self, gr_view: QDMGraphicsView) -> None:
+    def __init__(self, graphics_view: QDMGraphicsView) -> None:
         """Initialize edge rerouting handler.
 
         Args:
-            gr_view: QDMGraphicsView to operate on.
+            graphics_view: QDMGraphicsView to operate on.
         """
-        self.graphics_view = gr_view
+        self.graphics_view = graphics_view
         self.start_socket: Socket | None = None
         self.rerouting_edges: list[Edge] = []
         self.is_rerouting: bool = False

@@ -42,14 +42,14 @@ class EdgeSnapping:
         edge_snapping_radius: Distance within which to snap to sockets.
     """
 
-    def __init__(self, gr_view: QDMGraphicsView, snapping_radius: float = 24) -> None:
+    def __init__(self, graphics_view: QDMGraphicsView, snapping_radius: float = 24) -> None:
         """Initialize edge snapping handler.
 
         Args:
-            gr_view: QDMGraphicsView to operate on.
+            graphics_view: QDMGraphicsView to operate on.
             snapping_radius: Pixel radius for socket detection.
         """
-        self.graphics_view = gr_view
+        self.graphics_view = graphics_view
         self.graphics_scene = self.graphics_view.graphics_scene
         self.edge_snapping_radius = snapping_radius
 

@@ -48,7 +48,7 @@ class TestSceneCreation:
         """Test new scene starts in unmodified state."""
         scene = Scene()
 
-        assert not scene.is_modified()
+        assert not scene.has_been_modified
 
 
 class TestSceneNodeManagement:
@@ -131,7 +131,7 @@ class TestSceneModificationState:
         Node(scene, "Test Node")
         scene.has_been_modified = False
 
-        assert not scene.is_modified()
+        assert not scene.has_been_modified
 
 
 class TestSceneSerialization:

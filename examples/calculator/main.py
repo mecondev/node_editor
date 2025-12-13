@@ -7,7 +7,6 @@ import logging
 import os
 import sys
 
-from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QApplication
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -27,15 +26,6 @@ if __name__ == '__main__':
     wnd = CalculatorWindow()
     wnd.show()
     logger.info("Calculator window opened")
-
-    auto_exit_seconds = os.environ.get("AUTO_EXIT_SECONDS")
-    if auto_exit_seconds is not None:
-        try:
-            delay_ms = int(float(auto_exit_seconds) * 1000)
-            QTimer.singleShot(delay_ms, app.quit)
-        except ValueError:
-            # Ignore invalid env value; run normally
-            pass
 
     exit_code = app.exec_()
     logger.info("Calculator exiting with code %d", exit_code)

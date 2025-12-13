@@ -43,13 +43,13 @@ class EdgeDragging:
         drag_start_socket: Socket where drag originated.
     """
 
-    def __init__(self, gr_view: QDMGraphicsView) -> None:
+    def __init__(self, graphics_view: QDMGraphicsView) -> None:
         """Initialize edge dragging helper.
 
         Args:
-            gr_view: QDMGraphicsView to operate on.
+            graphics_view: QDMGraphicsView to operate on.
         """
-        self.graphics_view = gr_view
+        self.graphics_view = graphics_view
         self.drag_edge: Edge | None = None
         self.drag_start_socket = None
 

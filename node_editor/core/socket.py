@@ -214,23 +214,6 @@ class Socket(Serializable):
             else:
                 edge.remove()
 
-    def determine_multi_edges(self, data: dict) -> bool:
-        """Determine multi-edge capability from serialized data.
-
-        Handles backward compatibility with older file formats that didn't
-        explicitly store multi_edges flag.
-
-        Args:
-            data: Deserialized socket data dictionary.
-
-        Returns:
-            True if socket should allow multiple edge connections.
-        """
-        if "multi_edges" in data:
-            return data["multi_edges"]
-        # Legacy format: output sockets (RIGHT_*) were multi-edge by default
-        return data["position"] in (RIGHT_BOTTOM, RIGHT_TOP)
-
     def serialize(self) -> OrderedDict:
         """Convert socket state to ordered dictionary for persistence.
 
@@ -266,7 +249,7 @@ class Socket(Serializable):
 
         if restore_id:
             self.id = data["id"]
-        self.is_multi_edges = self.determine_multi_edges(data)
+        self.is_multi_edges = data["multi_edges"]
         self.change_socket_type(data["socket_type"])
         hashmap[data["id"]] = self
         return True

@@ -303,16 +303,6 @@ class Scene(Serializable):
 
     # Modification state
 
-    def is_modified(self) -> bool:
-        """Check if scene has unsaved changes.
-
-        Alias for has_been_modified property for compatibility.
-
-        Returns:
-            True if modified since last save.
-        """
-        return self.has_been_modified
-
     # Event listener management
 
     def add_has_been_modified_listener(self, callback: Callable) -> None:

@@ -42,14 +42,14 @@ class EdgeIntersect:
         hoveredList: Graphics items under the dragged node.
     """
 
-    def __init__(self, gr_view: QDMGraphicsView) -> None:
+    def __init__(self, graphics_view: QDMGraphicsView) -> None:
         """Initialize edge intersection handler.
 
         Args:
-            gr_view: QDMGraphicsView to operate on.
+            graphics_view: QDMGraphicsView to operate on.
         """
-        self.graphics_scene = gr_view.graphics_scene
-        self.graphics_view = gr_view
+        self.graphics_scene = graphics_view.graphics_scene
+        self.graphics_view = graphics_view
         self.draggedNode: Node | None = None
         self.hoveredList: list = []
 
@@ -140,16 +140,16 @@ class EdgeIntersect:
             _scene_pos_y: Current Y position (unused).
         """
         rect = self.hot_zone_rect(self.draggedNode)
-        gr_items = self.graphics_scene.items(rect)
+        graphics_items = self.graphics_scene.items(rect)
 
-        for gr_edge in self.hoveredList:
-            gr_edge.hovered = False
+        for graphics_edge in self.hoveredList:
+            graphics_edge.hovered = False
         self.hoveredList = []
 
-        for gr_item in gr_items:
-            if hasattr(gr_item, "edge") and not self.draggedNode.has_connected_edge(gr_item.edge):
-                self.hoveredList.append(gr_item)
-                gr_item.hovered = True
+        for graphics_item in graphics_items:
+            if hasattr(graphics_item, "edge") and not self.draggedNode.has_connected_edge(graphics_item.edge):
+                self.hoveredList.append(graphics_item)
+                graphics_item.hovered = True
 
     def intersect(self, node_box: QRectF) -> Edge | None:
         """Find first edge intersecting with node bounds.
@@ -160,10 +160,10 @@ class EdgeIntersect:
         Returns:
             First intersecting Edge, or None.
         """
-        gr_items = self.graphics_scene.items(node_box)
-        for gr_item in gr_items:
-            if hasattr(gr_item, "edge") and not self.draggedNode.has_connected_edge(gr_item.edge):
-                return gr_item.edge
+        graphics_items = self.graphics_scene.items(node_box)
+        for graphics_item in graphics_items:
+            if hasattr(graphics_item, "edge") and not self.draggedNode.has_connected_edge(graphics_item.edge):
+                return graphics_item.edge
         return None
 
     def is_connected(self, node: Node) -> bool:

@@ -7,9 +7,9 @@ and logging configuration.
 Functions:
     loadStylesheet: Load a single QSS stylesheet to QApplication.
     loadStylesheets: Load and concatenate multiple QSS stylesheets.
-    isCTRLPressed: Check if Control modifier is active.
-    isSHIFTPressed: Check if Shift modifier is active.
-    isALTPressed: Check if Alt modifier is active.
+    is_ctrl_pressed: Check if Control modifier is active.
+    is_shift_pressed: Check if Shift modifier is active.
+    is_alt_pressed: Check if Alt modifier is active.
      dump_exception: Print exception with traceback for debugging.
     pp: Pretty-print objects to console.
     setup_logging: Configure application-wide logging handlers.
@@ -25,9 +25,9 @@ Date:
 from node_editor.utils.helpers import dump_exception, pp
 from node_editor.utils.logging_config import get_logger, setup_logging
 from node_editor.utils.qt_helpers import (
-    isALTPressed,
-    isCTRLPressed,
-    isSHIFTPressed,
+    is_alt_pressed,
+    is_ctrl_pressed,
+    is_shift_pressed,
     loadStylesheet,
     loadStylesheets,
 )
@@ -37,9 +37,9 @@ __all__ = [
     "pp",
     "loadStylesheet",
     "loadStylesheets",
-    "isCTRLPressed",
-    "isSHIFTPressed",
-    "isALTPressed",
+    "is_ctrl_pressed",
+    "is_shift_pressed",
+    "is_alt_pressed",
     "setup_logging",
     "get_logger",
 ]

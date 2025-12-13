@@ -6,9 +6,12 @@ including stylesheet loading and keyboard modifier detection.
 Functions:
     loadStylesheet: Load a single QSS stylesheet.
     loadStylesheets: Load and concatenate multiple QSS stylesheets.
-    isCTRLPressed: Check if Control modifier is active.
-    isSHIFTPressed: Check if Shift modifier is active.
-    isALTPressed: Check if Alt modifier is active.
+    is_ctrl_pressed: Check if Control modifier is active.
+    is_shift_pressed: Check if Shift modifier is active.
+    is_alt_pressed: Check if Alt modifier is active.
+     is_ctrl_pressed: Check if Control modifier is active.
+     is_shift_pressed: Check if Shift modifier is active.
+     is_alt_pressed: Check if Alt modifier is active.
 
 Author:
     Michael Economou
@@ -62,7 +65,7 @@ def loadStylesheets(*filenames: str) -> None:
         app.setStyleSheet(combined)
 
 
-def isCTRLPressed(event) -> bool:
+def is_ctrl_pressed(event) -> bool:
     """Check if Control (or Command on Mac) is pressed.
 
     Args:
@@ -74,7 +77,7 @@ def isCTRLPressed(event) -> bool:
     return bool(event.modifiers() & Qt.ControlModifier)
 
 
-def isSHIFTPressed(event) -> bool:
+def is_shift_pressed(event) -> bool:
     """Check if Shift key is pressed.
 
     Args:
@@ -86,7 +89,7 @@ def isSHIFTPressed(event) -> bool:
     return bool(event.modifiers() & Qt.ShiftModifier)
 
 
-def isALTPressed(event) -> bool:
+def is_alt_pressed(event) -> bool:
     """Check if Alt key is pressed.
 
     Args:
@@ -97,8 +100,5 @@ def isALTPressed(event) -> bool:
     """
     return bool(event.modifiers() & Qt.AltModifier)
 
+ 
 
-# Snake_case aliases for consistency
-is_ctrl_pressed = isCTRLPressed
-is_shift_pressed = isSHIFTPressed
-is_alt_pressed = isALTPressed

@@ -187,11 +187,7 @@ class NodeEditorWindow(QMainWindow):
         nodeeditor = self.get_current_node_editor_widget()
         if nodeeditor is None:
             return False
-
-        if hasattr(nodeeditor, "is_modified"):
-            return nodeeditor.is_modified()
-
-        return nodeeditor.scene.is_modified()
+        return nodeeditor.is_modified()
 
     def get_current_node_editor_widget(self) -> NodeEditorWidget:
         """Get the active node editor widget.

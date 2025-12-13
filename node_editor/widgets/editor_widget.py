@@ -84,7 +84,7 @@ class NodeEditorWidget(QWidget):
         Returns:
             True if scene has been modified.
         """
-        return self.scene.is_modified()
+        return self.scene.has_been_modified
 
     def is_filename_set(self) -> bool:
         """Check if file has been saved.

@@ -45,7 +45,7 @@ class QDMGraphicsNode(QGraphicsItem):
         width: Node width in pixels.
         height: Node height in pixels.
         title_item: QGraphicsTextItem displaying the title.
-        grContent: QGraphicsProxyWidget containing content widget.
+        graphics_content: QGraphicsProxyWidget containing content widget.
     """
 
     def __init__(self, node: "Node", parent: QWidget | None = None):
@@ -263,9 +263,9 @@ class QDMGraphicsNode(QGraphicsItem):
                 self.height - 2 * self.edge_padding - self.title_height,
             )
 
-        self.grContent = self.node.scene.graphics_scene.addWidget(self.content)
-        self.grContent.node = self.node  # type: ignore
-        self.grContent.setParentItem(self)
+        self.graphics_content = self.node.scene.graphics_scene.addWidget(self.content)
+        self.graphics_content.node = self.node  # type: ignore
+        self.graphics_content.setParentItem(self)
 
     def paint(self, painter, _option: "QStyleOptionGraphicsItem", _widget=None) -> None:
         """Render node with title bar, content area, and outline.
