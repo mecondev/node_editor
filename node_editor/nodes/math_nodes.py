@@ -40,7 +40,7 @@ class MathGraphicsNode(QDMGraphicsNode):
 class MathContent(QDMNodeContentWidget):
     """Content widget with operation label."""
 
-    def initUI(self):
+    def init_ui(self):
         """Initialize the content label."""
         lbl = QLabel(self.node.content_label, self)
         lbl.setObjectName(self.node.content_label_objname)

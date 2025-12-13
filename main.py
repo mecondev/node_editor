@@ -47,7 +47,7 @@ class SimpleNodeEditorWindow(NodeEditorWindow):
         name_product: Product name for settings storage.
     """
 
-    def initUI(self) -> None:
+    def init_ui(self) -> None:
         """Initialize user interface and add demo content.
 
         Sets up the main window with stylesheet, title, and status bar.
@@ -56,7 +56,7 @@ class SimpleNodeEditorWindow(NodeEditorWindow):
         self.name_company = ""
         self.name_product = APP_NAME
 
-        super().initUI()
+        super().init_ui()
 
         stylesheet_path = os.path.join(os.path.dirname(__file__), STYLESHEET_PATH)
         if os.path.exists(stylesheet_path):

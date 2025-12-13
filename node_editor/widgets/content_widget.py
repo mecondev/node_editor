@@ -31,7 +31,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
     """Base class for node content area.
 
     Provides layout container for widgets displayed inside a node.
-    Subclass and override initUI() to create custom node interfaces.
+    Subclass and override init_ui() to create custom node interfaces.
 
     Attributes:
         node: Parent Node containing this content.
@@ -48,9 +48,9 @@ class QDMNodeContentWidget(QWidget, Serializable):
         self.node = node
         super().__init__(parent)
 
-        self.initUI()
+        self.init_ui()
 
-    def initUI(self) -> None:
+    def init_ui(self) -> None:
         """Set up layout and child widgets.
 
         Override in subclasses to create custom node content.
@@ -64,7 +64,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         self.layout.addWidget(self.wdg_label)
         self.layout.addWidget(QDMTextEdit("foo"))
 
-    def setEditingFlag(self, value: bool) -> None:
+    def set_editing_flag(self, value: bool) -> None:
         """Update editing state in graphics view.
 
         Call when starting/ending text editing to prevent view
@@ -116,7 +116,7 @@ class QDMTextEdit(QTextEdit):
         Args:
             event: Qt focus event.
         """
-        self.parentWidget().setEditingFlag(True)
+        self.parentWidget().set_editing_flag(True)
         super().focusInEvent(event)
 
     def focusOutEvent(self, event: "QFocusEvent") -> None:
@@ -125,5 +125,5 @@ class QDMTextEdit(QTextEdit):
         Args:
             event: Qt focus event.
         """
-        self.parentWidget().setEditingFlag(False)
+        self.parentWidget().set_editing_flag(False)
         super().focusOutEvent(event)

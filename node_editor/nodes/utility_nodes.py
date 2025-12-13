@@ -40,7 +40,7 @@ class UtilityGraphicsNode(QDMGraphicsNode):
 class ConstantContent(QDMNodeContentWidget):
     """Content widget for constant value input."""
 
-    def initUI(self):
+    def init_ui(self):
         """Initialize the input field."""
         self.edit = QLineEdit("0", self)
         self.edit.setObjectName("constant_edit")
@@ -50,7 +50,7 @@ class ConstantContent(QDMNodeContentWidget):
 class CommentContent(QDMNodeContentWidget):
     """Content widget for comment text."""
 
-    def initUI(self):
+    def init_ui(self):
         """Initialize the comment text area."""
         self.edit = QTextEdit("Comment", self)
         self.edit.setObjectName("comment_edit")
@@ -60,7 +60,7 @@ class CommentContent(QDMNodeContentWidget):
 class UtilityContent(QDMNodeContentWidget):
     """Content widget with simple label."""
 
-    def initUI(self):
+    def init_ui(self):
         """Initialize the content label."""
         lbl = QLabel(self.node.content_label, self)
         lbl.setObjectName(self.node.content_label_objname)

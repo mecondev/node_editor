@@ -36,7 +36,7 @@ class InputGraphicsNode(QDMGraphicsNode):
 class NumberInputContent(QDMNodeContentWidget):
     """Content widget with number input field."""
 
-    def initUI(self):
+    def init_ui(self):
         """Initialize the number input field."""
         layout = QVBoxLayout()
         layout.setContentsMargins(10, 5, 10, 5)
@@ -70,7 +70,7 @@ class NumberInputContent(QDMNodeContentWidget):
 class TextInputContent(QDMNodeContentWidget):
     """Content widget with text input field."""
 
-    def initUI(self):
+    def init_ui(self):
         """Initialize the text input field."""
         layout = QVBoxLayout()
         layout.setContentsMargins(10, 5, 10, 5)

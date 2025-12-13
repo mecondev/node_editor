@@ -36,7 +36,7 @@ class OutputGraphicsNode(QDMGraphicsNode):
 class OutputContent(QDMNodeContentWidget):
     """Content widget with result display label."""
 
-    def initUI(self):
+    def init_ui(self):
         """Initialize the output display label."""
         layout = QVBoxLayout()
         layout.setContentsMargins(10, 5, 10, 5)

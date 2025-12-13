@@ -40,15 +40,15 @@ class NodeEditorWidget(QWidget):
     state management.
 
     Attributes:
-        Scene_class: Scene class to instantiate.
-        GraphicsView_class: View class to instantiate.
+        scene_class: Scene class to instantiate.
+        graphics_view_class: View class to instantiate.
         scene: Active Scene instance.
         view: Active QDMGraphicsView instance.
         filename: Current file path, or None for unsaved.
     """
 
-    Scene_class = Scene
-    GraphicsView_class = None
+    scene_class = Scene
+    graphics_view_class = None
 
     def __init__(self, parent: QWidget | None = None) -> None:
         """Initialize node editor widget.
@@ -60,25 +60,25 @@ class NodeEditorWidget(QWidget):
 
         self.filename: str | None = None
 
-        self.initUI()
+        self.init_ui()
 
-    def initUI(self) -> None:
+    def init_ui(self) -> None:
         """Set up layout with scene and view."""
         self.layout = QVBoxLayout()
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.layout)
 
-        self.scene = self.__class__.Scene_class()
+        self.scene = self.__class__.scene_class()
 
         from node_editor.graphics.view import QDMGraphicsView
 
-        if self.__class__.GraphicsView_class is None:
-            self.__class__.GraphicsView_class = QDMGraphicsView
+        if self.__class__.graphics_view_class is None:
+            self.__class__.graphics_view_class = QDMGraphicsView
 
-        self.view = self.__class__.GraphicsView_class(self.scene.graphics_scene, self)
+        self.view = self.__class__.graphics_view_class(self.scene.graphics_scene, self)
         self.layout.addWidget(self.view)
 
-    def isModified(self) -> bool:
+    def is_modified(self) -> bool:
         """Check if scene has unsaved changes.
 
         Returns:
@@ -86,7 +86,7 @@ class NodeEditorWidget(QWidget):
         """
         return self.scene.isModified()
 
-    def isFilenameSet(self) -> bool:
+    def is_filename_set(self) -> bool:
         """Check if file has been saved.
 
         Returns:
@@ -94,16 +94,16 @@ class NodeEditorWidget(QWidget):
         """
         return self.filename is not None
 
-    def getUserFriendlyFilename(self) -> str:
+    def get_user_friendly_filename(self) -> str:
         """Get display name with modification indicator.
 
         Returns:
             Filename with asterisk if modified, or 'New Graph'.
         """
-        name = os.path.basename(self.filename) if self.isFilenameSet() else "New Graph"
-        return name + ("*" if self.isModified() else "")
+        name = os.path.basename(self.filename) if self.is_filename_set() else "New Graph"
+        return name + ("*" if self.is_modified() else "")
 
-    def getSelectedItems(self) -> list[QGraphicsItem]:
+    def get_selected_items(self) -> list[QGraphicsItem]:
         """Get currently selected graphics items.
 
         Returns:
@@ -111,15 +111,15 @@ class NodeEditorWidget(QWidget):
         """
         return self.scene.getSelectedItems()
 
-    def hasSelectedItems(self) -> bool:
+    def has_selected_items(self) -> bool:
         """Check if any items are selected.
 
         Returns:
             True if selection is non-empty.
         """
-        return self.getSelectedItems() != []
+        return self.get_selected_items() != []
 
-    def canUndo(self) -> bool:
+    def can_undo(self) -> bool:
         """Check if undo operation is available.
 
         Returns:
@@ -127,7 +127,7 @@ class NodeEditorWidget(QWidget):
         """
         return self.scene.history.canUndo()
 
-    def canRedo(self) -> bool:
+    def can_redo(self) -> bool:
         """Check if redo operation is available.
 
         Returns:
@@ -135,7 +135,7 @@ class NodeEditorWidget(QWidget):
         """
         return self.scene.history.canRedo()
 
-    def fileNew(self) -> None:
+    def file_new(self) -> None:
         """Create new empty scene.
 
         Clears current content and resets history.
@@ -145,7 +145,7 @@ class NodeEditorWidget(QWidget):
         self.scene.history.clear()
         self.scene.history.storeInitialHistoryStamp()
 
-    def fileLoad(self, filename: str) -> bool:
+    def file_load(self, filename: str) -> bool:
         """Load graph from JSON file.
 
         Args:
@@ -174,7 +174,7 @@ class NodeEditorWidget(QWidget):
         finally:
             QApplication.restoreOverrideCursor()
 
-    def fileSave(self, filename: str | None = None) -> bool:
+    def file_save(self, filename: str | None = None) -> bool:
         """Save graph to JSON file.
 
         Args:
