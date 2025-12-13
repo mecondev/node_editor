@@ -6,7 +6,7 @@ Date: 2025-12-11
 import logging
 import os
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QSignalMapper
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QAction, QDockWidget, QFileDialog, QMdiArea, QMessageBox
 
@@ -45,6 +45,9 @@ class CalculatorWindow(NodeEditorWindow):
 
 
         self.mdiArea = QMdiArea()
+        # Mapper to activate MDI child windows from menu actions
+        self.windowMapper = QSignalMapper(self)
+        self.windowMapper.mapped.connect(lambda w: self.mdiArea.setActiveSubWindow(w))
         self.mdiArea.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
         self.mdiArea.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
         self.mdiArea.setViewMode(QMdiArea.ViewMode.TabbedView)

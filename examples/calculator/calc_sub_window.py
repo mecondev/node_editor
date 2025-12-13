@@ -33,8 +33,9 @@ class CalculatorSubWindow(NodeEditorWidget):
 
         self.scene.add_has_been_modified_listener(self.set_title)
         self.scene.history.add_history_restored_listener(self.on_history_restored)
-        self.scene.add_drag_enter_listener(self.on_drag_enter)
-        self.scene.add_drop_listener(self.on_drop)
+        # Add drag/drop listeners directly to the view to avoid premature view access
+        self.view.add_drag_enter_listener(self.on_drag_enter)
+        self.view.add_drop_listener(self.on_drop)
         self.scene.set_node_class_selector(self.get_node_class_from_data)
         logger.info("CalculatorSubWindow.__init__: Listeners registered")
 
