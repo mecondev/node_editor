@@ -64,8 +64,10 @@ class Node(Serializable):
         outputs: List of output Socket instances.
 
     Class Attributes:
-        _graphics_node_class: Graphics class for node visualization.
-        NodeContent_class: Content widget class for node UI.
+        _graphics_node_class: Graphics class injected via node_editor.core._init_graphics_classes;
+            override in subclasses for custom visuals.
+        NodeContent_class: Content widget class injected via node_editor.core._init_graphics_classes;
+            override in subclasses for custom UI widgets.
         Socket_class: Socket class for creating connections.
     """
 

@@ -6,11 +6,10 @@ Date: 2025-12-11
 import logging
 import os
 
-from PyQt5.QtCore import Qt, QSignalMapper
+from PyQt5.QtCore import QSignalMapper, Qt
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QAction, QDockWidget, QFileDialog, QMdiArea, QMessageBox
 
-from examples.calculator.calc_conf import CALC_NODES
 from examples.calculator.calc_drag_listbox import QDMDragListbox
 from examples.calculator.calc_sub_window import CalculatorSubWindow
 

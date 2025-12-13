@@ -138,6 +138,15 @@ class Scene(Serializable):
 
         self._has_been_modified = value
 
+    def is_modified(self) -> bool:
+        """Compatibility alias for ``has_been_modified``.
+
+        Returns:
+            True if modified since last save.
+        """
+
+        return self.has_been_modified
+
     def init_ui(self) -> None:
         """Create and configure the graphics scene.
 

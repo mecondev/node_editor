@@ -106,7 +106,7 @@ class CalculatorSubWindow(NodeEditorWidget):
             pixmap = QPixmap()
             data_stream >> pixmap
             op_code = data_stream.readInt()
-            text = data_stream.readQString()
+            _ = data_stream.readQString()
 
             mouse_position = event.pos()
             scene_position = self.scene.graphics_scene.views()[0].mapToScene(mouse_position)

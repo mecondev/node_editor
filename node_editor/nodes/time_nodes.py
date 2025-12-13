@@ -269,7 +269,7 @@ class CompareTimeNode(Node):
 
     op_code = 104
     op_title = "Compare Time"
-    content_label = "Δt"
+    content_label = "dt"
     content_label_objname = "node_compare_time"
 
     def __init__(self, scene):

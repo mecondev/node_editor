@@ -23,25 +23,15 @@ The framework is designed to be **portable**: simply copy the `node_editor/` fol
 - **Edge Validators**: Customizable connection rules
 - **Interactive Tools**: Edge dragging, rerouting, snapping, cut-line
 
-## Σημαντικές αλλαγές — 2025-12-13
+## API Design
 
-Έγινε μεγάλης κλίμακας refactor για να βελτιωθεί η ονοματολογία και η συνέπεια του API. Οι αλλαγές είναι breaking (δεν υπάρχουν aliases) — ελέγξτε και ενημερώστε τον κώδικά σας αν τον έχετε ενσωματώσει.
+The framework follows these conventions:
 
-- Γενικό rename: όλα τα `gr*` identifiers (π.χ. `grView`, `gr_socket`, `grContent`) μετονομάστηκαν σε `graphics_*` (`graphics_view`, `graphics_socket`, `graphics_content`).
-- Socket factory: `Socket_GR_Class` μετονομάστηκε σε `Socket_Graphics_Class` (binding στο `node_editor.core._init_graphics_classes`).
-- Κατάργηση legacy aliases: η μέθοδος `Scene.is_modified()` αφαιρέθηκε — χρησιμοποιήστε την ιδιότητα `Scene.has_been_modified`.
-- Helpers: τα helper functions για πληκτρολογικούς ελέγχους έγιναν snake_case: `is_ctrl_pressed`, `is_shift_pressed`, `is_alt_pressed` (παλιές camelCase συναρτήσεις αφαιρέθηκαν).
-- Serialization: η παλαιά fallback λογική για `multi_edges` αφαιρέθηκε — τα serialized socket objects πρέπει πλέον να περιέχουν ρητά το πεδίο `multi_edges`.
-
-Οδηγίες αναβάθμισης (γρήγορα):
-
-1. Αντικαταστήστε `grView` → `graphics_view`, `grContent` → `graphics_content` σε custom code.
-2. Χρησιμοποιήστε `Socket_Graphics_Class` αν κάνετε late-binding των graphics κλάσεων.
-3. Αντικαταστήστε κλήσεις `scene.is_modified()` με `scene.has_been_modified`.
-4. Κάντε search στο project σας για `isCTRLPressed`, `isSHIFTPressed`, `isALTPressed` και αλλάξτε σε snake_case αντίστοιχα.
-5. Ελέγξτε τα JSON αρχεία που παράγετε: κάθε `socket` entry πρέπει τώρα να έχει `multi_edges` boolean.
-
-Για οποιαδήποτε βοήθεια με την αναβάθμιση, πείτε μου ποια modules/παραδείγματα θέλετε να αναβαθμίσω αυτόματα.
+- **Graphics attributes**: All graphics item references use snake_case naming (e.g., `graphics_view`, `graphics_socket`, `graphics_node`).
+- **Class factories**: Graphics classes are injected via `node_editor.core._init_graphics_classes()` to avoid circular imports.
+- **API methods**: All public methods follow snake_case convention (e.g., `mark_dirty()`, `get_input()`, `save_to_file()`).
+- **Scene state**: Use the `has_been_modified` property to check unsaved changes. The `is_modified()` method is a compatibility shim.
+- **Serialization**: Socket objects must explicitly include the `multi_edges` boolean field; automatic fallbacks are not supported.
 
 ## Installation
 
@@ -113,21 +103,21 @@ class MyCustomNode(Node):
     
     def __init__(self, scene):
         super().__init__(scene, "My Node", inputs=[1], outputs=[1])
-        self.markDirty()
+        self.mark_dirty()
     
     def eval(self):
         """Evaluate the node."""
-        input_val = self.getInput(0)
+        input_val = self.get_input(0)
         if input_val is None:
-            self.markInvalid()
+            self.mark_invalid()
             return None
         
         # Your custom logic here
         result = input_val.eval() * 2
         
         self.value = result
-        self.markDirty(False)
-        self.markInvalid(False)
+        self.mark_dirty(False)
+        self.mark_invalid(False)
         return result
 ```
 
@@ -214,10 +204,10 @@ class MyApplicationNode(Node):
 
 ```python
 # Save to file
-editor.scene.saveToFile("my_graph.json")
+editor.scene.save_to_file("my_graph.json")
 
 # Load from file
-editor.scene.loadFromFile("my_graph.json")
+editor.scene.load_from_file("my_graph.json")
 
 # Manual serialization
 data = editor.scene.serialize()  # Returns OrderedDict with version field

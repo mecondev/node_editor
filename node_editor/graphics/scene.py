@@ -19,8 +19,8 @@ Date:
 import math
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import QLine, QRect, Qt, pyqtSignal as Signal
-from PyQt5.QtGui import QColor, QPainter, QPen
+from PyQt5.QtCore import QLine, QRect, pyqtSignal as Signal
+from PyQt5.QtGui import QPainter, QPen
 from PyQt5.QtWidgets import QGraphicsScene, QWidget
 
 from node_editor.themes.theme_engine import ThemeEngine

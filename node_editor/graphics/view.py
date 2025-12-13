@@ -252,7 +252,7 @@ class QDMGraphicsView(QGraphicsView):
         Args:
             event: Qt mouse press event.
         """
-        item = self.getItemAtClick(event)
+        _ = self.getItemAtClick(event)
 
         release_event = QMouseEvent(
             QEvent.MouseButtonRelease,

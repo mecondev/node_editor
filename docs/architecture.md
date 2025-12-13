@@ -61,7 +61,7 @@ The foundation layer containing all model classes. **No Qt graphics imports here
 | `clipboard.py` | `SceneClipboard` | Copy/paste operations |
 | `serializable.py` | `Serializable` | Base class for persistence |
 
-**Key Design**: Core classes hold references to their graphics counterparts (`node.grNode`, `edge.grEdge`, etc.) but never import graphics modules directly. Graphics classes are injected via `_init_graphics_classes()`.
+**Key Design**: Core classes hold references to their graphics counterparts (`node.graphics_node`, `edge.graphics_edge`, etc.) but never import graphics modules directly. Graphics classes are injected via `_init_graphics_classes()`.
 
 ### Graphics Layer (`node_editor/graphics/`)
 
@@ -171,7 +171,7 @@ def _init_graphics_classes():
     from node_editor.graphics.node import QDMGraphicsNode
     # ... other imports
     
-    Node.GraphicsNode_class = QDMGraphicsNode
+    Node._graphics_node_class = QDMGraphicsNode
     # ... other assignments
 ```
 
@@ -194,18 +194,18 @@ User edits graph
          │
          ▼
 ┌───────────────────┐
-│ Node.onInputChanged() │──► markDirty()
-└────────┬──────────┘      markDescendantsDirty()
+│ Node.on_input_changed() │──► mark_dirty()
+└────────┬──────────┘         mark_descendants_dirty()
          │
          ▼
 ┌───────────────────┐
-│    Node.eval()    │──► Get inputs via getInput()
+│    Node.eval()    │──► Get inputs via get_input()
 └────────┬──────────┘    Compute result
          │               Store in self.value
          ▼
 ┌───────────────────┐
-│ markInvalid(False)│──► grNode.update()
-│ markDirty(False)  │    Triggers paint()
+│ mark_invalid(False)│──► graphics_node.update()
+│ mark_dirty(False)  │    Triggers paint()
 └───────────────────┘
 ```
 
@@ -213,20 +213,20 @@ User edits graph
 
 ```python
 # When input changes:
-def onInputChanged(self, socket):
-    self.markDirty()           # This node needs re-eval
-    self.markDescendantsDirty() # Children need re-eval too
-    
+def on_input_changed(self, socket):
+    self.mark_dirty()             # This node needs re-eval
+    self.mark_descendants_dirty() # Children need re-eval too
+
 # After successful evaluation:
 def eval(self):
     # ... compute ...
-    self.markDirty(False)      # No longer dirty
-    self.markInvalid(False)    # Valid result
-    
+    self.mark_dirty(False)        # No longer dirty
+    self.mark_invalid(False)      # Valid result
+
 # After failed evaluation:
 def eval(self):
-    self.markInvalid(True)     # Show error state
-    self.grNode.setToolTip("Error message")
+    self.mark_invalid(True)       # Show error state
+    self.graphics_node.setToolTip("Error message")
 ```
 
 ---
@@ -247,10 +247,10 @@ def eval(self):
      ┌───────────────┼───────────────┐
      │               │               │
      ▼               ▼               ▼
-┌─────────┐   ┌───────────┐   ┌───────────┐
-│QDMGrNode│   │QDMGrEdge │   │QDMGrScene │
-│initAssets│  │initAssets│   │initAssets │
-└─────────┘   └───────────┘   └───────────┘
+┌────────────────┐   ┌────────────────┐   ┌────────────────┐
+│QDMGraphicsNode │   │QDMGraphicsEdge │   │QDMGraphicsScene│
+│init_assets     │   │init_assets     │   │init_assets     │
+└────────────────┘   └────────────────┘   └────────────────┘
 ```
 
 ### Theme Properties Used
@@ -309,6 +309,8 @@ Scene
        ├─ start: int (socket id)
        └─ end: int (socket id)
 ```
+
+**Required fields**: Each socket entry must include `multi_edges`; legacy fallbacks have been removed.
 
 ### Hashmap for References
 
@@ -413,7 +415,7 @@ class MyGraphicsNode(QDMGraphicsNode):
         # Custom drawing
         
 class MyNode(Node):
-    GraphicsNode_class = MyGraphicsNode  # Use custom graphics
+    _graphics_node_class = MyGraphicsNode  # Use custom graphics
 ```
 
 ### 3. Custom Themes
@@ -451,7 +453,7 @@ def select_node_class(data: dict) -> type:
     op_code = data.get("op_code", 0)
     return NodeRegistry.get_node_class(op_code) or Node
 
-scene.setNodeClassSelector(select_node_class)
+scene.set_node_class_selector(select_node_class)
 ```
 
 ---
@@ -468,7 +470,7 @@ scene.setNodeClassSelector(select_node_class)
 
 ```python
 class Node:
-    GraphicsNode_class = QDMGraphicsNode  # Class attribute
+    _graphics_node_class = QDMGraphicsNode  # Class attribute
 ```
 
 Allows subclasses to override without modifying Node code. Set once via `_init_graphics_classes()`.
@@ -546,6 +548,6 @@ All PEP8 snake_case improvements have been successfully implemented:
 - ✅ **Documentation updated**: `_init_graphics_classes()` is documented as the intentional core→graphics bootstrap
 - ✅ **Tools consolidated**: `tools/` is the official location for all edge manipulation behaviors
 
-**Breaking Changes**: This is a complete API rename. No backward-compatible aliases provided.  
+**Breaking Changes**: This is a complete API rename. `Scene.is_modified()` is kept as a compatibility shim; prefer `Scene.has_been_modified`.  
 **Testing**: All 328 tests passing, ruff checks passing.  
 **Migration**: Use provided sed scripts in repository history to update downstream code.

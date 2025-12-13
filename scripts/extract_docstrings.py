@@ -9,9 +9,8 @@ This module provides functionality for the application.
 """
 
 import ast
-import os
 import logging
-
+import os
 
 logger = logging.getLogger(__name__)
 
