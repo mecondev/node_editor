@@ -29,3 +29,9 @@ def scene(qapp):  # noqa: ARG001
     from node_editor.core.scene import Scene
 
     return Scene()
+
+
+@pytest.fixture
+def _qtbot(qtbot):
+    """Alias for qtbot that can be used as unused param (_qtbot)."""
+    return qtbot
