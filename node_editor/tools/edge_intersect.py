@@ -181,4 +181,4 @@ class EdgeIntersect:
         if node.inputs == [] or node.outputs == []:
             return True
 
-        return node.getInput() or node.getOutputs()
+        return node.get_input() or node.get_outputs()

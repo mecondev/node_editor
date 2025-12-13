@@ -98,7 +98,7 @@ class EdgeSnapping:
         if len(items) > 1:
             nearest = float('inf')
             for grsock in items:
-                grsock_scenepos = grsock.socket.node.getSocketScenePosition(grsock.socket)
+                grsock_scenepos = grsock.socket.node.get_socket_scene_position(grsock.socket)
                 qpdist = QPointF(*grsock_scenepos) - scenepos
                 dist = qpdist.x() * qpdist.x() + qpdist.y() * qpdist.y()
                 if dist < nearest:
@@ -107,6 +107,6 @@ class EdgeSnapping:
 
         selected_item.isHighlighted = True
 
-        calcpos = selected_item.socket.node.getSocketScenePosition(selected_item.socket)
+        calcpos = selected_item.socket.node.get_socket_scene_position(selected_item.socket)
 
         return selected_item, QPointF(*calcpos)
