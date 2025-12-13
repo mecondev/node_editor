@@ -22,18 +22,18 @@ class QDMDragListbox(QListWidget):
         self.setSelectionMode(QAbstractItemView.SingleSelection)
         self.setDragEnabled(True)
 
-        self.addMyItems()
+        self.add_my_items()
 
 
-    def addMyItems(self):
+    def add_my_items(self):
         keys = list(CALC_NODES.keys())
         keys.sort()
         for key in keys:
             node = get_class_from_opcode(key)
-            self.addMyItem(node.op_title, node.icon, node.op_code)
+            self.add_my_item(node.op_title, node.icon, node.op_code)
 
 
-    def addMyItem(self, name, icon=None, op_code=0):
+    def add_my_item(self, name, icon=None, op_code=0):
         item = QListWidgetItem(name, self) # can be (icon, text, parent, <int>type)
         pixmap = QPixmap(icon if icon is not None else ".")
         item.setIcon(QIcon(pixmap))
@@ -46,7 +46,7 @@ class QDMDragListbox(QListWidget):
         item.setData(Qt.UserRole + 1, op_code)
 
 
-    def startDrag(self, _event=None):
+    def start_drag(self, _event=None):
         try:
             item = self.currentItem()
             op_code = item.data(Qt.UserRole + 1)

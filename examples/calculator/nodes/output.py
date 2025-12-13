@@ -28,11 +28,11 @@ class CalcNodeOutput(CalcNode):
     def __init__(self, scene):
         super().__init__(scene, inputs=[1], outputs=[])
 
-    def initInnerClasses(self):
+    def init_inner_classes(self):
         self.content = CalcOutputContent(self)
         self.graphics_node = CalcGraphicsNode(self)
 
-    def evalImplementation(self):
+    def eval_implementation(self):
         input_node = self.getInput(0)
         if not input_node:
             self.graphics_node.setToolTip("Input is not connected")

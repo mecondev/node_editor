@@ -34,29 +34,29 @@ class CalculatorSubWindow(NodeEditorWidget):
 
         self._close_event_listeners = []
 
-    def getNodeClassFromData(self, data):
+    def get_node_class_from_data(self, data):
         if 'op_code' not in data:
             from node_editor.core.node import Node
             return Node
         return get_class_from_opcode(data['op_code'])
 
-    def doEvalOutputs(self):
+    def do_eval_outputs(self):
         # eval all output nodes
         for node in self.scene.nodes:
             if node.__class__.__name__ == "CalcNode_Output":
                 node.eval()
 
-    def onHistoryRestored(self):
-        self.doEvalOutputs()
+    def on_history_restored(self):
+        self.do_eval_outputs()
 
     def file_load(self, filename):
         if super().file_load(filename):
-            self.doEvalOutputs()
+            self.do_eval_outputs()
             return True
 
         return False
 
-    def initNewNodeActions(self):
+    def init_new_node_actions(self):
         self.node_actions = {}
         keys = list(CALC_NODES.keys())
         keys.sort()
@@ -65,7 +65,7 @@ class CalculatorSubWindow(NodeEditorWidget):
             self.node_actions[node.op_code] = QAction(QIcon(node.icon), node.op_title)
             self.node_actions[node.op_code].setData(node.op_code)
 
-    def initNodesContextMenu(self):
+    def init_nodes_context_menu(self):
         context_menu = QMenu(self)
         keys = list(CALC_NODES.keys())
         keys.sort()
@@ -76,21 +76,21 @@ class CalculatorSubWindow(NodeEditorWidget):
     def set_title(self):
         self.setWindowTitle(self.get_user_friendly_filename())
 
-    def addCloseEventListener(self, callback):
+    def add_close_event_listener(self, callback):
         self._close_event_listeners.append(callback)
 
     def closeEvent(self, event):
         for callback in self._close_event_listeners:
             callback(self, event)
 
-    def onDragEnter(self, event):
+    def on_drag_enter(self, event):
         if event.mimeData().hasFormat(LISTBOX_MIMETYPE):
             event.acceptProposedAction()
         else:
             # print(" ... denied drag enter event")
             event.setAccepted(False)
 
-    def onDrop(self, event):
+    def on_drop(self, event):
         if event.mimeData().hasFormat(LISTBOX_MIMETYPE):
             event_data = event.mimeData().data(LISTBOX_MIMETYPE)
             data_stream = QDataStream(event_data, QIODevice.ReadOnly)
@@ -141,7 +141,7 @@ class CalculatorSubWindow(NodeEditorWidget):
         except Exception as e:
             dump_exception(e)
 
-    def handleNodeContextMenu(self, event):
+    def handle_node_context_menu(self, event):
         if DEBUG_CONTEXT:
             print("CONTEXT: NODE")
         context_menu = QMenu(self)
@@ -178,7 +178,7 @@ class CalculatorSubWindow(NodeEditorWidget):
                 print("EVALUATED:", val)
 
 
-    def handleEdgeContextMenu(self, event):
+    def handle_edge_context_menu(self, event):
         if DEBUG_CONTEXT:
             print("CONTEXT: EDGE")
         context_menu = QMenu(self)
@@ -216,7 +216,7 @@ class CalculatorSubWindow(NodeEditorWidget):
         new_calc_node.graphics_node.on_selected()
 
 
-    def handleNewNodeContextMenu(self, event):
+    def handle_new_node_context_menu(self, event):
 
         if DEBUG_CONTEXT:
             print("CONTEXT: EMPTY SPACE")

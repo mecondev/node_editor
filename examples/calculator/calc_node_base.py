@@ -78,10 +78,10 @@ class CalcNode(Node):
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
-    def evalOperation(self, _input1, _input2):
+    def eval_operation(self, _input1, _input2):
         return 123
 
-    def evalImplementation(self):
+    def eval_implementation(self):
         i1 = self.getInput(0)
         i2 = self.getInput(1)
 
@@ -134,7 +134,7 @@ class CalcNode(Node):
 
 
 
-    def onInputChanged(self, _socket=None):
+    def on_input_changed(self, _socket=None):
         print(f"{self.__class__.__name__}::__onInputChanged")
         self.mark_dirty()
         self.eval()

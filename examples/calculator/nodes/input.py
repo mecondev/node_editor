@@ -47,12 +47,12 @@ class CalcNodeInput(CalcNode):
         super().__init__(scene, inputs=[], outputs=[3])
         self.eval()  # noqa: A001
 
-    def initInnerClasses(self):
+    def init_inner_classes(self):
         self.content = CalcInputContent(self)
         self.graphics_node = CalcGraphicsNode(self)
         self.content.edit.textChanged.connect(self.onInputChanged)
 
-    def evalImplementation(self):
+    def eval_implementation(self):
         u_value = self.content.edit.text()
         s_value = int(u_value)
         self.value = s_value

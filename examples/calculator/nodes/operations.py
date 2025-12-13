@@ -21,7 +21,7 @@ class CalcNodeAdd(CalcNode):
     content_label = "+"
     content_label_objname = "calc_node_bg"
 
-    def evalOperation(self, input1, input2):
+    def eval_operation(self, input1, input2):
         return input1 + input2
 
 
@@ -33,7 +33,7 @@ class CalcNodeSub(CalcNode):
     content_label = "-"
     content_label_objname = "calc_node_bg"
 
-    def evalOperation(self, input1, input2):
+    def eval_operation(self, input1, input2):
         return input1 - input2
 
 @register_node(OP_NODE_MUL)
@@ -44,7 +44,7 @@ class CalcNodeMul(CalcNode):
     content_label = "*"
     content_label_objname = "calc_node_mul"
 
-    def evalOperation(self, input1, input2):
+    def eval_operation(self, input1, input2):
         print('foo')
         return input1 * input2
 
@@ -56,7 +56,7 @@ class CalcNodeDiv(CalcNode):
     content_label = "/"
     content_label_objname = "calc_node_div"
 
-    def evalOperation(self, input1, input2):
+    def eval_operation(self, input1, input2):
         if input2 == 0:
             raise ZeroDivisionError("Cannot divide by zero")
         return input1 / input2
