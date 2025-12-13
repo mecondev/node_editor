@@ -8,7 +8,6 @@ The scene supports:
     - Configurable grid with light and dark lines
     - Background color theming
     - Selection change signaling
-    - Optional debug state display
 
 Author:
     Michael Economou
@@ -21,16 +20,13 @@ import math
 from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import QLine, QRect, Qt, pyqtSignal as Signal
-from PyQt5.QtGui import QColor, QFont, QPainter, QPen
+from PyQt5.QtGui import QColor, QPainter, QPen
 from PyQt5.QtWidgets import QGraphicsScene, QWidget
 
 from node_editor.themes.theme_engine import ThemeEngine
 
 if TYPE_CHECKING:
     from node_editor.core.scene import Scene
-
-DEBUG_STATE = False
-
 
 class QDMGraphicsScene(QGraphicsScene):
     """Qt graphics scene rendering the node graph background.
@@ -78,15 +74,11 @@ class QDMGraphicsScene(QGraphicsScene):
         self._color_background = theme.scene_background
         self._color_light = theme.scene_grid_light
         self._color_dark = theme.scene_grid_dark
-        self._color_state = QColor("#cccccc")
 
         self._pen_light = QPen(self._color_light)
         self._pen_light.setWidth(1)
         self._pen_dark = QPen(self._color_dark)
         self._pen_dark.setWidth(2)
-
-        self._pen_state = QPen(self._color_state)
-        self._font_state = QFont("Ubuntu", 16)
 
     def dragMoveEvent(self, event) -> None:
         """Accept drag move events for drop support.
@@ -149,24 +141,3 @@ class QDMGraphicsScene(QGraphicsScene):
         except TypeError:
             painter.drawLines(lines_dark)
 
-        if DEBUG_STATE:
-            try:
-                from node_editor.graphics.view import STATE_STRING
-
-                painter.setFont(self._font_state)
-                painter.setPen(self._pen_state)
-                painter.setRenderHint(QPainter.RenderHint.TextAntialiasing)
-                offset = 14
-                rect_state = QRect(
-                    rect.x() + offset,
-                    rect.y() + offset,
-                    rect.width() - 2 * offset,
-                    rect.height() - 2 * offset,
-                )
-                painter.drawText(
-                    rect_state,
-                    Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignTop,
-                    STATE_STRING[self.views()[0].mode].upper(),
-                )
-            except Exception:
-                pass

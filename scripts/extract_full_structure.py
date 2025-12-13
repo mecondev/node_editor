@@ -14,6 +14,10 @@ Date: 2025-01-17
 
 import argparse
 from pathlib import Path
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 def get_docstring_snippet(file_path):
@@ -65,6 +69,8 @@ def main():
     parser.add_argument("--markdown", action="store_true", help="Enable Markdown output (default: on)")
     args = parser.parse_args()
 
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(message)s")
+
     project_path = Path(args.path).resolve()
     output_path = Path(args.output).resolve()
 
@@ -86,12 +92,17 @@ def main():
             for m in missing:
                 f.write(f"- {m}\n")
 
-    print(f"\n Structure written to: {output_path}")
-    print(f" Docstring Coverage: {docstats['documented']} / {docstats['total']} files ({coverage_percent:.1f}%)")
+    logger.info("Structure written to: %s", output_path)
+    logger.info(
+        "Docstring Coverage: %s / %s files (%.1f%%)",
+        docstats['documented'],
+        docstats['total'],
+        coverage_percent,
+    )
     if missing:
-        print("\n️ Missing docstrings:")
+        logger.warning("Missing docstrings:")
         for m in missing:
-            print(f" - {m}")
+            logger.warning("- %s", m)
 
 if __name__ == "__main__":
     main()

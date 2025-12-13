@@ -35,9 +35,6 @@ RIGHT_TOP = 4
 RIGHT_CENTER = 5
 RIGHT_BOTTOM = 6
 
-DEBUG_REMOVE_WARNINGS = False
-
-
 class Socket(Serializable):
     """Connection point on a node for attaching edges.
 
@@ -200,8 +197,6 @@ class Socket(Serializable):
         """
         if edge in self.edges:
             self.edges.remove(edge)
-        elif DEBUG_REMOVE_WARNINGS:
-            pass
 
     def remove_all_edges(self, silent: bool = False) -> None:
         """Disconnect and remove all edges from this socket.

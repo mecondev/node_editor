@@ -20,9 +20,6 @@ WINDOW_HEIGHT = 800
 DEFAULT_STYLE = "Fusion"
 STYLESHEET_PATH = "resources/styles/nodestyle.qss"
 
-# Debug mode
-DEBUG = False
-
 # File extensions
 FILE_EXTENSION = ".json"
 FILE_FILTER = "Node Editor Files (*.json);;All Files (*)"

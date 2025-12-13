@@ -10,6 +10,10 @@ This module provides functionality for the application.
 
 import ast
 import os
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 def extract_docstrings_from_file(filepath):
@@ -44,8 +48,9 @@ def save_results(results, output_file):
             f.write(f"{doc if doc else '[No docstring found]'}\n\n")
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(message)s")
     project_dir = "."  # Or put the project path here
     output_path = "reports/docstrings_report.txt"
     docstrings = scan_project(project_dir)
     save_results(docstrings, output_path)
-    print(f" Docstrings saved to {output_path}")
+    logger.info("Docstrings saved to %s", output_path)

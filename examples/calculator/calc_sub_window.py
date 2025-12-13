@@ -3,6 +3,8 @@ Module description.
 Author: Michael Economou
 Date: 2025-12-11
 """
+import logging
+
 from PyQt5.QtCore import QDataStream, QIODevice, Qt
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
@@ -13,14 +15,11 @@ from node_editor.graphics.view import MODE_EDGE_DRAG
 from node_editor.utils.helpers import dump_exception
 from node_editor.widgets.editor_widget import NodeEditorWidget
 
-DEBUG = False
-DEBUG_CONTEXT = False
+logger = logging.getLogger(__name__)
 
 
 class CalculatorSubWindow(NodeEditorWidget):
     def __init__(self):
-        import logging
-        logger = logging.getLogger(__name__)
         logger.info("CalculatorSubWindow.__init__: Starting")
         super().__init__()
         logger.info("CalculatorSubWindow.__init__: super().__init__() complete")
@@ -78,7 +77,8 @@ class CalculatorSubWindow(NodeEditorWidget):
         keys = list(CALC_NODES.keys())
         keys.sort()
         for key in keys:
-            context_menu.addAction(self.node_actions[key])
+            node = CALC_NODES[key]
+            context_menu.addAction(self.node_actions[node.op_code])
         return context_menu
 
     def set_title(self):
@@ -95,7 +95,7 @@ class CalculatorSubWindow(NodeEditorWidget):
         if event.mimeData().hasFormat(LISTBOX_MIMETYPE):
             event.acceptProposedAction()
         else:
-            # print(" ... denied drag enter event")
+            logger.debug("Drag enter event denied: unsupported MIME type")
             event.setAccepted(False)
 
     def on_drop(self, event):
@@ -110,9 +110,6 @@ class CalculatorSubWindow(NodeEditorWidget):
             mouse_position = event.pos()
             scene_position = self.scene.graphics_scene.views()[0].mapToScene(mouse_position)
 
-            if DEBUG:
-                print(f"GOT DROP: [{op_code}] '{text}'", "mouse:", mouse_position, "scene:", scene_position)
-
             try:
                 node = get_class_from_opcode(op_code)(self.scene)
                 node.set_pos(scene_position.x(), scene_position.y())
@@ -124,15 +121,12 @@ class CalculatorSubWindow(NodeEditorWidget):
             event.setDropAction(Qt.MoveAction)
             event.accept()
         else:
-            # print(" ... drop ignored, not requested format '%s'" % LISTBOX_MIMETYPE)
             event.ignore()
 
 
     def contextMenuEvent(self, event):
         try:
             item = self.scene.get_item_at(event.pos())
-            if DEBUG_CONTEXT:
-                print(item)
 
             if isinstance(item, QGraphicsProxyWidget):
                 item = item.widget()
@@ -150,8 +144,6 @@ class CalculatorSubWindow(NodeEditorWidget):
             dump_exception(e)
 
     def handle_node_context_menu(self, event):
-        if DEBUG_CONTEXT:
-            print("CONTEXT: NODE")
         context_menu = QMenu(self)
         mark_dirty_act = context_menu.addAction("Mark Dirty")
         mark_dirty_descendants_act = context_menu.addAction("Mark Descendant Dirty")
@@ -170,8 +162,6 @@ class CalculatorSubWindow(NodeEditorWidget):
         if hasattr(item, 'socket'):
             selected = item.socket.node
 
-        if DEBUG_CONTEXT:
-            print("got item:", selected)
         if selected and action == mark_dirty_act:
             selected.mark_dirty()
         if selected and action == mark_dirty_descendants_act:
@@ -182,13 +172,10 @@ class CalculatorSubWindow(NodeEditorWidget):
             selected.mark_invalid(False)
         if selected and action == eval_act:
             val = selected.eval()
-            if DEBUG_CONTEXT:
-                print("EVALUATED:", val)
+            logger.info("Evaluated node %s with result %s", selected.__class__.__name__, val)
 
 
     def handle_edge_context_menu(self, event):
-        if DEBUG_CONTEXT:
-            print("CONTEXT: EDGE")
         context_menu = QMenu(self)
         bezier_act = context_menu.addAction("Bezier Edge")
         direct_act = context_menu.addAction("Direct Edge")
@@ -225,9 +212,6 @@ class CalculatorSubWindow(NodeEditorWidget):
 
 
     def handle_new_node_context_menu(self, event):
-
-        if DEBUG_CONTEXT:
-            print("CONTEXT: EMPTY SPACE")
         context_menu = self.init_nodes_context_menu()
         action = context_menu.exec_(self.mapToGlobal(event.pos()))
 
@@ -235,8 +219,6 @@ class CalculatorSubWindow(NodeEditorWidget):
             new_calc_node = get_class_from_opcode(action.data())(self.scene)
             scene_pos = self.scene.get_view().mapToScene(event.pos())
             new_calc_node.set_pos(scene_pos.x(), scene_pos.y())
-            if DEBUG_CONTEXT:
-                print("Selected node:", new_calc_node)
 
             if self.scene.get_view().mode == MODE_EDGE_DRAG:
                 # if we were dragging an edge...

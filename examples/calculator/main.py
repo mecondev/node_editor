@@ -22,8 +22,6 @@ if __name__ == '__main__':
     logger.info("Starting Calculator Example")
 
     app = QApplication(sys.argv)
-
-    # print(QStyleFactory.keys())
     app.setStyle('Fusion')
 
     wnd = CalculatorWindow()

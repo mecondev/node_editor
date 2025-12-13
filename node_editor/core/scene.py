@@ -42,10 +42,6 @@ if TYPE_CHECKING:
     from node_editor.core.node import Node
     from node_editor.graphics.scene import QDMGraphicsScene
 
-
-DEBUG_REMOVE_WARNINGS = False
-
-
 class InvalidFileError(Exception):
     """Raised when file loading fails due to invalid format or content."""
 
@@ -185,8 +181,6 @@ class Scene(Serializable):
         """
         if node in self.nodes:
             self.nodes.remove(node)
-        elif DEBUG_REMOVE_WARNINGS:
-            pass
 
     def remove_edge(self, edge: Edge) -> None:
         """Unregister an edge from this scene.
@@ -198,8 +192,6 @@ class Scene(Serializable):
         """
         if edge in self.edges:
             self.edges.remove(edge)
-        elif DEBUG_REMOVE_WARNINGS:
-            pass
 
     def clear(self) -> None:
         """Remove all nodes and edges from the scene.

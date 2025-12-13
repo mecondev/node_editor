@@ -16,7 +16,6 @@ Example:
         Edge.register_edge_validator(edge_cannot_connect_input_and_output_of_same_node)
 
 Available validators:
-    - edge_validator_debug: Debug logging (always allows)
     - edge_cannot_connect_two_outputs_or_two_inputs: Prevents output-output or input-input
     - edge_cannot_connect_input_and_output_of_same_node: Prevents self-connections
     - edge_cannot_connect_input_and_output_of_different_type: Enforces type matching
@@ -34,28 +33,6 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from node_editor.core.socket import Socket
-
-
-def edge_validator_debug(input_socket: Socket, output_socket: Socket) -> bool:
-    """Debug validator that logs socket information.
-
-    Iterates through all sockets on both nodes for debugging purposes.
-    Always allows the connection.
-
-    Args:
-        input_socket: First socket in the connection.
-        output_socket: Second socket in the connection.
-
-    Returns:
-        Always True (connection allowed).
-    """
-    for _s in input_socket.node.inputs + input_socket.node.outputs:
-        pass
-
-    for _s in output_socket.node.inputs + output_socket.node.outputs:
-        pass
-
-    return True
 
 
 def edge_cannot_connect_two_outputs_or_two_inputs(

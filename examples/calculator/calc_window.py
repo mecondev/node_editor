@@ -3,6 +3,7 @@ Module description.
 Author: Michael Economou
 Date: 2025-12-11
 """
+import logging
 import os
 
 from PyQt5.QtCore import Qt
@@ -18,19 +19,15 @@ from node_editor.core.edge import Edge
 from node_editor.tools.edge_validators import (
     edge_cannot_connect_input_and_output_of_same_node,
     edge_cannot_connect_two_outputs_or_two_inputs,
-    edge_validator_debug,
 )
-from node_editor.utils.helpers import dump_exception, pp
+from node_editor.utils.helpers import dump_exception
 from node_editor.utils.qt_helpers import loadStylesheets
 from node_editor.widgets.editor_window import NodeEditorWindow
 
-Edge.register_edge_validator(edge_validator_debug)
 Edge.register_edge_validator(edge_cannot_connect_two_outputs_or_two_inputs)
 Edge.register_edge_validator(edge_cannot_connect_input_and_output_of_same_node)
 
-
-
-DEBUG = False
+logger = logging.getLogger(__name__)
 
 class CalculatorWindow(NodeEditorWindow):
 
@@ -45,10 +42,6 @@ class CalculatorWindow(NodeEditorWindow):
         )
 
         self.empty_icon = QIcon(".")
-
-        if DEBUG:
-            print("Registered nodes:")
-            pp(CALC_NODES)
 
 
         self.mdiArea = QMdiArea()
@@ -109,8 +102,6 @@ class CalculatorWindow(NodeEditorWindow):
         return None
 
     def on_file_new(self):
-        import logging
-        logger = logging.getLogger(__name__)
         logger.info("on_file_new: Starting")
         try:
             logger.info("on_file_new: Creating MDI child")
@@ -174,7 +165,6 @@ class CalculatorWindow(NodeEditorWindow):
         self.editMenu.aboutToShow.connect(self.update_edit_menu)
 
     def update_menus(self):
-        # print("update Menus")
         active = self.get_current_node_editor_widget()
         has_mdi_child = (active is not None)
 
@@ -192,7 +182,6 @@ class CalculatorWindow(NodeEditorWindow):
 
     def update_edit_menu(self):
         try:
-            # print("update Edit Menu")
             active = self.get_current_node_editor_widget()
             has_mdi_child = (active is not None)
 

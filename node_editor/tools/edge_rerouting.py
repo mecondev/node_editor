@@ -29,8 +29,6 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-DEBUG_REROUTING = False
-
 
 class EdgeRerouting:
     """Manages rerouting of existing edge connections.

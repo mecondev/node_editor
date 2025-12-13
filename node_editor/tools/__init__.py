@@ -10,7 +10,6 @@ Classes:
     EdgeSnapping: Snap edge endpoints to nearby sockets.
 
 Validator Functions:
-    edge_validator_debug: Debug logging validator (always passes).
     edge_cannot_connect_two_outputs_or_two_inputs: Prevent same-type connections.
     edge_cannot_connect_input_and_output_of_same_node: Prevent self-loops.
     edge_cannot_connect_input_and_output_of_different_type: Enforce type matching.
@@ -32,7 +31,6 @@ from node_editor.tools.edge_validators import (
     edge_cannot_connect_input_and_output_of_different_type,
     edge_cannot_connect_input_and_output_of_same_node,
     edge_cannot_connect_two_outputs_or_two_inputs,
-    edge_validator_debug,
 )
 
 __all__ = [
@@ -40,7 +38,6 @@ __all__ = [
     'EdgeRerouting',
     'EdgeIntersect',
     'EdgeSnapping',
-    'edge_validator_debug',
     'edge_cannot_connect_two_outputs_or_two_inputs',
     'edge_cannot_connect_input_and_output_of_same_node',
     'edge_cannot_connect_input_and_output_of_different_type',

@@ -11,7 +11,7 @@ Usage:
 
         ThemeEngine.set_theme("dark")
         theme = ThemeEngine.get_theme()
-        print(theme.node_background)
+        background = theme.node_background
 
 Author:
     Michael Economou

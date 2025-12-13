@@ -244,9 +244,7 @@ class PrintNode(Node):
             value = input_node.eval()
             self.value = value
 
-            # Print to console
-            logger.info(f"PrintNode: {self.value}")
-            print(f"[PrintNode {self.id}] {self.value}")  # noqa: T201
+            logger.info("PrintNode %s output %s", self.id, self.value)
 
             self.mark_dirty(False)
             self.mark_invalid(False)

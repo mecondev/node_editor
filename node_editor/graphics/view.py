@@ -62,13 +62,6 @@ EDGE_REROUTING_UE = True  # Enable UnrealEngine style rerouting
 EDGE_SNAPPING_RADIUS = 24  # Socket snapping distance
 EDGE_SNAPPING = True  # Enable socket snapping
 
-# Debug flags
-DEBUG_MMB_SCENE_ITEMS = False
-DEBUG_MMB_LAST_SELECTIONS = False
-DEBUG_EDGE_INTERSECT = False
-DEBUG_STATE = False
-
-
 class QDMGraphicsView(QGraphicsView):
     """Graphics view managing node editor interactions.
 
@@ -261,32 +254,6 @@ class QDMGraphicsView(QGraphicsView):
         """
         item = self.getItemAtClick(event)
 
-        if DEBUG_MMB_SCENE_ITEMS:
-            from node_editor.graphics.edge import QDMGraphicsEdge
-            from node_editor.graphics.socket import QDMGraphicsSocket
-
-            if isinstance(item, QDMGraphicsEdge):
-                return
-
-            if isinstance(item, QDMGraphicsSocket):
-                if item.socket.edges:
-                    for _edge in item.socket.edges:
-                        pass
-                return
-
-        if DEBUG_MMB_SCENE_ITEMS and (item is None or self.mode == MODE_EDGES_REROUTING):
-            for _node in self.graphics_scene.scene.nodes:
-                pass
-            for _edge in self.graphics_scene.scene.edges:
-                pass
-
-            if is_ctrl_pressed(event):
-                for _item in self.graphics_scene.items():
-                    pass
-
-        if DEBUG_MMB_LAST_SELECTIONS and is_shift_pressed(event):
-            return
-
         release_event = QMouseEvent(
             QEvent.MouseButtonRelease,
             event.localPos(),
@@ -359,13 +326,9 @@ class QDMGraphicsView(QGraphicsView):
                 return
 
         if hasattr(item, "node"):
-            if DEBUG_EDGE_INTERSECT:
-                pass
             if self.mode == MODE_NOOP:
                 self.mode = MODE_NODE_DRAG
                 self.edgeIntersect.enter_state(item.node)
-                if DEBUG_EDGE_INTERSECT:
-                    pass
 
         if self.is_snapping_enabled(event):
             item = self.snapping.getSnappedSocketItem(event)
