@@ -21,12 +21,27 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Callable
+from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from node_editor.core.scene import Scene
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class HistoryStamp:
+    """Snapshot of scene state for undo/redo.
+
+    Attributes:
+        desc: Human-readable description of this snapshot.
+        snapshot: Serialized scene data (nodes, edges, etc.).
+        selection: Dict with 'nodes' and 'edges' lists of selected IDs.
+    """
+    desc: str
+    snapshot: dict
+    selection: dict
 
 
 class SceneHistory:
@@ -56,7 +71,7 @@ class SceneHistory:
         """
         self.scene = scene
 
-        self.history_stack: list[dict] = []
+        self.history_stack: list[HistoryStamp] = []
         self.history_current_step: int = -1
         self.history_limit: int = 32
 
@@ -235,27 +250,25 @@ class SceneHistory:
 
         return sel_obj
 
-    def create_history_stamp(self, desc: str) -> dict:
+    def create_history_stamp(self, desc: str) -> HistoryStamp:
         """Create complete history snapshot.
 
         Serializes entire scene state and current selection into a
-        dictionary that can later be restored.
+        HistoryStamp dataclass that can later be restored.
 
         Args:
             desc: Human-readable label for this snapshot.
 
         Returns:
-            Dict containing description, scene snapshot, and selection.
+            HistoryStamp containing description, scene snapshot, and selection.
         """
-        history_stamp = {
-            "desc": desc,
-            "snapshot": self.scene.serialize(),
-            "selection": self.capture_current_selection(),
-        }
+        return HistoryStamp(
+            desc=desc,
+            snapshot=self.scene.serialize(),
+            selection=self.capture_current_selection(),
+        )
 
-        return history_stamp
-
-    def restore_history_stamp(self, history_stamp: dict) -> None:
+    def restore_history_stamp(self, history_stamp: HistoryStamp) -> None:
         """Apply a history snapshot to the scene.
 
         Deserializes the scene graph and restores selection state.
@@ -269,12 +282,12 @@ class SceneHistory:
             self.undo_selection_has_changed = False
             previous_selection = self.capture_current_selection()
 
-            self.scene.deserialize(history_stamp["snapshot"])
+            self.scene.deserialize(history_stamp.snapshot)
 
             for edge in self.scene.edges:
                 edge.graphics_edge.setSelected(False)
 
-            for edge_id in history_stamp["selection"]["edges"]:
+            for edge_id in history_stamp.selection["edges"]:
                 for edge in self.scene.edges:
                     if edge.id == edge_id:
                         edge.graphics_edge.setSelected(True)
@@ -283,7 +296,7 @@ class SceneHistory:
             for node in self.scene.nodes:
                 node.graphics_node.setSelected(False)
 
-            for node_id in history_stamp["selection"]["nodes"]:
+            for node_id in history_stamp.selection["nodes"]:
                 for node in self.scene.nodes:
                     if node.id == node_id:
                         node.graphics_node.setSelected(True)
