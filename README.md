@@ -4,7 +4,7 @@ A portable, extensible framework for building node-based visual editors with PyQ
 
 ![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)
 ![PyQt5](https://img.shields.io/badge/PyQt5-5.15%2B-green)
-![Tests](https://img.shields.io/badge/tests-328%20passed-brightgreen)
+![Tests](https://img.shields.io/badge/tests-338%20passed-brightgreen)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
 ## What is this?
@@ -22,6 +22,26 @@ The framework is designed to be **portable**: simply copy the `node_editor/` fol
 - **Full Serialization**: JSON save/load with undo/redo history
 - **Edge Validators**: Customizable connection rules
 - **Interactive Tools**: Edge dragging, rerouting, snapping, cut-line
+
+## Σημαντικές αλλαγές — 2025-12-13
+
+Έγινε μεγάλης κλίμακας refactor για να βελτιωθεί η ονοματολογία και η συνέπεια του API. Οι αλλαγές είναι breaking (δεν υπάρχουν aliases) — ελέγξτε και ενημερώστε τον κώδικά σας αν τον έχετε ενσωματώσει.
+
+- Γενικό rename: όλα τα `gr*` identifiers (π.χ. `grView`, `gr_socket`, `grContent`) μετονομάστηκαν σε `graphics_*` (`graphics_view`, `graphics_socket`, `graphics_content`).
+- Socket factory: `Socket_GR_Class` μετονομάστηκε σε `Socket_Graphics_Class` (binding στο `node_editor.core._init_graphics_classes`).
+- Κατάργηση legacy aliases: η μέθοδος `Scene.is_modified()` αφαιρέθηκε — χρησιμοποιήστε την ιδιότητα `Scene.has_been_modified`.
+- Helpers: τα helper functions για πληκτρολογικούς ελέγχους έγιναν snake_case: `is_ctrl_pressed`, `is_shift_pressed`, `is_alt_pressed` (παλιές camelCase συναρτήσεις αφαιρέθηκαν).
+- Serialization: η παλαιά fallback λογική για `multi_edges` αφαιρέθηκε — τα serialized socket objects πρέπει πλέον να περιέχουν ρητά το πεδίο `multi_edges`.
+
+Οδηγίες αναβάθμισης (γρήγορα):
+
+1. Αντικαταστήστε `grView` → `graphics_view`, `grContent` → `graphics_content` σε custom code.
+2. Χρησιμοποιήστε `Socket_Graphics_Class` αν κάνετε late-binding των graphics κλάσεων.
+3. Αντικαταστήστε κλήσεις `scene.is_modified()` με `scene.has_been_modified`.
+4. Κάντε search στο project σας για `isCTRLPressed`, `isSHIFTPressed`, `isALTPressed` και αλλάξτε σε snake_case αντίστοιχα.
+5. Ελέγξτε τα JSON αρχεία που παράγετε: κάθε `socket` entry πρέπει τώρα να έχει `multi_edges` boolean.
+
+Για οποιαδήποτε βοήθεια με την αναβάθμιση, πείτε μου ποια modules/παραδείγματα θέλετε να αναβαθμίσω αυτόματα.
 
 ## Installation
 
@@ -269,7 +289,7 @@ pytest --cov=node_editor
 pytest tests/test_nodes_math.py
 ```
 
-**Test Status**: 328 tests passing
+**Test Status**: 338 tests passing
 
 ## Project Structure
 
