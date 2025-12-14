@@ -17,6 +17,7 @@ import tempfile
 from node_editor.core.edge import Edge
 from node_editor.core.node import Node
 from node_editor.core.scene import Scene
+from node_editor.persistence.scene_json import load_scene_from_file, save_scene_to_file
 
 
 class TestSceneCreation:
@@ -35,14 +36,14 @@ class TestSceneCreation:
         scene = Scene()
 
         assert scene.history is not None
-        assert hasattr(scene, 'history')
+        assert hasattr(scene, "history")
 
     def test_scene_has_clipboard(self):
         """Test scene has clipboard manager."""
         scene = Scene()
 
         assert scene.clipboard is not None
-        assert hasattr(scene, 'clipboard')
+        assert hasattr(scene, "clipboard")
 
     def test_scene_starts_unmodified(self):
         """Test new scene starts in unmodified state."""
@@ -124,7 +125,7 @@ class TestSceneModificationState:
 
         # Note: Modification flag should be set by history system
         # For now we just test the property exists
-        assert hasattr(scene, 'has_been_modified')
+        assert hasattr(scene, "has_been_modified")
 
     def test_reset_modification_flag(self, scene):
         """Test resetting modification flag."""
@@ -141,11 +142,11 @@ class TestSceneSerialization:
         """Test serializing an empty scene."""
         data = scene.serialize()
 
-        assert 'id' in data
-        assert 'nodes' in data
-        assert 'edges' in data
-        assert len(data['nodes']) == 0
-        assert len(data['edges']) == 0
+        assert "sid" in data
+        assert "nodes" in data
+        assert "edges" in data
+        assert len(data["nodes"]) == 0
+        assert len(data["edges"]) == 0
 
     def test_serialize_scene_with_nodes(self, scene):
         """Test serializing scene with nodes."""
@@ -154,7 +155,7 @@ class TestSceneSerialization:
 
         data = scene.serialize()
 
-        assert len(data['nodes']) == 2
+        assert len(data["nodes"]) == 2
 
     def test_serialize_scene_with_edges(self, scene):
         """Test serializing scene with connected nodes."""
@@ -164,8 +165,8 @@ class TestSceneSerialization:
 
         data = scene.serialize()
 
-        assert len(data['nodes']) == 2
-        assert len(data['edges']) == 1
+        assert len(data["nodes"]) == 2
+        assert len(data["edges"]) == 1
 
     def test_deserialize_scene(self, scene):
         """Test deserializing a scene."""
@@ -191,18 +192,18 @@ class TestSceneFileOperations:
         """Test saving scene to file."""
         Node(scene, "Test Node")
 
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             filename = f.name
 
         try:
-            scene.save_to_file(filename)
+            save_scene_to_file(scene, filename)
 
             assert os.path.exists(filename)
 
             # Verify JSON is valid
             with open(filename) as f:
                 data = json.load(f)
-                assert 'nodes' in data
+                assert "nodes" in data
         finally:
             if os.path.exists(filename):
                 os.unlink(filename)
@@ -214,15 +215,15 @@ class TestSceneFileOperations:
         node2 = Node(scene, "Node 2", inputs=[0])
         Edge(scene, node1.outputs[0], node2.inputs[0])
 
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             filename = f.name
 
         try:
-            scene.save_to_file(filename)
+            save_scene_to_file(scene, filename)
 
             # Load into new scene
             new_scene = Scene()
-            new_scene.load_from_file(filename)
+            load_scene_from_file(new_scene, filename)
 
             assert len(new_scene.nodes) == 2
             assert len(new_scene.edges) == 1
@@ -276,7 +277,7 @@ class TestSceneView:
         items = scene.graphics_scene.items()
 
         # Should include graphics node
-        assert any(hasattr(item, 'node') for item in items)
+        assert any(hasattr(item, "node") for item in items)
 
 
 class TestSceneSelection:

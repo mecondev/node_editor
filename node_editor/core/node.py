@@ -487,14 +487,14 @@ class Node(Serializable):
         """
         from collections import deque
 
-        visited: set[int] = {self.id}
+        visited: set[str] = {self.sid}
         queue: deque[Node] = deque(self.get_children_nodes())
 
         while queue:
             node = queue.popleft()
-            if node.id in visited:
+            if node.sid in visited:
                 continue
-            visited.add(node.id)
+            visited.add(node.sid)
             node.mark_dirty(new_value)
             queue.extend(node.get_children_nodes())
 
@@ -547,14 +547,14 @@ class Node(Serializable):
         """
         from collections import deque
 
-        visited: set[int] = {self.id}
+        visited: set[str] = {self.sid}
         queue: deque[Node] = deque(self.get_children_nodes())
 
         while queue:
             node = queue.popleft()
-            if node.id in visited:
+            if node.sid in visited:
                 continue
-            visited.add(node.id)
+            visited.add(node.sid)
             node.mark_invalid(new_value)
             queue.extend(node.get_children_nodes())
 
@@ -711,7 +711,7 @@ class Node(Serializable):
             outputs.append(socket.serialize())
         ser_content = self.content.serialize() if isinstance(self.content, Serializable) else {}
         return {
-            "id": self.id,
+            "sid": self.sid,
             "title": self.title,
             "pos_x": self.graphics_node.scenePos().x(),
             "pos_y": self.graphics_node.scenePos().y(),
@@ -745,9 +745,15 @@ class Node(Serializable):
             hashmap = {}
 
         try:
-            if restore_id:
-                self.id = data["id"]
-            hashmap[data["id"]] = self
+            # New format (v2+): stable string IDs
+            if restore_id and "sid" in data:
+                self.sid = data["sid"]
+
+            # Register both stable and legacy IDs (legacy used ints under key 'id')
+            if "sid" in data:
+                hashmap[data["sid"]] = self
+            if "id" in data:
+                hashmap[data["id"]] = self
 
             self.set_pos(data["pos_x"], data["pos_y"])
             self.title = data["title"]

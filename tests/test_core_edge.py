@@ -208,7 +208,7 @@ class TestEdgeSerialization:
 
         data = edge.serialize()
 
-        assert data["id"] == edge.id
+        assert data["sid"] == edge.sid
         assert data["edge_type"] == EDGE_TYPE_BEZIER
         assert data["start"] == node1.outputs[0].id
         assert data["end"] == node2.inputs[0].id

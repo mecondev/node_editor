@@ -26,7 +26,12 @@ from typing import TYPE_CHECKING
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMessageBox, QVBoxLayout, QWidget
 
-from node_editor.core.scene import InvalidFileError, Scene
+from node_editor.core.scene import Scene
+from node_editor.persistence.scene_json import (
+    InvalidFileError,
+    load_scene_from_file,
+    save_scene_to_file,
+)
 from node_editor.utils.helpers import dump_exception
 
 if TYPE_CHECKING:
@@ -159,7 +164,7 @@ class NodeEditorWidget(QWidget):
         """
         QApplication.setOverrideCursor(Qt.WaitCursor)
         try:
-            self.scene.load_from_file(filename)
+            load_scene_from_file(self.scene, filename)
             self.filename = filename
             self.scene.history.clear()
             self.scene.history.store_initial_history_stamp()
@@ -190,7 +195,7 @@ class NodeEditorWidget(QWidget):
             self.filename = filename
 
         QApplication.setOverrideCursor(Qt.WaitCursor)
-        self.scene.save_to_file(self.filename)
+        save_scene_to_file(self.scene, self.filename)
         QApplication.restoreOverrideCursor()
 
         return True

@@ -25,12 +25,11 @@ Date:
 
 from __future__ import annotations
 
-import json
 import logging
-import os
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 
+from node_editor.core.host_bridge import NodeHostBridge, NullNodeHostBridge
 from node_editor.core.serializable import Serializable
 from node_editor.utils.helpers import dump_exception
 
@@ -43,10 +42,6 @@ if TYPE_CHECKING:
     from node_editor.graphics.scene import QDMGraphicsScene
 
 logger = logging.getLogger(__name__)
-
-
-class InvalidFileError(Exception):
-    """Raised when file loading fails due to invalid format or content."""
 
 
 class Scene(Serializable):
@@ -78,13 +73,19 @@ class Scene(Serializable):
     history_class = None
     clipboard_class = None
 
-    def __init__(self) -> None:
+    SNAPSHOT_VERSION = "2.0.0"
+
+    def __init__(self, host_bridge: NodeHostBridge | None = None) -> None:
         """Initialize empty scene with default dimensions.
 
         Creates graphics scene, history system, and clipboard. Connects
         selection signals for event handling.
         """
         super().__init__()
+
+        self.host_bridge: NodeHostBridge = (
+            host_bridge if host_bridge is not None else NullNodeHostBridge()
+        )
 
         self.nodes: list[Node] = []
         self.edges: list[Edge] = []
@@ -216,7 +217,7 @@ class Scene(Serializable):
 
         self.has_been_modified = False
 
-    def get_node_by_id(self, node_id: int) -> Node | None:
+    def get_node_by_id(self, node_id: str) -> Node | None:
         """Find a node by its unique identifier.
 
         Args:
@@ -226,7 +227,7 @@ class Scene(Serializable):
             Matching Node instance or None if not found.
         """
         for node in self.nodes:
-            if node.id == node_id:
+            if node.sid == node_id:
                 return node
         return None
 
@@ -395,49 +396,6 @@ class Scene(Serializable):
         """
         return self.get_view().itemAt(pos)
 
-    # File operations
-
-    def save_to_file(self, filename: str) -> None:
-        """Persist scene to JSON file.
-
-        Serializes all nodes and edges and writes to disk. Updates
-        filename association and clears modified flag.
-
-        Args:
-            filename: Target file path.
-        """
-        with open(filename, "w") as file:
-            file.write(json.dumps(self.serialize(), indent=4))
-
-        self.has_been_modified = False
-        self.filename = filename
-
-    def load_from_file(self, filename: str) -> None:
-        """Load scene from JSON file.
-
-        Clears existing content and deserializes from file. Updates
-        filename association and clears modified flag.
-
-        Args:
-            filename: Source file path.
-
-        Raises:
-            InvalidFileError: If file is not valid JSON or format is wrong.
-        """
-        with open(filename) as file:
-            raw_data = file.read()
-            try:
-                data = json.loads(raw_data)
-                self.filename = filename
-                self.deserialize(data)
-                self.has_been_modified = False
-            except json.JSONDecodeError:
-                raise InvalidFileError(
-                    f"{os.path.basename(filename)} is not a valid JSON file"
-                ) from None
-            except Exception as e:
-                dump_exception(e)
-
     # Node/Edge class selection
 
     def get_edge_class(self) -> type[Edge]:
@@ -452,7 +410,9 @@ class Scene(Serializable):
 
         return Edge
 
-    def set_node_class_selector(self, class_selecting_function: Callable[[dict], type[Node]]) -> None:
+    def set_node_class_selector(
+        self, class_selecting_function: Callable[[dict], type[Node]]
+    ) -> None:
         """Set callback for dynamic node class selection.
 
         During deserialization, the callback receives serialized node data
@@ -482,39 +442,42 @@ class Scene(Serializable):
             return Node
         return self.node_class_selector(data)
 
-    # Serialization
+    # Snapshot serialization (IO-free)
 
-    def serialize(self) -> dict:
-        """Convert scene state to dictionary.
-
-        Serializes all nodes and edges, avoiding duplicates.
+    def serialize_snapshot(self) -> dict:
+        """Convert scene state to an IO-free snapshot dictionary.
 
         Returns:
             Dictionary containing complete scene state.
         """
-        nodes = []
-        edges = []
+        nodes: list[dict] = []
+        edges: list[dict] = []
 
         for node in self.nodes:
             newnode = node.serialize()
-            if not any(newnode["id"] == a["id"] for a in nodes):
+            if not any(newnode["sid"] == a["sid"] for a in nodes):
                 nodes.append(newnode)
 
         for edge in self.edges:
             newedge = edge.serialize()
-            if not any(newedge["id"] == a["id"] for a in edges):
+            if not any(newedge["sid"] == a["sid"] for a in edges):
                 edges.append(newedge)
 
         return {
-            "version": "1.0.0",
-            "id": self.id,
+            "version": self.SNAPSHOT_VERSION,
+            "sid": self.sid,
             "scene_width": self.scene_width,
             "scene_height": self.scene_height,
             "nodes": nodes,
             "edges": edges,
         }
 
-    def deserialize(
+    def serialize(self) -> dict:
+        """Backward-compatible alias for :meth:`serialize_snapshot`."""
+
+        return self.serialize_snapshot()
+
+    def deserialize_snapshot(
         self, data: dict, hashmap: dict | None = None, restore_id: bool = True, *args, **kwargs
     ) -> bool:
         """Restore scene state from serialized dictionary.
@@ -538,18 +501,23 @@ class Scene(Serializable):
 
         # Handle versioning and migrations
         version = data.get("version", "0.9.0")  # Legacy files have no version
-        if version != "1.0.0":
+        if version not in ("1.0.0", self.SNAPSHOT_VERSION):
             data = self._migrate_to_current_version(data, version)
 
-        if restore_id:
-            self.id = data["id"]
+        if restore_id and "sid" in data:
+            self.sid = data["sid"]
+
+        if "sid" in data:
+            hashmap[data["sid"]] = self
+        if "id" in data:
+            hashmap[data["id"]] = self
 
         all_nodes = self.nodes.copy()
 
         for node_data in data["nodes"]:
             found = None
             for node in all_nodes:
-                if node.id == node_data["id"]:
+                if "sid" in node_data and node.sid == node_data["sid"]:
                     found = node
                     break
 
@@ -578,7 +546,7 @@ class Scene(Serializable):
         for edge_data in data["edges"]:
             found = None
             for edge in all_edges:
-                if edge.id == edge_data["id"]:
+                if "sid" in edge_data and edge.sid == edge_data["sid"]:
                     found = edge
                     break
 
@@ -595,6 +563,15 @@ class Scene(Serializable):
             edge.remove()
 
         return True
+
+    def deserialize(
+        self, data: dict, hashmap: dict | None = None, restore_id: bool = True, *args, **kwargs
+    ) -> bool:
+        """Backward-compatible alias for :meth:`deserialize_snapshot`."""
+
+        return self.deserialize_snapshot(
+            data, *args, hashmap=hashmap, restore_id=restore_id, **kwargs
+        )
 
     def _migrate_to_current_version(self, data: dict, from_version: str) -> dict:  # noqa: ARG002
         """Migrate serialized data from old version to current format.

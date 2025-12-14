@@ -39,6 +39,7 @@ class HistoryStamp:
         snapshot: Serialized scene data (nodes, edges, etc.).
         selection: Dict with 'nodes' and 'edges' lists of selected IDs.
     """
+
     desc: str
     snapshot: dict
     selection: dict
@@ -244,9 +245,9 @@ class SceneHistory:
 
         for item in self.scene.graphics_scene.selectedItems():
             if hasattr(item, "node"):
-                sel_obj["nodes"].append(item.node.id)
+                sel_obj["nodes"].append(item.node.sid)
             elif hasattr(item, "edge"):
-                sel_obj["edges"].append(item.edge.id)
+                sel_obj["edges"].append(item.edge.sid)
 
         return sel_obj
 
@@ -264,7 +265,7 @@ class SceneHistory:
         """
         return HistoryStamp(
             desc=desc,
-            snapshot=self.scene.serialize(),
+            snapshot=self.scene.serialize_snapshot(),
             selection=self.capture_current_selection(),
         )
 
@@ -282,14 +283,14 @@ class SceneHistory:
             self.undo_selection_has_changed = False
             previous_selection = self.capture_current_selection()
 
-            self.scene.deserialize(history_stamp.snapshot)
+            self.scene.deserialize_snapshot(history_stamp.snapshot)
 
             for edge in self.scene.edges:
                 edge.graphics_edge.setSelected(False)
 
             for edge_id in history_stamp.selection["edges"]:
                 for edge in self.scene.edges:
-                    if edge.id == edge_id:
+                    if edge.sid == edge_id:
                         edge.graphics_edge.setSelected(True)
                         break
 
@@ -298,7 +299,7 @@ class SceneHistory:
 
             for node_id in history_stamp.selection["nodes"]:
                 for node in self.scene.nodes:
-                    if node.id == node_id:
+                    if node.sid == node_id:
                         node.graphics_node.setSelected(True)
                         break
 

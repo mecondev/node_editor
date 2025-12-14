@@ -14,6 +14,10 @@ Date:
     2025-12-11
 """
 
+from __future__ import annotations
+
+from node_editor.utils.ulid import is_ulid, new_ulid
+
 
 class Serializable:
     """Abstract base class for objects supporting dictionary serialization.
@@ -26,12 +30,38 @@ class Serializable:
     Subclasses must implement both serialize() and deserialize() methods.
 
     Attributes:
-        id: Unique identifier for this instance, used in serialization hashmap.
+        sid: Stable string identifier for this instance.
     """
 
-    def __init__(self):
-        """Initialize with a unique identifier based on object memory address."""
-        self.id = id(self)
+    def __init__(self, sid: str | None = None):
+        """Initialize with a stable identifier.
+
+        Args:
+            sid: Optional explicit stable ID. If not provided, a new ULID is generated.
+        """
+        self.sid: str = sid if sid is not None else new_ulid()
+
+    @property
+    def id(self) -> str:
+        """Backward-compatible alias for ``sid``."""
+
+        return self.sid
+
+    @id.setter
+    def id(self, value: object) -> None:
+        """Backward-compatible setter for ``sid``.
+
+        Notes:
+            Legacy snapshots used integer IDs. We do not treat those as stable IDs.
+            Only ULID-shaped strings are accepted as a direct sid assignment.
+        """
+        if isinstance(value, str) and is_ulid(value):
+            self.sid = value
+            return
+        if isinstance(value, str) and value:
+            self.sid = value
+            return
+        raise TypeError("id/sid must be a non-empty string")
 
     def serialize(self) -> dict:
         """Convert this object to a dictionary representation.

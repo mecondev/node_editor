@@ -10,7 +10,6 @@ Date:
     2025-12-12
 """
 
-
 from node_editor.core.node import Node
 
 
@@ -108,6 +107,7 @@ class TestNodeSockets:
 
         # Create edge between nodes
         from node_editor.core.edge import Edge
+
         edge = Edge(scene, node1.outputs[0], node2.inputs[0])
 
         # Move node and update
@@ -149,6 +149,7 @@ class TestNodeState:
         node3 = Node(scene, "Node 3", inputs=[0])
 
         from node_editor.core.edge import Edge
+
         Edge(scene, node1.outputs[0], node2.inputs[0])
         Edge(scene, node2.outputs[0], node3.inputs[0])
 
@@ -179,6 +180,7 @@ class TestNodeRemoval:
         node2 = Node(scene, "Node 2", inputs=[0])
 
         from node_editor.core.edge import Edge
+
         edge = Edge(scene, node1.outputs[0], node2.inputs[0])
 
         node1.remove()
@@ -206,7 +208,7 @@ class TestNodeSerialization:
 
         data = node.serialize()
 
-        assert data["id"] == node.id
+        assert data["sid"] == node.sid
         assert data["title"] == "Test Node"
         assert data["pos_x"] == 100
         assert data["pos_y"] == 150
@@ -246,6 +248,7 @@ class TestNodeCallbacks:
         node2 = Node(scene, "Node 2", inputs=[0])
 
         from node_editor.core.edge import Edge
+
         edge = Edge(scene, node1.outputs[0], node2.inputs[0])
 
         # Should not raise exception

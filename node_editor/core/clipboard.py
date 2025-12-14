@@ -66,7 +66,7 @@ class SceneClipboard:
             if hasattr(item, "node"):
                 sel_nodes.append(item.node.serialize())
                 for socket in item.node.inputs + item.node.outputs:
-                    sel_sockets[socket.id] = socket
+                    sel_sockets[socket.sid] = socket
             elif hasattr(item, "edge"):
                 from node_editor.graphics.edge import QDMGraphicsEdge
 
@@ -75,7 +75,7 @@ class SceneClipboard:
 
         edges_to_remove = []
         for edge in sel_edges:
-            if edge.start_socket.id in sel_sockets and edge.end_socket.id in sel_sockets:
+            if edge.start_socket.sid in sel_sockets and edge.end_socket.sid in sel_sockets:
                 pass
             else:
                 edges_to_remove.append(edge)

@@ -13,12 +13,12 @@ Date:
     2025-12-13
 """
 
-
 from node_editor.core.edge import Edge
 from node_editor.core.scene import Scene
 from node_editor.nodes.input_node import NumberInputNode
 from node_editor.nodes.math_nodes import AddNode, MultiplyNode
 from node_editor.nodes.output_node import OutputNode
+from node_editor.persistence.scene_json import load_scene_from_file, save_scene_to_file
 
 
 class TestNodeEditorWorkflow:
@@ -206,14 +206,14 @@ class TestNodeEditorWorkflow:
 
         # Save to file
         filepath = tmp_path / "test_scene.json"
-        scene1.save_to_file(str(filepath))
+        save_scene_to_file(scene1, str(filepath))
 
         assert filepath.exists()
 
         # Create new scene and load
         scene2 = Scene()
         _ = scene2.graphics_scene
-        scene2.load_from_file(str(filepath))
+        load_scene_from_file(scene2, str(filepath))
 
         # Verify structure
         assert len(scene2.nodes) == 3

@@ -46,7 +46,7 @@ def test_serialization_version() -> None:
 
     # Check version field
     assert "version" in data, "Version field missing in serialization!"
-    assert data["version"] == "1.0.0"
+    assert data["version"] == "2.0.0"
 
     # Deserialize
     scene2 = Scene()
@@ -64,9 +64,7 @@ def test_refresh_graphics_items() -> None:
     AddNode(scene)
 
     # Test refresh method exists
-    assert hasattr(
-        ThemeEngine, "refresh_graphics_items"
-    ), "refresh_graphics_items method missing!"
+    assert hasattr(ThemeEngine, "refresh_graphics_items"), "refresh_graphics_items method missing!"
 
     # Call it (should not raise)
     ThemeEngine.refresh_graphics_items(scene)

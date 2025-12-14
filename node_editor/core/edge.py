@@ -42,6 +42,7 @@ class EdgeType(IntEnum):
     IntEnum provides type safety while maintaining backward compatibility
     with integer comparisons and serialization.
     """
+
     DIRECT = 1
     BEZIER = 2
     SQUARE = 3
@@ -371,10 +372,10 @@ class Edge(Serializable):
             Dictionary with edge ID, type, and socket references.
         """
         return {
-            "id": self.id,
+            "sid": self.sid,
             "edge_type": self.edge_type,
-            "start": self.start_socket.id if self.start_socket is not None else None,
-            "end": self.end_socket.id if self.end_socket is not None else None,
+            "start": self.start_socket.sid if self.start_socket is not None else None,
+            "end": self.end_socket.sid if self.end_socket is not None else None,
         }
 
     def deserialize(
@@ -400,9 +401,15 @@ class Edge(Serializable):
         if hashmap is None:
             hashmap = {}
 
-        if restore_id:
-            self.id = data["id"]
-        self.start_socket = hashmap[data["start"]]
-        self.end_socket = hashmap[data["end"]]
+        if restore_id and "sid" in data:
+            self.sid = data["sid"]
+
+        if "sid" in data:
+            hashmap[data["sid"]] = self
+        if "id" in data:
+            hashmap[data["id"]] = self
+
+        self.start_socket = hashmap[data["start"]] if data.get("start") is not None else None
+        self.end_socket = hashmap[data["end"]] if data.get("end") is not None else None
         self.edge_type = data["edge_type"]
         return True

@@ -34,6 +34,7 @@ class SocketPosition(IntEnum):
     IntEnum provides type safety while maintaining backward compatibility
     with integer comparisons and serialization.
     """
+
     LEFT_TOP = 1
     LEFT_CENTER = 2
     LEFT_BOTTOM = 3
@@ -49,6 +50,7 @@ LEFT_BOTTOM = SocketPosition.LEFT_BOTTOM
 RIGHT_TOP = SocketPosition.RIGHT_TOP
 RIGHT_CENTER = SocketPosition.RIGHT_CENTER
 RIGHT_BOTTOM = SocketPosition.RIGHT_BOTTOM
+
 
 class Socket(Serializable):
     """Connection point on a node for attaching edges.
@@ -89,7 +91,7 @@ class Socket(Serializable):
         socket_type: int = 1,
         multi_edges: bool = True,
         count_on_this_node_side: int = 1,
-        is_input: bool = False
+        is_input: bool = False,
     ):
         """Create a socket attached to a node.
 
@@ -158,9 +160,7 @@ class Socket(Serializable):
         Queries the parent node for this socket's position and updates
         the graphics socket accordingly.
         """
-        pos = self.node.get_socket_position(
-            self.index, self.position, self.count_on_this_node_side
-        )
+        pos = self.node.get_socket_position(self.index, self.position, self.count_on_this_node_side)
         self.graphics_socket.setPos(*pos)
 
     def get_socket_position(self) -> tuple[float, float]:
@@ -236,19 +236,14 @@ class Socket(Serializable):
             Dictionary containing socket configuration and ID.
         """
         return {
-            "id": self.id,
+            "sid": self.sid,
             "index": self.index,
             "multi_edges": self.is_multi_edges,
             "position": self.position,
             "socket_type": self.socket_type,
         }
 
-    def deserialize(
-        self,
-        data: dict,
-        hashmap: dict | None = None,
-        restore_id: bool = True
-    ) -> bool:
+    def deserialize(self, data: dict, hashmap: dict | None = None, restore_id: bool = True) -> bool:
         """Restore socket state from serialized dictionary.
 
         Args:
@@ -262,10 +257,16 @@ class Socket(Serializable):
         if hashmap is None:
             hashmap = {}
 
-        if restore_id:
-            self.id = data["id"]
+        # New format (v2+): stable string IDs
+        if restore_id and "sid" in data:
+            self.sid = data["sid"]
+
+        # Register both stable and legacy IDs (legacy used ints under key 'id')
+        if "sid" in data:
+            hashmap[data["sid"]] = self
+        if "id" in data:
+            hashmap[data["id"]] = self
+
         self.is_multi_edges = data["multi_edges"]
         self.change_socket_type(data["socket_type"])
-        hashmap[data["id"]] = self
         return True
-
