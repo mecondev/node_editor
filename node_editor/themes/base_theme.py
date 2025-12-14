@@ -99,6 +99,9 @@ class BaseTheme:
     node_title_font = "Ubuntu"
     node_title_font_size = 10
 
+    # Icon colors (for SVG icons in palette/listbox)
+    icon_color = QColor("#FFCCCCCC")  # Light gray for dark theme
+
     @classmethod
     def get_socket_color(cls, socket_type: int) -> QColor:
         """Get the color for a socket type.

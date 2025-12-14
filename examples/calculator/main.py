@@ -1,8 +1,17 @@
 """
-Module description.
+Calculator application entry point and main window launcher.
+
+This module initializes and runs the PyQt5-based calculator GUI application.
+It sets up logging configuration, creates the main application window, and handles
+the application lifecycle including startup and graceful shutdown.
+
+The calculator example demonstrates a node-based editor implementation for
+arithmetic operations using a visual node graph interface.
+
 Author: Michael Economou
-Date: 2025-12-11
+Date: 2025-12-14
 """
+
 import logging
 import os
 import sys

@@ -66,3 +66,6 @@ class DarkTheme(BaseTheme):
 
     # Fonts
     node_title_font = QFont("Ubuntu", 10)
+
+    # Icon colors (for SVG icons in palette/listbox)
+    icon_color = QColor("#FFCCCCCC")  # Light gray (not pure white)

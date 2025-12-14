@@ -1,0 +1,52 @@
+QDMNodeContentWidget {
+  background: transparent;
+}
+QDMNodeContentWidget QFrame {
+  background: transparent;
+}
+QDMNodeContentWidget QTextEdit,
+QDMNodeContentWidget QLineEdit {
+  background: #666;
+  color: #fff;
+}
+QDMNodeContentWidget QLabel {
+  color: #e0e0e0;
+}
+/* String processor operation labels (inside nodes) */
+QDMNodeContentWidget QLabel#str_node_bg,
+QDMNodeContentWidget QLabel#str_node_concat,
+QDMNodeContentWidget QLabel#str_node_format,
+QDMNodeContentWidget QLabel#str_node_length,
+QDMNodeContentWidget QLabel#str_node_substring,
+QDMNodeContentWidget QLabel#str_node_split {
+  background: transparent;
+  height: 0px;
+  color: #505050;
+  font-size: 42px;
+  max-height: 49px;
+  min-height: 49px;
+  padding-left: 50px;
+  padding-top: 1px;
+}
+/* Output display label */
+QDMNodeContentWidget QLabel#str_output_label {
+  min-width: 150px;
+  max-width: 150px;
+  min-height: 40px;
+  max-height: 40px;
+  margin-left: 5px;
+  margin-top: 5px;
+  font-size: 22px;
+  color: #e0e0e0;
+}
+/* Text input field */
+QDMNodeContentWidget QLineEdit#str_input_edit {
+  width: 130px;
+  height: 30px;
+  margin-top: 5px;
+  margin-left: 5px;
+  font-size: 18px;
+}
+QGraphicsView {
+  selection-background-color: #fff;
+}

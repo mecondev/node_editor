@@ -1,0 +1,175 @@
+{
+    "version": "1.0.0",
+    "id": "string_processor_example",
+    "scene_width": 64000,
+    "scene_height": 64000,
+    "nodes": [
+        {
+            "id": 4,
+            "title": "Length",
+            "pos_x": 151.140625,
+            "pos_y": -194.296875,
+            "inputs": [
+                {
+                    "id": 41,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 5
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 40,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 5,
+                    "socket_type": 1
+                }
+            ],
+            "content": {},
+            "op_code": 205
+        },
+        {
+            "id": 5,
+            "title": "Text Output",
+            "pos_x": 166.421875,
+            "pos_y": 142.609375,
+            "inputs": [
+                {
+                    "id": 51,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 5
+                }
+            ],
+            "outputs": [],
+            "content": {},
+            "op_code": 202
+        },
+        {
+            "id": 6,
+            "title": "Text Output",
+            "pos_x": 243.9062500000001,
+            "pos_y": -12.187500000000071,
+            "inputs": [
+                {
+                    "id": 61,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 5
+                }
+            ],
+            "outputs": [],
+            "content": {},
+            "op_code": 202
+        },
+        {
+            "id": 126128177668624,
+            "title": "Concatenate",
+            "pos_x": -136.71875,
+            "pos_y": -7.812499999999993,
+            "inputs": [
+                {
+                    "id": 126128177216592,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 5
+                },
+                {
+                    "id": 126128182178304,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 5
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 126128182178544,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 5,
+                    "socket_type": 5
+                }
+            ],
+            "content": {},
+            "op_code": 203
+        },
+        {
+            "id": 133608183551312,
+            "title": "Text Input",
+            "pos_x": -400.0,
+            "pos_y": -190.0,
+            "inputs": [],
+            "outputs": [
+                {
+                    "id": 133608202507936,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 5,
+                    "socket_type": 5
+                }
+            ],
+            "content": {
+                "value": "Hello"
+            },
+            "op_code": 201
+        },
+        {
+            "id": 130789527560400,
+            "title": "Text Input",
+            "pos_x": -398.0,
+            "pos_y": 114.0,
+            "inputs": [],
+            "outputs": [
+                {
+                    "id": 130789527435600,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 5,
+                    "socket_type": 5
+                }
+            ],
+            "content": {
+                "value": "world"
+            },
+            "op_code": 201
+        }
+    ],
+    "edges": [
+        {
+            "id": 104,
+            "edge_type": 2,
+            "start": 40,
+            "end": 61
+        },
+        {
+            "id": 126128177240528,
+            "edge_type": 5,
+            "start": 126128182178544,
+            "end": 51
+        },
+        {
+            "id": 126128177217104,
+            "edge_type": 5,
+            "start": 126128182178544,
+            "end": 41
+        },
+        {
+            "id": 130789527476960,
+            "edge_type": 5,
+            "start": 130789527435600,
+            "end": 126128182178304
+        },
+        {
+            "id": 130789527436112,
+            "edge_type": 5,
+            "start": 133608202507936,
+            "end": 126128177216592
+        }
+    ]
+}
