@@ -10,6 +10,7 @@ All conversion nodes follow Python's standard conversion rules.
 """
 
 import logging
+from typing import Any
 
 from node_editor.core.node import Node
 from node_editor.core.socket import LEFT_CENTER, RIGHT_CENTER
@@ -51,7 +52,7 @@ class ToStringNode(Node):
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
-    def eval(self):
+    def eval(self) -> Any:
         """Convert input value to string.
 
         Returns:
@@ -89,7 +90,7 @@ class ToStringNode(Node):
         except Exception as e:
             self.mark_invalid()
             self.graphics_node.setToolTip(f"Error: {e}")
-            logger.error(f"ToStringNode eval error: {e}")
+            logger.error("ToStringNode eval error: %s", e)
             return None
 
 
@@ -126,7 +127,7 @@ class ToNumberNode(Node):
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
-    def eval(self):
+    def eval(self) -> Any:
         """Convert input value to float.
 
         Returns:
@@ -179,12 +180,12 @@ class ToNumberNode(Node):
         except ValueError as e:
             self.mark_invalid()
             self.graphics_node.setToolTip(f"Invalid number format: {e}")
-            logger.error(f"ToNumberNode conversion error: {e}")
+            logger.error("ToNumberNode conversion error: %s", e)
             return None
         except Exception as e:
             self.mark_invalid()
             self.graphics_node.setToolTip(f"Error: {e}")
-            logger.error(f"ToNumberNode eval error: {e}")
+            logger.error("ToNumberNode eval error: %s", e)
             return None
 
 
@@ -222,7 +223,7 @@ class ToBoolNode(Node):
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
-    def eval(self):
+    def eval(self) -> Any:
         """Convert input value to boolean.
 
         Returns:
@@ -268,7 +269,7 @@ class ToBoolNode(Node):
         except Exception as e:
             self.mark_invalid()
             self.graphics_node.setToolTip(f"Error: {e}")
-            logger.error(f"ToBoolNode eval error: {e}")
+            logger.error("ToBoolNode eval error: %s", e)
             return None
 
 
@@ -305,7 +306,7 @@ class ToIntNode(Node):
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
-    def eval(self):
+    def eval(self) -> Any:
         """Convert input value to integer.
 
         Returns:
@@ -361,10 +362,10 @@ class ToIntNode(Node):
         except ValueError as e:
             self.mark_invalid()
             self.graphics_node.setToolTip(f"Invalid integer format: {e}")
-            logger.error(f"ToIntNode conversion error: {e}")
+            logger.error("ToIntNode conversion error: %s", e)
             return None
         except Exception as e:
             self.mark_invalid()
             self.graphics_node.setToolTip(f"Error: {e}")
-            logger.error(f"ToIntNode eval error: {e}")
+            logger.error("ToIntNode eval error: %s", e)
             return None

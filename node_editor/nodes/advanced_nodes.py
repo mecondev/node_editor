@@ -21,6 +21,7 @@ import os
 import re
 import urllib.error
 import urllib.request
+from typing import Any
 
 from node_editor.core.node import Node
 from node_editor.core.socket import LEFT_CENTER, RIGHT_CENTER

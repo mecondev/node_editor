@@ -99,7 +99,7 @@ class CompareNode(Node):
         _ = input1, input2  # Unused in base class
         return False
 
-    def eval(self):
+    def eval(self) -> bool | None:
         """Evaluate the comparison node.
 
         Gets values from both inputs, performs the comparison,

@@ -100,7 +100,7 @@ class MathNode(Node):
         _ = input1, input2  # Unused in base class
         return 0
 
-    def eval(self):
+    def eval(self) -> float | None:
         """Evaluate the math operation node.
 
         Gets values from both inputs, performs the operation,

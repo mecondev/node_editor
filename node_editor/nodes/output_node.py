@@ -9,6 +9,8 @@ Date:
     2025-12-12
 """
 
+from typing import Any
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QLabel, QVBoxLayout
 
@@ -102,7 +104,7 @@ class OutputNode(Node):
         super().init_settings()
         self.input_socket_position = LEFT_CENTER
 
-    def eval(self):
+    def eval(self) -> Any:
         """Evaluate the node and display the input value.
 
         Returns:

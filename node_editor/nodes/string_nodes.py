@@ -9,6 +9,8 @@ Date:
     2025-12-12
 """
 
+from typing import Any
+
 from PyQt5.QtWidgets import QLabel
 
 from node_editor.core.node import Node
@@ -85,7 +87,7 @@ class ConcatenateNode(Node):
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
-    def eval(self):
+    def eval(self) -> Any:
         """Evaluate the concatenate operation.
 
         Returns:
@@ -165,7 +167,7 @@ class FormatNode(Node):
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
-    def eval(self):
+    def eval(self) -> Any:
         """Evaluate the format operation.
 
         Returns:
@@ -249,7 +251,7 @@ class LengthNode(Node):
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
-    def eval(self):
+    def eval(self) -> Any:
         """Evaluate the length operation.
 
         Returns:
@@ -328,7 +330,7 @@ class SubstringNode(Node):
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
-    def eval(self):
+    def eval(self) -> Any:
         """Evaluate the substring operation.
 
         Returns:
@@ -410,7 +412,7 @@ class SplitNode(Node):
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
-    def eval(self):
+    def eval(self) -> Any:
         """Evaluate the split operation.
 
         Returns:

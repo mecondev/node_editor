@@ -143,7 +143,7 @@ class NumberInputNode(Node):
         super().init_settings()
         self.output_socket_position = RIGHT_CENTER
 
-    def eval(self):
+    def eval(self) -> float:
         """Evaluate the node and parse the input value.
 
         Returns:

@@ -11,6 +11,7 @@ All list operations follow Python's standard list semantics.
 """
 
 import logging
+from typing import Any
 
 from node_editor.core.node import Node
 from node_editor.core.socket import LEFT_CENTER, RIGHT_CENTER
@@ -51,7 +52,7 @@ class CreateListNode(Node):
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
-    def eval(self):
+    def eval(self) -> Any:
         """Create a list from all connected input values.
 
         Returns:
@@ -83,7 +84,7 @@ class CreateListNode(Node):
         except Exception as e:
             self.mark_invalid()
             self.graphics_node.setToolTip(f"Error: {e}")
-            logger.error(f"CreateListNode eval error: {e}")
+            logger.error("CreateListNode eval error: %s", e)
             return None
 
 
@@ -120,7 +121,7 @@ class GetItemNode(Node):
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
-    def eval(self):
+    def eval(self) -> Any:
         """Get item from list at specified index.
 
         Returns:
@@ -193,7 +194,7 @@ class GetItemNode(Node):
         except Exception as e:
             self.mark_invalid()
             self.graphics_node.setToolTip(f"Error: {e}")
-            logger.error(f"GetItemNode eval error: {e}")
+            logger.error("GetItemNode eval error: %s", e)
             return None
 
 
@@ -229,7 +230,7 @@ class ListLengthNode(Node):
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
-    def eval(self):
+    def eval(self) -> Any:
         """Get length of input list or string.
 
         Returns:
@@ -273,7 +274,7 @@ class ListLengthNode(Node):
         except Exception as e:
             self.mark_invalid()
             self.graphics_node.setToolTip(f"Error: {e}")
-            logger.error(f"ListLengthNode eval error: {e}")
+            logger.error("ListLengthNode eval error: %s", e)
             return None
 
 
@@ -310,7 +311,7 @@ class AppendNode(Node):
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
-    def eval(self):
+    def eval(self) -> Any:
         """Append item to list.
 
         Returns:
@@ -367,7 +368,7 @@ class AppendNode(Node):
         except Exception as e:
             self.mark_invalid()
             self.graphics_node.setToolTip(f"Error: {e}")
-            logger.error(f"AppendNode eval error: {e}")
+            logger.error("AppendNode eval error: %s", e)
             return None
 
 
@@ -404,7 +405,7 @@ class JoinNode(Node):
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
-    def eval(self):
+    def eval(self) -> Any:
         """Join list elements into a string.
 
         Returns:
@@ -456,5 +457,5 @@ class JoinNode(Node):
         except Exception as e:
             self.mark_invalid()
             self.graphics_node.setToolTip(f"Error: {e}")
-            logger.error(f"JoinNode eval error: {e}")
+            logger.error("JoinNode eval error: %s", e)
             return None

@@ -11,6 +11,7 @@ Date:
 
 import logging
 import random
+from typing import Any
 
 from PyQt5.QtWidgets import QLabel, QLineEdit, QTextEdit
 
@@ -119,7 +120,7 @@ class ConstantNode(Node):
         self.mark_dirty()
         self.eval()
 
-    def eval(self):
+    def eval(self) -> Any:
         """Evaluate the constant value.
 
         Returns:
@@ -224,7 +225,7 @@ class PrintNode(Node):
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
-    def eval(self):
+    def eval(self) -> Any:
         """Evaluate the print operation.
 
         Prints input value and passes it through.
@@ -297,7 +298,7 @@ class CommentNode(Node):
             outputs = []
         super().__init__(scene, self.__class__.op_title, inputs, outputs)
 
-    def eval(self):
+    def eval(self) -> Any:
         """Comment nodes don't evaluate.
 
         Returns:
@@ -378,7 +379,7 @@ class ClampNode(Node):
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
-    def eval(self):
+    def eval(self) -> Any:
         """Evaluate the clamp operation.
 
         Returns:
@@ -465,7 +466,7 @@ class RandomNode(Node):
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
-    def eval(self):
+    def eval(self) -> Any:
         """Evaluate the random operation.
 
         Returns:
