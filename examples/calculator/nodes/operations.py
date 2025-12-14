@@ -3,6 +3,8 @@ Module description.
 Author: Michael Economou
 Date: 2025-12-11
 """
+import os
+
 from examples.calculator.calc_conf import (
     OP_NODE_ADD,
     OP_NODE_DIV,
@@ -13,9 +15,14 @@ from examples.calculator.calc_conf import (
 from examples.calculator.calc_node_base import CalcNode
 
 
+def get_icon_path(relative_path):
+    """Get absolute path for icon file."""
+    return os.path.join(os.path.dirname(__file__), "..", relative_path)
+
+
 @register_node(OP_NODE_ADD)
 class CalcNodeAdd(CalcNode):
-    icon = "icons/add.png"
+    icon = get_icon_path("icons/add.png")
     op_code = OP_NODE_ADD
     op_title = "Add"
     content_label = "+"
@@ -27,7 +34,7 @@ class CalcNodeAdd(CalcNode):
 
 @register_node(OP_NODE_SUB)
 class CalcNodeSub(CalcNode):
-    icon = "icons/sub.png"
+    icon = get_icon_path("icons/sub.png")
     op_code = OP_NODE_SUB
     op_title = "Substract"
     content_label = "-"
@@ -38,7 +45,7 @@ class CalcNodeSub(CalcNode):
 
 @register_node(OP_NODE_MUL)
 class CalcNodeMul(CalcNode):
-    icon = "icons/mul.png"
+    icon = get_icon_path("icons/mul.png")
     op_code = OP_NODE_MUL
     op_title = "Multiply"
     content_label = "*"
@@ -49,7 +56,7 @@ class CalcNodeMul(CalcNode):
 
 @register_node(OP_NODE_DIV)
 class CalcNodeDiv(CalcNode):
-    icon = "icons/divide.png"
+    icon = get_icon_path("icons/divide.png")
     op_code = OP_NODE_DIV
     op_title = "Divide"
     content_label = "/"

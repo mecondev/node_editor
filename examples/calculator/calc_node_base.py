@@ -20,7 +20,7 @@ from node_editor.widgets.content_widget import QDMNodeContentWidget
 class CalcGraphicsNode(QDMGraphicsNode):
     def init_sizes(self):
         super().init_sizes()
-        self.width = 160
+        self.width = 200
         self.height = 74
         self.edge_roundness = 6
         self.edge_padding = 0

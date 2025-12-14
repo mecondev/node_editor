@@ -40,6 +40,7 @@ class QDMDragListbox(QListWidget):
         pixmap = QPixmap(icon if icon is not None else ".")
         item.setIcon(QIcon(pixmap))
         item.setSizeHint(QSize(32, 32))
+        item.setText(name)  # Set the text to display node name
 
         item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
 

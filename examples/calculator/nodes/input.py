@@ -3,6 +3,8 @@ Module description.
 Author: Michael Economou
 Date: 2025-12-11
 """
+import os
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QLineEdit
 
@@ -12,11 +14,17 @@ from node_editor.utils.helpers import dump_exception
 from node_editor.widgets.content_widget import QDMNodeContentWidget
 
 
+def get_icon_path(relative_path):
+    """Get absolute path for icon file."""
+    return os.path.join(os.path.dirname(__file__), "..", relative_path)
+
+
 class CalcInputContent(QDMNodeContentWidget):
     def init_ui(self):
         self.edit = QLineEdit("1", self)
         self.edit.setAlignment(Qt.AlignRight)
         self.edit.setObjectName(self.node.content_label_objname)
+        self.edit.setFixedWidth(184)  # Match node width minus padding
 
     def serialize(self):
         res = super().serialize()
@@ -38,7 +46,7 @@ class CalcInputContent(QDMNodeContentWidget):
 
 @register_node(OP_NODE_INPUT)
 class CalcNodeInput(CalcNode):
-    icon = "icons/in.png"
+    icon = get_icon_path("icons/in.png")
     op_code = OP_NODE_INPUT
     op_title = "Input"
     content_label_objname = "calc_node_input"
