@@ -28,14 +28,17 @@ Date:
     2025-12-11
 """
 
+import logging
 from collections.abc import Callable
+
+logger = logging.getLogger(__name__)
 
 
 class NodeRegistry:
     """Central registry for all node types.
 
     Maintains a dictionary mapping operation codes to node classes.
-    Use op_codes 1-99 for built-in nodes and 100+ for custom nodes.
+    Built-in nodes use op_codes 1-113. Custom nodes should use 200+.
 
     Attributes:
         _nodes: Dictionary mapping op_codes to node classes.
@@ -78,11 +81,16 @@ class NodeRegistry:
             """
             if op_code in cls._nodes:
                 existing = cls._nodes[op_code].__name__
+                logger.error(
+                    "Duplicate op_code %s: already registered to %s, cannot register %s",
+                    op_code, existing, node_class.__name__
+                )
                 raise ValueError(
                     f"OpCode {op_code} already registered to {existing}"
                 )
             cls._nodes[op_code] = node_class
             node_class.op_code = op_code
+            logger.debug("Registered node: %s with op_code %s", node_class.__name__, op_code)
             return node_class
         return decorator
 
@@ -99,11 +107,16 @@ class NodeRegistry:
         """
         if op_code in cls._nodes:
             existing = cls._nodes[op_code].__name__
+            logger.error(
+                "Duplicate op_code %s: already registered to %s, cannot register %s",
+                op_code, existing, node_class.__name__
+            )
             raise ValueError(
                 f"OpCode {op_code} already registered to {existing}"
             )
         cls._nodes[op_code] = node_class
         node_class.op_code = op_code
+        logger.debug("Registered node: %s with op_code %s", node_class.__name__, op_code)
 
     @classmethod
     def get_node_class(cls, op_code: int) -> type | None:

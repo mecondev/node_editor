@@ -4,7 +4,7 @@ A portable, extensible framework for building node-based visual editors with PyQ
 
 ![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)
 ![PyQt5](https://img.shields.io/badge/PyQt5-5.15%2B-green)
-![Tests](https://img.shields.io/badge/tests-338%20passed-brightgreen)
+![Tests](https://img.shields.io/badge/tests-368%20passed-brightgreen)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
 ## What is this?
@@ -23,6 +23,16 @@ The framework is designed to be **portable**: simply copy the `node_editor/` fol
 - **Edge Validators**: Customizable connection rules
 - **Interactive Tools**: Edge dragging, rerouting, snapping, cut-line
 
+## Documentation
+
+For detailed technical documentation see [docs/architecture.md](docs/architecture.md), which covers:
+- Layer architecture (Core, Graphics, Widgets)
+- Module dependencies and import hierarchy
+- Data flow and evaluation system
+- Theme system integration
+- Serialization format
+- Extension points for custom nodes, graphics, and validators
+
 ## API Design
 
 The framework follows these conventions:
@@ -30,8 +40,8 @@ The framework follows these conventions:
 - **Graphics attributes**: All graphics item references use snake_case naming (e.g., `graphics_view`, `graphics_socket`, `graphics_node`).
 - **Class factories**: Graphics classes are injected via `node_editor.core._init_graphics_classes()` to avoid circular imports.
 - **API methods**: All public methods follow snake_case convention (e.g., `mark_dirty()`, `get_input()`, `save_to_file()`).
-- **Scene state**: Use the `has_been_modified` property to check unsaved changes. The `is_modified()` method is a compatibility shim.
-- **Serialization**: Socket objects must explicitly include the `multi_edges` boolean field; automatic fallbacks are not supported.
+- **Scene state**: Use the `has_been_modified` property to check unsaved changes.
+- **Serialization**: Socket objects must explicitly include the `multi_edges` boolean field.
 
 ## Installation
 
@@ -97,7 +107,7 @@ class MyWindow(QMainWindow):
 from node_editor.core.node import Node
 from node_editor.nodes import NodeRegistry
 
-@NodeRegistry.register(200)  # Use op_codes >= 100 for custom nodes
+@NodeRegistry.register(200)  # Use op_codes >= 200 for custom nodes
 class MyCustomNode(Node):
     """Custom node with one input and one output."""
     
@@ -170,30 +180,30 @@ ThemeEngine.set_theme("mytheme")
 
 ## Node System
 
-### Built-in Nodes (Op Codes)
+### Built-in Nodes (52 total)
 
-| Category | Nodes | Op Codes |
-|----------|-------|----------|
-| **Input** | NumberInput, TextInput | 1-2 |
-| **Output** | Output | 3 |
-| **Math** | Add, Subtract, Multiply, Divide | 10-13 |
-| **Math Extended** | Power, Sqrt, Abs, Min, Max, Round, Modulo | 50-56 |
-| **Comparison** | Equal, NotEqual, LessThan, LessEqual, GreaterThan, GreaterEqual | 20-25 |
-| **Logic** | If, And, Or, Not, Xor | 26, 60-63 |
-| **String** | Concatenate, Format, Length, Substring, Split | 40-44 |
-| **Conversion** | ToString, ToNumber, ToBool, ToInt | 70-73 |
-| **Utility** | Constant, Print, Comment, Clamp, Random | 80-84 |
-| **List** | CreateList, GetItem, ListLength, Append, Join | 90-94 |
-| **Time** | CurrentTime, FormatDate, ParseDate, TimeDelta, CompareTime | 100-104 |
-| **Advanced** | RegexMatch, FileRead, FileWrite, HttpRequest | 110-113 |
+| Category | Nodes | Op Codes | Module |
+|----------|-------|----------|--------|
+| **Input** | NumberInput, TextInput | 1-2 | `input_node.py` |
+| **Output** | Output | 3 | `output_node.py` |
+| **Math** | Add, Subtract, Multiply, Divide | 10-13 | `math_nodes.py` |
+| **Math Extended** | Power, Sqrt, Abs, Min, Max, Round, Modulo | 50-56 | `math_nodes.py` |
+| **Comparison** | Equal, NotEqual, LessThan, LessEqual, GreaterThan, GreaterEqual | 20-25 | `logic_nodes.py` |
+| **Logic** | If, And, Or, Not, Xor | 30, 60-63 | `logic_nodes.py` |
+| **String** | Concatenate, Format, Length, Substring, Split | 40-44 | `string_nodes.py` |
+| **Conversion** | ToString, ToNumber, ToBool, ToInt | 70-73 | `conversion_nodes.py` |
+| **Utility** | Constant, Print, Comment, Clamp, Random | 80-84 | `utility_nodes.py` |
+| **List** | CreateList, GetItem, ListLength, Append, Join | 90-94 | `list_nodes.py` |
+| **Time** | CurrentTime, FormatDate, ParseDate, TimeDelta, CompareTime | 100-104 | `time_nodes.py` |
+| **Advanced** | RegexMatch, FileRead, FileWrite, HttpRequest | 110-113 | `advanced_nodes.py` |
 
 ### Node Registration Convention
 
-- **1-99**: Reserved for built-in framework nodes
-- **100+**: Available for custom application nodes
+- **1-113**: Used by built-in framework nodes
+- **200+**: Recommended for custom application nodes
 
 ```python
-@NodeRegistry.register(150)  # Your custom op_code
+@NodeRegistry.register(200)  # Your custom op_code
 class MyApplicationNode(Node):
     pass
 ```
@@ -244,7 +254,7 @@ editor.scene.deserialize(data)   # Restores state, handles version migrations
 }
 ```
 
-**Note:** The `version` field enables backward-compatible migrations when the format changes.
+**Note:** The `version` field enables format migrations when needed.
 
 ## Running Examples
 
@@ -279,7 +289,7 @@ pytest --cov=node_editor
 pytest tests/test_nodes_math.py
 ```
 
-**Test Status**: 338 tests passing
+**Test Status**: 368 tests passing
 
 ## Project Structure
 
@@ -401,12 +411,8 @@ from node_editor.themes import (
 
 MIT License - see LICENSE file for details.
 
-## Acknowledgments
-
-Based on the original nodeeditor framework, refactored for modularity and portability.
-
 ---
 
 **Author**: Michael Economou  
 **Version**: 1.0.0  
-**Date**: 2025-12-12
+**Date**: 2025-12-14

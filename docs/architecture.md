@@ -310,7 +310,7 @@ Scene
        └─ end: int (socket id)
 ```
 
-**Required fields**: Each socket entry must include `multi_edges`; legacy fallbacks have been removed.
+**Required fields**: Each socket entry must include `multi_edges`.
 
 ### Hashmap for References
 
@@ -346,7 +346,7 @@ class ConstantNode(Node):
 
 ### Versioning Strategy
 
-Scene serialization includes a version field for format migrations:
+Scene serialization includes a version field for format identification:
 
 ```json
 {
@@ -367,22 +367,13 @@ def serialize(self):
     ])
 
 def deserialize(self, data, hashmap=None, restore_id=True):
-    version = data.get("version", "0.9.0")  # Legacy files default to 0.9.0
-    data = self._migrate_to_current_version(version, data)
+    version = data.get("version", "1.0.0")
     # ... restore nodes/edges ...
-
-def _migrate_to_current_version(self, version: str, data: dict) -> dict:
-    """Apply migrations for older format versions."""
-    # Future migrations go here
-    # Example: if version < "1.1.0": data = migrate_to_1_1_0(data)
-    return data
 ```
 
 **Guidelines**:
 - Bump version when changing serialization format (add/remove/rename fields)
 - Use semantic versioning: major.minor.patch
-- Keep `_migrate_to_current_version()` for backward compatibility
-- Test loading files from previous versions
 
 ---
 
@@ -480,7 +471,7 @@ Allows subclasses to override without modifying Node code. Set once via `_init_g
 Operation codes provide:
 - Stable identifiers for serialization (class names can change)
 - Fast lookup in registry
-- Clear namespace separation (1-99 built-in, 100+ custom)
+- Clear namespace separation (1-113 built-in, 200+ custom)
 
 ---
 
@@ -531,23 +522,4 @@ node_editor/__init__.py
 ---
 
 *Document created: 2025-12-12*  
-*Last updated: 2025-12-13*
-
----
-
-## Completed Refactoring (v2.0.0)
-
-All PEP8 snake_case improvements have been successfully implemented:
-
-- ✅ **Graphics attributes renamed**: `grNode` → `graphics_node`, `grEdge` → `graphics_edge`, `grSocket` → `graphics_socket`, `grScene` → `graphics_scene`
-- ✅ **State methods renamed**: `markDirty` → `mark_dirty`, `markInvalid` → `mark_invalid`, `markDescendantsDirty` → `mark_descendants_dirty`, etc.
-- ✅ **Class attributes renamed**: `GraphicsNode_class` → `_graphics_node_class` (private convention)
-- ✅ **Init methods renamed**: `initSettings` → `init_settings`, `initSizes` → `init_sizes`, `initAssets` → `init_assets`
-- ✅ **Graphics methods renamed**: 13 methods including `calcPath` → `calc_path`, `doSelect` → `do_select`, etc.
-- ✅ **Node methods renamed**: `getInput` → `get_input`, `evalChildren` → `eval_children`, `isDirty` → `is_dirty`, etc.
-- ✅ **Documentation updated**: `_init_graphics_classes()` is documented as the intentional core→graphics bootstrap
-- ✅ **Tools consolidated**: `tools/` is the official location for all edge manipulation behaviors
-
-**Breaking Changes**: This is a complete API rename. `Scene.is_modified()` is kept as a compatibility shim; prefer `Scene.has_been_modified`.  
-**Testing**: All 328 tests passing, ruff checks passing.  
-**Migration**: Use provided sed scripts in repository history to update downstream code.
+*Last updated: 2025-12-14*
