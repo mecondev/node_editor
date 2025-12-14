@@ -18,6 +18,8 @@ Date:
     2025-12-11
 """
 
+from __future__ import annotations
+
 import logging
 from typing import TYPE_CHECKING
 
@@ -31,6 +33,7 @@ if TYPE_CHECKING:
     from PyQt5.QtWidgets import QGraphicsSceneHoverEvent, QStyleOptionGraphicsItem
 
     from node_editor.core.node import Node
+    from node_editor.widgets.content_widget import QDMNodeContentWidget
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +54,7 @@ class QDMGraphicsNode(QGraphicsItem):
         graphics_content: QGraphicsProxyWidget containing content widget.
     """
 
-    def __init__(self, node: "Node", parent: QWidget | None = None):
+    def __init__(self, node: Node, parent: QWidget | None = None):
         """Initialize graphics node for a logical node.
 
         Args:
@@ -72,7 +75,7 @@ class QDMGraphicsNode(QGraphicsItem):
         self.init_ui()
 
     @property
-    def content(self):
+    def content(self) -> QDMNodeContentWidget | None:
         """Content widget of the associated node.
 
         Returns:
@@ -252,7 +255,7 @@ class QDMGraphicsNode(QGraphicsItem):
         """
         self.node.on_double_clicked(event)
 
-    def hoverEnterEvent(self, _event: "QGraphicsSceneHoverEvent") -> None:
+    def hoverEnterEvent(self, _event: QGraphicsSceneHoverEvent) -> None:
         """Enable hover highlighting when mouse enters.
 
         Args:
@@ -261,7 +264,7 @@ class QDMGraphicsNode(QGraphicsItem):
         self.hovered = True
         self.update()
 
-    def hoverLeaveEvent(self, _event: "QGraphicsSceneHoverEvent") -> None:
+    def hoverLeaveEvent(self, _event: QGraphicsSceneHoverEvent) -> None:
         """Disable hover highlighting when mouse leaves.
 
         Args:
@@ -301,7 +304,7 @@ class QDMGraphicsNode(QGraphicsItem):
         self.graphics_content.node = self.node  # type: ignore
         self.graphics_content.setParentItem(self)
 
-    def paint(self, painter, _option: "QStyleOptionGraphicsItem", _widget=None) -> None:
+    def paint(self, painter, _option: QStyleOptionGraphicsItem, _widget=None) -> None:
         """Render node with title bar, content area, and outline.
 
         Draws rounded rectangles for title and content backgrounds,

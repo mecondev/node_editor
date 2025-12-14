@@ -6,14 +6,13 @@ Tests node registration, duplicate detection, and lookup functionality.
 import pytest
 
 from node_editor.core.node import Node
-from node_editor.core.scene import Scene
 from node_editor.nodes.registry import NodeRegistry
 
 
 class TestNodeRegistry:
     """Test suite for NodeRegistry class."""
 
-    def test_register_decorator_success(self, qtbot):
+    def test_register_decorator_success(self, _qtbot):
         """Test successful node registration using decorator."""
         # Create a unique op_code for this test
         test_op_code = 9999
@@ -35,7 +34,7 @@ class TestNodeRegistry:
         # Clean up
         del NodeRegistry._nodes[test_op_code]
 
-    def test_register_duplicate_op_code_raises_error(self, qtbot):
+    def test_register_duplicate_op_code_raises_error(self, _qtbot):
         """Test that registering duplicate op_code raises ValueError."""
         test_op_code = 9998
 
@@ -58,7 +57,7 @@ class TestNodeRegistry:
         # Clean up
         del NodeRegistry._nodes[test_op_code]
 
-    def test_register_node_method_success(self, qtbot):
+    def test_register_node_method_success(self, _qtbot):
         """Test successful node registration using register_node method."""
         test_op_code = 9997
 
@@ -80,7 +79,7 @@ class TestNodeRegistry:
         # Clean up
         del NodeRegistry._nodes[test_op_code]
 
-    def test_register_node_method_duplicate_raises_error(self, qtbot):
+    def test_register_node_method_duplicate_raises_error(self, _qtbot):
         """Test that register_node raises ValueError for duplicate op_code."""
         test_op_code = 9996
 
@@ -105,7 +104,7 @@ class TestNodeRegistry:
         # Clean up
         del NodeRegistry._nodes[test_op_code]
 
-    def test_get_node_class_existing(self, qtbot):
+    def test_get_node_class_existing(self, _qtbot):
         """Test getting an existing node class."""
         test_op_code = 9995
 
@@ -125,30 +124,30 @@ class TestNodeRegistry:
         # Clean up
         del NodeRegistry._nodes[test_op_code]
 
-    def test_get_node_class_nonexistent(self, qtbot):
+    def test_get_node_class_nonexistent(self, _qtbot):
         """Test getting a non-existent node class returns None."""
         nonexistent_op_code = 99999
         retrieved_class = NodeRegistry.get_node_class(nonexistent_op_code)
         assert retrieved_class is None
 
-    def test_get_all_nodes(self, qtbot):
+    def test_get_all_nodes(self, _qtbot):
         """Test getting all registered node classes."""
         # This should return a dictionary with at least the built-in nodes
         all_nodes = NodeRegistry.get_all_nodes()
         assert isinstance(all_nodes, dict)
-        
+
         # Check that some built-in nodes are present
         assert 1 in all_nodes  # NumberInputNode
         assert 2 in all_nodes  # TextInputNode
         assert 3 in all_nodes  # OutputNode
-        
+
         # Verify it's a copy, not the internal dict
         original_count = len(all_nodes)
         all_nodes[88888] = None
         all_nodes_again = NodeRegistry.get_all_nodes()
         assert len(all_nodes_again) == original_count
 
-    def test_node_instantiation_after_registration(self, qtbot, scene):
+    def test_node_instantiation_after_registration(self, _qtbot, scene):
         """Test that a registered node can be instantiated and used."""
         test_op_code = 9994
 

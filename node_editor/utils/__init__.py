@@ -10,7 +10,7 @@ Functions:
     is_ctrl_pressed: Check if Control modifier is active.
     is_shift_pressed: Check if Shift modifier is active.
     is_alt_pressed: Check if Alt modifier is active.
-     dump_exception: Print exception with traceback for debugging.
+    dump_exception: Print exception with traceback for debugging.
     pp: Pretty-print objects to console.
     setup_logging: Configure application-wide logging handlers.
     get_logger: Get a named logger instance.
@@ -33,7 +33,7 @@ from node_editor.utils.qt_helpers import (
 )
 
 __all__ = [
-     "dump_exception",
+    "dump_exception",
     "pp",
     "loadStylesheet",
     "loadStylesheets",

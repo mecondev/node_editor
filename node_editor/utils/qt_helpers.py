@@ -9,9 +9,6 @@ Functions:
     is_ctrl_pressed: Check if Control modifier is active.
     is_shift_pressed: Check if Shift modifier is active.
     is_alt_pressed: Check if Alt modifier is active.
-     is_ctrl_pressed: Check if Control modifier is active.
-     is_shift_pressed: Check if Shift modifier is active.
-     is_alt_pressed: Check if Alt modifier is active.
 
 Author:
     Michael Economou

@@ -558,7 +558,7 @@ class Node(Serializable):
             node.mark_invalid(new_value)
             queue.extend(node.get_children_nodes())
 
-    def eval(self, _index: int = 0):
+    def eval(self, _index: int = 0) -> int | float | str | bool | list | dict | None:
         """Evaluate node and compute output value.
 
         Override this method to implement node-specific computation.

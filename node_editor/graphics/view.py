@@ -43,7 +43,7 @@ from node_editor.utils.helpers import dump_exception
 from node_editor.utils.qt_helpers import is_ctrl_pressed, is_shift_pressed
 
 if TYPE_CHECKING:
-    from PyQt5.QtWidgets import QWidget
+    from PyQt5.QtWidgets import QGraphicsItem, QWidget
 
     from node_editor.graphics.scene import QDMGraphicsScene
 
@@ -586,7 +586,7 @@ class QDMGraphicsView(QGraphicsView):
 
         self.graphics_scene.scene.history.store_history("Delete selected", set_modified=True)
 
-    def getItemAtClick(self, event: QEvent):
+    def getItemAtClick(self, event: QEvent) -> QGraphicsItem | None:
         """Get graphics item at event position.
 
         Args:

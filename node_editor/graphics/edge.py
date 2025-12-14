@@ -18,6 +18,8 @@ Date:
     2025-12-11
 """
 
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import QPointF, QRectF, Qt
@@ -37,6 +39,7 @@ if TYPE_CHECKING:
     from PyQt5.QtWidgets import QGraphicsSceneHoverEvent, QStyleOptionGraphicsItem
 
     from node_editor.core.edge import Edge
+    from node_editor.graphics.edge_path import GraphicsEdgePathBase
 
 
 class QDMGraphicsEdge(QGraphicsPathItem):
@@ -54,7 +57,7 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         hovered: True while mouse hovers over this edge.
     """
 
-    def __init__(self, edge: "Edge", parent: QWidget | None = None):
+    def __init__(self, edge: Edge, parent: QWidget | None = None):
         """Initialize graphics edge for a logical edge.
 
         Args:
@@ -101,7 +104,7 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         self._pen_dragging.setWidthF(theme.edge_width)
         self._pen_hovered.setWidthF(theme.edge_width + 2.0)
 
-    def create_edge_path_calculator(self):
+    def create_edge_path_calculator(self) -> GraphicsEdgePathBase:
         """Instantiate new path calculator based on edge type.
 
         Returns:
@@ -110,7 +113,7 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         self.path_calculator = self.determine_edge_path_class()(self)
         return self.path_calculator
 
-    def determine_edge_path_class(self):
+    def determine_edge_path_class(self) -> type[GraphicsEdgePathBase]:
         """Select path calculator class based on edge_type constant.
 
         Returns:
@@ -199,7 +202,7 @@ class QDMGraphicsEdge(QGraphicsPathItem):
             self._last_selected_state = self.isSelected()
             self.on_selected()
 
-    def hoverEnterEvent(self, _event: "QGraphicsSceneHoverEvent") -> None:
+    def hoverEnterEvent(self, _event: QGraphicsSceneHoverEvent) -> None:
         """Enable hover highlight when mouse enters.
 
         Args:
@@ -208,7 +211,7 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         self.hovered = True
         self.update()
 
-    def hoverLeaveEvent(self, _event: "QGraphicsSceneHoverEvent") -> None:
+    def hoverLeaveEvent(self, _event: QGraphicsSceneHoverEvent) -> None:
         """Disable hover highlight when mouse leaves.
 
         Args:
@@ -254,7 +257,7 @@ class QDMGraphicsEdge(QGraphicsPathItem):
     def paint(
         self,
         painter,
-        _option: "QStyleOptionGraphicsItem",
+        _option: QStyleOptionGraphicsItem,
         _widget=None,
     ) -> None:
         """Render the edge path with appropriate pen.

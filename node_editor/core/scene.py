@@ -36,7 +36,7 @@ from node_editor.utils.helpers import dump_exception
 
 if TYPE_CHECKING:
     from PyQt5.QtCore import QPointF
-    from PyQt5.QtWidgets import QGraphicsView
+    from PyQt5.QtWidgets import QGraphicsItem, QGraphicsView
 
     from node_editor.core.edge import Edge
     from node_editor.core.node import Node
@@ -384,7 +384,7 @@ class Scene(Serializable):
         """
         return self.get_view()
 
-    def get_item_at(self, pos: QPointF):
+    def get_item_at(self, pos: QPointF) -> QGraphicsItem | None:
         """Find graphics item at scene position.
 
         Args:
