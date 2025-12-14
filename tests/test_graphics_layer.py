@@ -103,7 +103,7 @@ class TestGraphicsView:
             )
             view.wheelEvent(wheel_event)
 
-        assert view.zoom == view.zoomRange[0]
+        assert view.zoom == view.zoom_range[0]
 
         # Zoom in many times
         for _ in range(50):
@@ -114,7 +114,7 @@ class TestGraphicsView:
             )
             view.wheelEvent(wheel_event)
 
-        assert view.zoom == view.zoomRange[1]
+        assert view.zoom == view.zoom_range[1]
 
     def test_reset_zoom(self, qtbot):
         """Test that zoom starts at expected level."""
@@ -125,7 +125,7 @@ class TestGraphicsView:
 
         # Initial zoom should be at default value (10)
         assert view.zoom == 10
-        assert view.zoomRange == [0, 10]
+        assert view.zoom_range == [0, 10]
         assert abs(view.transform().m11() - 1.0) < 0.01
 
     def test_fit_in_view(self, qtbot):

@@ -72,9 +72,9 @@ class QDMGraphicsView(QGraphicsView):
         graphics_scene: QDMGraphicsScene being displayed.
         mode: Current interaction mode constant.
         zoom: Current zoom level integer.
-        zoomInFactor: Scaling factor per zoom step.
-        zoomClamp: Whether zoom is clamped to range.
-        zoomRange: [min, max] zoom level range.
+        zoom_in_factor: Scaling factor per zoom step.
+        zoom_clamp: Whether zoom is clamped to range.
+        zoom_range: [min, max] zoom level range.
         last_scene_mouse_position: Last cursor position in scene coords.
 
     Signals:
@@ -97,8 +97,8 @@ class QDMGraphicsView(QGraphicsView):
         self.setScene(self.graphics_scene)
 
         self.mode: int = MODE_NOOP
-        self.editingFlag: bool = False
-        self.rubberBandDraggingRectangle: bool = False
+        self.editing_flag: bool = False
+        self.rubber_band_dragging_rectangle: bool = False
 
         from node_editor.tools.edge_dragging import EdgeDragging
 
@@ -124,11 +124,11 @@ class QDMGraphicsView(QGraphicsView):
         self.last_scene_mouse_position = QPoint(0, 0)
         self.last_lmb_click_scene_pos: QPointF | None = None
 
-        self.zoomInFactor = 1.25
-        self.zoomClamp = True
+        self.zoom_in_factor = 1.25
+        self.zoom_clamp = True
         self.zoom = 10
-        self.zoomStep = 1
-        self.zoomRange = [0, 10]
+        self.zoom_step = 1
+        self.zoom_range = [0, 10]
 
         self._drag_enter_listeners: list = []
         self._drop_listeners: list = []
@@ -436,8 +436,8 @@ class QDMGraphicsView(QGraphicsView):
                 self.mode = MODE_NOOP
                 self.update()
 
-            if self.rubberBandDraggingRectangle:
-                self.rubberBandDraggingRectangle = False
+            if self.rubber_band_dragging_rectangle:
+                self.rubber_band_dragging_rectangle = False
                 current_selected_items = self.graphics_scene.selectedItems()
 
                 if current_selected_items != self.graphics_scene.scene._last_selected_items:
@@ -623,20 +623,23 @@ class QDMGraphicsView(QGraphicsView):
         Args:
             event: Qt wheel event.
         """
-        zoom_out_factor = 1 / self.zoomInFactor
+        # Determine zoom direction from wheel delta
+        zoom_in = event.angleDelta().y() > 0
 
-        if event.angleDelta().y() > 0:
-            zoom_factor = self.zoomInFactor
-            self.zoom += self.zoomStep
+        zoom_out_factor = 1 / self.zoom_in_factor
+
+        if zoom_in:
+            zoom_factor = self.zoom_in_factor
+            self.zoom += self.zoom_step
         else:
             zoom_factor = zoom_out_factor
-            self.zoom -= self.zoomStep
+            self.zoom -= self.zoom_step
 
         clamped = False
-        if self.zoom < self.zoomRange[0]:
-            self.zoom, clamped = self.zoomRange[0], True
-        if self.zoom > self.zoomRange[1]:
-            self.zoom, clamped = self.zoomRange[1], True
+        if self.zoom < self.zoom_range[0]:
+            self.zoom, clamped = self.zoom_range[0], True
+        if self.zoom > self.zoom_range[1]:
+            self.zoom, clamped = self.zoom_range[1], True
 
-        if not clamped or self.zoomClamp is False:
+        if not clamped or self.zoom_clamp is False:
             self.scale(zoom_factor, zoom_factor)

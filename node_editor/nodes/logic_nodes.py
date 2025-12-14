@@ -84,7 +84,7 @@ class CompareNode(Node):
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
-    def compareOperation(self, input1, input2):
+    def compare_operation(self, input1, input2):
         """Perform the comparison operation.
 
         Override this method in subclasses to implement specific comparisons.
@@ -121,7 +121,7 @@ class CompareNode(Node):
             val1 = i1.eval()
             val2 = i2.eval()
 
-            self.value = self.compareOperation(val1, val2)
+            self.value = self.compare_operation(val1, val2)
             self.mark_dirty(False)
             self.mark_invalid(False)
             self.graphics_node.setToolTip("")
@@ -152,7 +152,7 @@ class EqualNode(CompareNode):
     content_label = "=="
     content_label_objname = "logic_node_eq"
 
-    def compareOperation(self, input1, input2):
+    def compare_operation(self, input1, input2):
         """Check if two values are equal.
 
         Args:
@@ -180,7 +180,7 @@ class NotEqualNode(CompareNode):
     content_label = "!="
     content_label_objname = "logic_node_neq"
 
-    def compareOperation(self, input1, input2):
+    def compare_operation(self, input1, input2):
         """Check if two values are not equal.
 
         Args:
@@ -208,7 +208,7 @@ class LessThanNode(CompareNode):
     content_label = "<"
     content_label_objname = "logic_node_lt"
 
-    def compareOperation(self, input1, input2):
+    def compare_operation(self, input1, input2):
         """Check if first value is less than second.
 
         Args:
@@ -236,7 +236,7 @@ class LessEqualNode(CompareNode):
     content_label = "<="
     content_label_objname = "logic_node_le"
 
-    def compareOperation(self, input1, input2):
+    def compare_operation(self, input1, input2):
         """Check if first value is less than or equal to second.
 
         Args:
@@ -264,7 +264,7 @@ class GreaterThanNode(CompareNode):
     content_label = ">"
     content_label_objname = "logic_node_gt"
 
-    def compareOperation(self, input1, input2):
+    def compare_operation(self, input1, input2):
         """Check if first value is greater than second.
 
         Args:
@@ -292,7 +292,7 @@ class GreaterEqualNode(CompareNode):
     content_label = ">="
     content_label_objname = "logic_node_ge"
 
-    def compareOperation(self, input1, input2):
+    def compare_operation(self, input1, input2):
         """Check if first value is greater than or equal to second.
 
         Args:

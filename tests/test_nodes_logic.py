@@ -44,22 +44,22 @@ class TestEqualNode:
     def test_equal_same_numbers(self, scene: Scene):
         """Test equality of same numbers."""
         node = EqualNode(scene)
-        assert node.compareOperation(5, 5) is True
+        assert node.compare_operation(5, 5) is True
 
     def test_equal_different_numbers(self, scene: Scene):
         """Test inequality of different numbers."""
         node = EqualNode(scene)
-        assert node.compareOperation(5, 3) is False
+        assert node.compare_operation(5, 3) is False
 
     def test_equal_same_strings(self, scene: Scene):
         """Test equality of same strings."""
         node = EqualNode(scene)
-        assert node.compareOperation("hello", "hello") is True
+        assert node.compare_operation("hello", "hello") is True
 
     def test_equal_different_strings(self, scene: Scene):
         """Test inequality of different strings."""
         node = EqualNode(scene)
-        assert node.compareOperation("hello", "world") is False
+        assert node.compare_operation("hello", "world") is False
 
 
 class TestNotEqualNode:
@@ -75,12 +75,12 @@ class TestNotEqualNode:
     def test_not_equal_different_numbers(self, scene: Scene):
         """Test not equal with different numbers."""
         node = NotEqualNode(scene)
-        assert node.compareOperation(5, 3) is True
+        assert node.compare_operation(5, 3) is True
 
     def test_not_equal_same_numbers(self, scene: Scene):
         """Test not equal with same numbers."""
         node = NotEqualNode(scene)
-        assert node.compareOperation(5, 5) is False
+        assert node.compare_operation(5, 5) is False
 
 
 class TestLessThanNode:
@@ -96,17 +96,17 @@ class TestLessThanNode:
     def test_less_than_true(self, scene: Scene):
         """Test less than when true."""
         node = LessThanNode(scene)
-        assert node.compareOperation(3, 5) is True
+        assert node.compare_operation(3, 5) is True
 
     def test_less_than_false(self, scene: Scene):
         """Test less than when false."""
         node = LessThanNode(scene)
-        assert node.compareOperation(5, 3) is False
+        assert node.compare_operation(5, 3) is False
 
     def test_less_than_equal_values(self, scene: Scene):
         """Test less than with equal values."""
         node = LessThanNode(scene)
-        assert node.compareOperation(5, 5) is False
+        assert node.compare_operation(5, 5) is False
 
 
 class TestLessEqualNode:
@@ -122,17 +122,17 @@ class TestLessEqualNode:
     def test_less_equal_less_than(self, scene: Scene):
         """Test less or equal when less than."""
         node = LessEqualNode(scene)
-        assert node.compareOperation(3, 5) is True
+        assert node.compare_operation(3, 5) is True
 
     def test_less_equal_equal(self, scene: Scene):
         """Test less or equal when equal."""
         node = LessEqualNode(scene)
-        assert node.compareOperation(5, 5) is True
+        assert node.compare_operation(5, 5) is True
 
     def test_less_equal_greater(self, scene: Scene):
         """Test less or equal when greater."""
         node = LessEqualNode(scene)
-        assert node.compareOperation(7, 5) is False
+        assert node.compare_operation(7, 5) is False
 
 
 class TestGreaterThanNode:
@@ -148,17 +148,17 @@ class TestGreaterThanNode:
     def test_greater_than_true(self, scene: Scene):
         """Test greater than when true."""
         node = GreaterThanNode(scene)
-        assert node.compareOperation(5, 3) is True
+        assert node.compare_operation(5, 3) is True
 
     def test_greater_than_false(self, scene: Scene):
         """Test greater than when false."""
         node = GreaterThanNode(scene)
-        assert node.compareOperation(3, 5) is False
+        assert node.compare_operation(3, 5) is False
 
     def test_greater_than_equal_values(self, scene: Scene):
         """Test greater than with equal values."""
         node = GreaterThanNode(scene)
-        assert node.compareOperation(5, 5) is False
+        assert node.compare_operation(5, 5) is False
 
 
 class TestGreaterEqualNode:
@@ -174,17 +174,17 @@ class TestGreaterEqualNode:
     def test_greater_equal_greater(self, scene: Scene):
         """Test greater or equal when greater."""
         node = GreaterEqualNode(scene)
-        assert node.compareOperation(7, 5) is True
+        assert node.compare_operation(7, 5) is True
 
     def test_greater_equal_equal(self, scene: Scene):
         """Test greater or equal when equal."""
         node = GreaterEqualNode(scene)
-        assert node.compareOperation(5, 5) is True
+        assert node.compare_operation(5, 5) is True
 
     def test_greater_equal_less(self, scene: Scene):
         """Test greater or equal when less."""
         node = GreaterEqualNode(scene)
-        assert node.compareOperation(3, 5) is False
+        assert node.compare_operation(3, 5) is False
 
 
 class TestIfNode:

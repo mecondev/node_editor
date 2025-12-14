@@ -49,7 +49,7 @@ class MathContent(QDMNodeContentWidget):
 class MathNode(Node):
     """Base class for binary math operation nodes.
 
-    Subclass this and override evalOperation() to implement
+    Subclass this and override eval_operation() to implement
     specific mathematical operations.
     """
 
@@ -85,7 +85,7 @@ class MathNode(Node):
         self.input_socket_position = LEFT_CENTER
         self.output_socket_position = RIGHT_CENTER
 
-    def evalOperation(self, input1, input2):
+    def eval_operation(self, input1, input2):
         """Perform the mathematical operation.
 
         Override this method in subclasses to implement specific operations.
@@ -128,7 +128,7 @@ class MathNode(Node):
             if not isinstance(val2, int | float):
                 val2 = float(val2)
 
-            self.value = self.evalOperation(val1, val2)
+            self.value = self.eval_operation(val1, val2)
             self.mark_dirty(False)
             self.mark_invalid(False)
             self.graphics_node.setToolTip("")
@@ -159,7 +159,7 @@ class AddNode(MathNode):
     content_label = "+"
     content_label_objname = "math_node_add"
 
-    def evalOperation(self, input1, input2):
+    def eval_operation(self, input1, input2):
         """Add two numbers.
 
         Args:
@@ -187,7 +187,7 @@ class SubtractNode(MathNode):
     content_label = "-"
     content_label_objname = "math_node_sub"
 
-    def evalOperation(self, input1, input2):
+    def eval_operation(self, input1, input2):
         """Subtract two numbers.
 
         Args:
@@ -215,7 +215,7 @@ class MultiplyNode(MathNode):
     content_label = "×"
     content_label_objname = "math_node_mul"
 
-    def evalOperation(self, input1, input2):
+    def eval_operation(self, input1, input2):
         """Multiply two numbers.
 
         Args:
@@ -243,7 +243,7 @@ class DivideNode(MathNode):
     content_label = "÷"
     content_label_objname = "math_node_div"
 
-    def evalOperation(self, input1, input2):
+    def eval_operation(self, input1, input2):
         """Divide two numbers.
 
         Args:

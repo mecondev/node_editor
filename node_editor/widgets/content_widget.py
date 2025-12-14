@@ -72,7 +72,7 @@ class QDMNodeContentWidget(QWidget, Serializable):
         Args:
             value: True when editing starts, False when done.
         """
-        self.node.scene.get_view().editingFlag = value
+        self.node.scene.get_view().editing_flag = value
 
     def serialize(self) -> dict:
         """Serialize content widget state.

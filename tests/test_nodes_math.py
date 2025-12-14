@@ -44,31 +44,31 @@ class TestAddNode:
     def test_add_positive_numbers(self, scene: Scene):
         """Test adding two positive numbers."""
         node = AddNode(scene)
-        result = node.evalOperation(5, 3)
+        result = node.eval_operation(5, 3)
         assert result == 8
 
     def test_add_negative_numbers(self, scene: Scene):
         """Test adding two negative numbers."""
         node = AddNode(scene)
-        result = node.evalOperation(-5, -3)
+        result = node.eval_operation(-5, -3)
         assert result == -8
 
     def test_add_mixed_signs(self, scene: Scene):
         """Test adding positive and negative numbers."""
         node = AddNode(scene)
-        result = node.evalOperation(10, -3)
+        result = node.eval_operation(10, -3)
         assert result == 7
 
     def test_add_zero(self, scene: Scene):
         """Test adding zero."""
         node = AddNode(scene)
-        result = node.evalOperation(42, 0)
+        result = node.eval_operation(42, 0)
         assert result == 42
 
     def test_add_floats(self, scene: Scene):
         """Test adding floating point numbers."""
         node = AddNode(scene)
-        result = node.evalOperation(1.5, 2.3)
+        result = node.eval_operation(1.5, 2.3)
         assert result == pytest.approx(3.8)
 
 
@@ -87,37 +87,37 @@ class TestSubtractNode:
     def test_subtract_positive_numbers(self, scene: Scene):
         """Test subtracting positive numbers."""
         node = SubtractNode(scene)
-        result = node.evalOperation(10, 3)
+        result = node.eval_operation(10, 3)
         assert result == 7
 
     def test_subtract_negative_result(self, scene: Scene):
         """Test subtraction resulting in negative."""
         node = SubtractNode(scene)
-        result = node.evalOperation(3, 10)
+        result = node.eval_operation(3, 10)
         assert result == -7
 
     def test_subtract_negative_numbers(self, scene: Scene):
         """Test subtracting negative numbers."""
         node = SubtractNode(scene)
-        result = node.evalOperation(-5, -3)
+        result = node.eval_operation(-5, -3)
         assert result == -2
 
     def test_subtract_zero(self, scene: Scene):
         """Test subtracting zero."""
         node = SubtractNode(scene)
-        result = node.evalOperation(42, 0)
+        result = node.eval_operation(42, 0)
         assert result == 42
 
     def test_subtract_from_zero(self, scene: Scene):
         """Test subtracting from zero."""
         node = SubtractNode(scene)
-        result = node.evalOperation(0, 5)
+        result = node.eval_operation(0, 5)
         assert result == -5
 
     def test_subtract_floats(self, scene: Scene):
         """Test subtracting floating point numbers."""
         node = SubtractNode(scene)
-        result = node.evalOperation(5.5, 2.3)
+        result = node.eval_operation(5.5, 2.3)
         assert result == pytest.approx(3.2)
 
 
@@ -136,37 +136,37 @@ class TestMultiplyNode:
     def test_multiply_positive_numbers(self, scene: Scene):
         """Test multiplying positive numbers."""
         node = MultiplyNode(scene)
-        result = node.evalOperation(6, 7)
+        result = node.eval_operation(6, 7)
         assert result == 42
 
     def test_multiply_by_zero(self, scene: Scene):
         """Test multiplying by zero."""
         node = MultiplyNode(scene)
-        result = node.evalOperation(42, 0)
+        result = node.eval_operation(42, 0)
         assert result == 0
 
     def test_multiply_negative_numbers(self, scene: Scene):
         """Test multiplying two negative numbers."""
         node = MultiplyNode(scene)
-        result = node.evalOperation(-4, -5)
+        result = node.eval_operation(-4, -5)
         assert result == 20
 
     def test_multiply_mixed_signs(self, scene: Scene):
         """Test multiplying positive and negative."""
         node = MultiplyNode(scene)
-        result = node.evalOperation(5, -3)
+        result = node.eval_operation(5, -3)
         assert result == -15
 
     def test_multiply_by_one(self, scene: Scene):
         """Test multiplying by one."""
         node = MultiplyNode(scene)
-        result = node.evalOperation(42, 1)
+        result = node.eval_operation(42, 1)
         assert result == 42
 
     def test_multiply_floats(self, scene: Scene):
         """Test multiplying floating point numbers."""
         node = MultiplyNode(scene)
-        result = node.evalOperation(2.5, 4.0)
+        result = node.eval_operation(2.5, 4.0)
         assert result == pytest.approx(10.0)
 
 
@@ -185,49 +185,49 @@ class TestDivideNode:
     def test_divide_positive_numbers(self, scene: Scene):
         """Test dividing positive numbers."""
         node = DivideNode(scene)
-        result = node.evalOperation(10, 2)
+        result = node.eval_operation(10, 2)
         assert result == 5.0
 
     def test_divide_with_remainder(self, scene: Scene):
         """Test division with remainder."""
         node = DivideNode(scene)
-        result = node.evalOperation(7, 2)
+        result = node.eval_operation(7, 2)
         assert result == pytest.approx(3.5)
 
     def test_divide_negative_numbers(self, scene: Scene):
         """Test dividing two negative numbers."""
         node = DivideNode(scene)
-        result = node.evalOperation(-10, -2)
+        result = node.eval_operation(-10, -2)
         assert result == 5.0
 
     def test_divide_mixed_signs(self, scene: Scene):
         """Test dividing positive by negative."""
         node = DivideNode(scene)
-        result = node.evalOperation(10, -2)
+        result = node.eval_operation(10, -2)
         assert result == -5.0
 
     def test_divide_by_one(self, scene: Scene):
         """Test dividing by one."""
         node = DivideNode(scene)
-        result = node.evalOperation(42, 1)
+        result = node.eval_operation(42, 1)
         assert result == 42.0
 
     def test_divide_zero_by_number(self, scene: Scene):
         """Test dividing zero by a number."""
         node = DivideNode(scene)
-        result = node.evalOperation(0, 5)
+        result = node.eval_operation(0, 5)
         assert result == 0.0
 
     def test_divide_by_zero_raises_error(self, scene: Scene):
         """Test division by zero raises ZeroDivisionError."""
         node = DivideNode(scene)
         with pytest.raises(ZeroDivisionError):
-            node.evalOperation(10, 0)
+            node.eval_operation(10, 0)
 
     def test_divide_floats(self, scene: Scene):
         """Test dividing floating point numbers."""
         node = DivideNode(scene)
-        result = node.evalOperation(7.5, 2.5)
+        result = node.eval_operation(7.5, 2.5)
         assert result == pytest.approx(3.0)
 
 
