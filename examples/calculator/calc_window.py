@@ -6,7 +6,7 @@ Date: 2025-12-11
 import logging
 import os
 
-from PyQt5.QtCore import QSignalMapper, Qt
+from PyQt5.QtCore import QSignalMapper, Qt, QTimer
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QAction, QDockWidget, QFileDialog, QMdiArea, QMessageBox
 
@@ -105,17 +105,21 @@ class CalculatorWindow(NodeEditorWindow):
 
     def on_file_new(self):
         logger.info("on_file_new: Starting")
-        try:
-            logger.info("on_file_new: Creating MDI child")
-            subwnd = self.create_mdi_child()
-            logger.info("on_file_new: Calling file_new on widget")
-            subwnd.widget().file_new()
-            logger.info("on_file_new: Showing subwindow")
-            subwnd.show()
-            logger.info("on_file_new: Complete")
-        except Exception as e:
-            logger.error("on_file_new: Exception occurred", exc_info=True)
-            dump_exception(e)
+        def _do_new():
+            try:
+                logger.info("on_file_new: Creating MDI child")
+                subwnd = self.create_mdi_child()
+                logger.info("on_file_new: Calling file_new on widget")
+                subwnd.widget().file_new()
+                logger.info("on_file_new: Showing subwindow")
+                subwnd.show()
+                logger.info("on_file_new: Complete")
+            except Exception as exc:
+                logger.error("on_file_new: Exception occurred", exc_info=True)
+                dump_exception(exc)
+
+        # Defer creation to next event loop tick to avoid occasional Qt crashes
+        QTimer.singleShot(0, _do_new)
 
 
     def on_file_open(self):
@@ -126,24 +130,28 @@ class CalculatorWindow(NodeEditorWindow):
             self.get_file_dialog_filter(),
         )
 
-        try:
-            for fname in fnames:
-                if fname:
-                    existing = self.find_mdi_child(fname)
-                    if existing:
-                        self.mdiArea.setActiveSubWindow(existing)
-                    else:
-                        # we need to create new subWindow and open the file
-                        nodeeditor = CalculatorSubWindow()
-                        if nodeeditor.file_load(fname):
-                            self.statusBar().showMessage(f"File {fname} loaded", 5000)
-                            nodeeditor.set_title()
-                            subwnd = self.create_mdi_child(nodeeditor)
-                            subwnd.show()
-                        else:
-                            nodeeditor.close()
-        except Exception as e:
-            dump_exception(e)
+        def _do_open(fname: str):
+            try:
+                if not fname:
+                    return
+                existing = self.find_mdi_child(fname)
+                if existing:
+                    self.mdiArea.setActiveSubWindow(existing)
+                    return
+                nodeeditor = CalculatorSubWindow()
+                if nodeeditor.file_load(fname):
+                    self.statusBar().showMessage(f"File {fname} loaded", 5000)
+                    nodeeditor.set_title()
+                    subwnd = self.create_mdi_child(nodeeditor)
+                    subwnd.show()
+                else:
+                    nodeeditor.close()
+            except Exception as exc:
+                dump_exception(exc)
+
+        # Defer loading to next event loop tick per file to avoid sporadic Qt crashes
+        for fname in fnames:
+            QTimer.singleShot(0, lambda fn=fname: _do_open(fn))
 
 
     def about(self):
