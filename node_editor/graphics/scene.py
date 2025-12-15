@@ -141,3 +141,12 @@ class QDMGraphicsScene(QGraphicsScene):
         except TypeError:
             painter.drawLines(lines_dark)
 
+    def reset_last_selected_states(self) -> None:
+        """Clear internal selection state flags on all graphics items.
+
+        Ensures proper detection of selection changes on next interaction.
+        """
+        for node in self.scene.nodes:
+            node.graphics_node._last_selected_state = False
+        for edge in self.scene.edges:
+            edge.graphics_edge._last_selected_state = False

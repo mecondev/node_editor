@@ -346,7 +346,7 @@ class NodeEditorWindow(QMainWindow):
     def on_edit_delete(self) -> None:
         """Delete selected items."""
         if self.get_current_node_editor_widget():
-            self.get_current_node_editor_widget().scene.get_view().delete_selected()
+            self.get_current_node_editor_widget().view.delete_selected()
 
     def on_edit_cut(self) -> None:
         """Cut selected items to clipboard."""

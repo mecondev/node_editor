@@ -34,12 +34,10 @@ from node_editor.core.serializable import Serializable
 from node_editor.utils.helpers import dump_exception
 
 if TYPE_CHECKING:
-    from PyQt5.QtCore import QPointF
-    from PyQt5.QtWidgets import QGraphicsItem, QGraphicsView
-
     from node_editor.core.edge import Edge
     from node_editor.core.node import Node
     from node_editor.graphics.scene import QDMGraphicsScene
+
 
 logger = logging.getLogger(__name__)
 
@@ -244,6 +242,22 @@ class Scene(Serializable):
         """
         self._silent_selection_events = value
 
+    def get_selected_nodes(self) -> list[Node]:
+        """Get all currently selected nodes.
+
+        Returns:
+            List of selected Node instances.
+        """
+        return [node for node in self.nodes if node.is_selected()]
+
+    def get_selected_edges(self) -> list[Edge]:
+        """Get all currently selected edges.
+
+        Returns:
+            List of selected Edge instances.
+        """
+        return [edge for edge in self.edges if edge.is_selected()]
+
     def get_selected_items(self) -> list:
         """Get all currently selected graphics items.
 
@@ -252,26 +266,39 @@ class Scene(Serializable):
         """
         return self.graphics_scene.selectedItems()
 
-    def do_deselect_items(self, silent: bool = False) -> None:
-        """Clear selection from all items.
+    def deselect_all(self, silent: bool = False) -> None:
+        """Clear selection from all nodes and edges.
 
         Args:
             silent: If True, skip onItemsDeselected callback.
         """
-        for item in self.get_selected_items():
-            item.setSelected(False)
+        for node in self.nodes:
+            node.do_select(False)
+        for edge in self.edges:
+            edge.do_select(False)
         if not silent:
             self.on_items_deselected()
+
+    def do_deselect_items(self, silent: bool = False) -> None:
+        """Clear selection from all items.
+
+        .. deprecated::
+            Use :meth:`deselect_all` instead.
+
+        Args:
+            silent: If True, skip onItemsDeselected callback.
+        """
+        self.deselect_all(silent)
 
     def reset_last_selected_states(self) -> None:
         """Clear internal selection state flags on all graphics items.
 
+        .. deprecated::
+            Delegate to :meth:`graphics_scene.reset_last_selected_states`.
+
         Ensures proper detection of selection changes on next interaction.
         """
-        for node in self.nodes:
-            node.graphics_node._last_selected_state = False
-        for edge in self.edges:
-            edge.graphics_edge._last_selected_state = False
+        self.graphics_scene.reset_last_selected_states()
 
     def on_item_selected(self, silent: bool = False) -> None:
         """Handle selection change events.
@@ -348,53 +375,17 @@ class Scene(Serializable):
         """
         self._items_deselected_listeners.append(callback)
 
-    def add_drag_enter_listener(self, callback: Callable) -> None:
-        """Register callback for drag-enter events on the view.
-
-        Args:
-            callback: Function to call when drag enters the view.
-        """
-        self.get_view().add_drag_enter_listener(callback)
-
-    def add_drop_listener(self, callback: Callable) -> None:
-        """Register callback for drop events on the view.
-
-        Args:
-            callback: Function to call when drop occurs.
-        """
-        self.get_view().add_drop_listener(callback)
-
-    # View access
-
-    def get_view(self) -> QGraphicsView:
-        """Get the graphics view displaying this scene.
+    def _get_graphics_view(self):
+        """Internal helper to access graphics view through graphics_scene.
 
         Returns:
-            First QGraphicsView attached to the graphics scene.
+            First QDMGraphicsView attached to graphics_scene.
+
+        Note:
+            This is a transitional helper for components that need view access.
+            Prefer using scene-level APIs where possible.
         """
         return self.graphics_scene.views()[0]
-
-    @property
-    def view(self) -> QGraphicsView:
-        """Get the graphics view displaying this scene.
-
-        Convenience property for get_view().
-
-        Returns:
-            First QGraphicsView attached to the graphics scene.
-        """
-        return self.get_view()
-
-    def get_item_at(self, pos: QPointF) -> QGraphicsItem | None:
-        """Find graphics item at scene position.
-
-        Args:
-            pos: Position in scene coordinates.
-
-        Returns:
-            QGraphicsItem at position or None.
-        """
-        return self.get_view().itemAt(pos)
 
     # Node/Edge class selection
 

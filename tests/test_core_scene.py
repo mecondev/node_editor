@@ -257,11 +257,11 @@ class TestSceneClear:
 class TestSceneView:
     """Test scene view access."""
 
-    def test_get_view(self, scene):
-        """Test getting the graphics view."""
+    def test_get_graphics_view_internal(self, scene):
+        """Test getting the graphics view through internal helper."""
         # View might not be set in test environment
         try:
-            view = scene.get_view()
+            view = scene._get_graphics_view()
             # If no exception, view exists or is None
             assert view is None or view is not None
         except IndexError:

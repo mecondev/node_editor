@@ -93,7 +93,7 @@ class SceneClipboard:
         }
 
         if delete:
-            self.scene.get_view().delete_selected()
+            self.scene._get_graphics_view().delete_selected()
             self.scene.history.store_history("Cut out elements from scene", set_modified=True)
 
         return data
@@ -112,7 +112,7 @@ class SceneClipboard:
         """
         hashmap = {}
 
-        view = self.scene.get_view()
+        view = self.scene._get_graphics_view()
         mouse_scene_pos = view.last_scene_mouse_position
 
         minx = maxx = miny = maxy = None

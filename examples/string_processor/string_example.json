@@ -1,86 +1,64 @@
 {
-    "version": "1.0.0",
-    "id": "string_processor_example",
+    "version": "2.0.0",
+    "sid": "01KCFEZEV5871QMJMTA91EGD6Y",
     "scene_width": 64000,
     "scene_height": 64000,
     "nodes": [
         {
-            "id": 4,
-            "title": "Length",
-            "pos_x": 151.140625,
-            "pos_y": -194.296875,
-            "inputs": [
-                {
-                    "id": 41,
-                    "index": 0,
-                    "multi_edges": false,
-                    "position": 2,
-                    "socket_type": 5
-                }
-            ],
+            "sid": "01KCFF015V944NHHSECZ6RXW5E",
+            "title": "Text Input",
+            "pos_x": -390.0,
+            "pos_y": -185.0,
+            "inputs": [],
             "outputs": [
                 {
-                    "id": 40,
+                    "sid": "01KCFF016P2040GHBVP0G61G45",
                     "index": 0,
                     "multi_edges": true,
                     "position": 5,
-                    "socket_type": 1
-                }
-            ],
-            "content": {},
-            "op_code": 205
-        },
-        {
-            "id": 5,
-            "title": "Text Output",
-            "pos_x": 166.421875,
-            "pos_y": 142.609375,
-            "inputs": [
-                {
-                    "id": 51,
-                    "index": 0,
-                    "multi_edges": false,
-                    "position": 2,
                     "socket_type": 5
                 }
             ],
-            "outputs": [],
-            "content": {},
-            "op_code": 202
+            "content": {
+                "value": "Hello "
+            },
+            "op_code": 201
         },
         {
-            "id": 6,
-            "title": "Text Output",
-            "pos_x": 243.9062500000001,
-            "pos_y": -12.187500000000071,
-            "inputs": [
+            "sid": "01KCFF05BEZF0F7F029VRT3ZV1",
+            "title": "Text Input",
+            "pos_x": -383.0,
+            "pos_y": 58.0,
+            "inputs": [],
+            "outputs": [
                 {
-                    "id": 61,
+                    "sid": "01KCFF05BJNGMMFNF6AGWQ7TWK",
                     "index": 0,
-                    "multi_edges": false,
-                    "position": 2,
+                    "multi_edges": true,
+                    "position": 5,
                     "socket_type": 5
                 }
             ],
-            "outputs": [],
-            "content": {},
-            "op_code": 202
+            "content": {
+                "value": "World"
+            },
+            "op_code": 201
         },
         {
-            "id": 126128177668624,
+            "sid": "01KCFF0AGP39R649EP3XCMMF0H",
             "title": "Concatenate",
-            "pos_x": -136.71875,
-            "pos_y": -7.812499999999993,
+            "pos_x": -98.0,
+            "pos_y": -52.0,
             "inputs": [
                 {
-                    "id": 126128177216592,
+                    "sid": "01KCFF0AH353SZNYAZPX1HXMRA",
                     "index": 0,
                     "multi_edges": false,
                     "position": 2,
                     "socket_type": 5
                 },
                 {
-                    "id": 126128182178304,
+                    "sid": "01KCFF0AH3TJDJY05GZ266SZNA",
                     "index": 1,
                     "multi_edges": false,
                     "position": 2,
@@ -89,7 +67,7 @@
             ],
             "outputs": [
                 {
-                    "id": 126128182178544,
+                    "sid": "01KCFF0AH43WE2HJ1G3V1EVE5F",
                     "index": 0,
                     "multi_edges": true,
                     "position": 5,
@@ -100,76 +78,98 @@
             "op_code": 203
         },
         {
-            "id": 133608183551312,
-            "title": "Text Input",
-            "pos_x": -400.0,
-            "pos_y": -190.0,
-            "inputs": [],
-            "outputs": [
+            "sid": "01KCFF0WC7XQMAYQKT39QD0238",
+            "title": "Text Output",
+            "pos_x": 227.0,
+            "pos_y": 71.0,
+            "inputs": [
                 {
-                    "id": 133608202507936,
+                    "sid": "01KCFF0WCMHQVD2ZDRN4P5YZS9",
                     "index": 0,
-                    "multi_edges": true,
-                    "position": 5,
+                    "multi_edges": false,
+                    "position": 2,
                     "socket_type": 5
                 }
             ],
-            "content": {
-                "value": "Hello"
-            },
-            "op_code": 201
+            "outputs": [],
+            "content": {},
+            "op_code": 202
         },
         {
-            "id": 130789527560400,
-            "title": "Text Input",
-            "pos_x": -398.0,
-            "pos_y": 114.0,
-            "inputs": [],
-            "outputs": [
+            "sid": "01KCFF17KER31PNFYJENWA5AET",
+            "title": "Length",
+            "pos_x": 124.0,
+            "pos_y": -187.0,
+            "inputs": [
                 {
-                    "id": 130789527435600,
+                    "sid": "01KCFF17KRWRHCV5AEJ1RXB0WC",
                     "index": 0,
-                    "multi_edges": true,
-                    "position": 5,
+                    "multi_edges": false,
+                    "position": 2,
                     "socket_type": 5
                 }
             ],
-            "content": {
-                "value": "world"
-            },
-            "op_code": 201
+            "outputs": [
+                {
+                    "sid": "01KCFF17KR75M7229PE4RPFX77",
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 5,
+                    "socket_type": 1
+                }
+            ],
+            "content": {},
+            "op_code": 205
+        },
+        {
+            "sid": "01KCFF1DQPSFDYYYBCSHNYEB0V",
+            "title": "Text Output",
+            "pos_x": 328.0,
+            "pos_y": -29.0,
+            "inputs": [
+                {
+                    "sid": "01KCFF1DQZXSZSYXR8VXY09FA8",
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 5
+                }
+            ],
+            "outputs": [],
+            "content": {},
+            "op_code": 202
         }
     ],
     "edges": [
         {
-            "id": 104,
-            "edge_type": 2,
-            "start": 40,
-            "end": 61
+            "sid": "01KCFF0F8EBEMTHX8GA4NQ1CTW",
+            "edge_type": 5,
+            "start": "01KCFF05BJNGMMFNF6AGWQ7TWK",
+            "end": "01KCFF0AH3TJDJY05GZ266SZNA"
         },
         {
-            "id": 126128177240528,
+            "sid": "01KCFF0H7YVESW36PP6JVV6QCF",
             "edge_type": 5,
-            "start": 126128182178544,
-            "end": 51
+            "start": "01KCFF016P2040GHBVP0G61G45",
+            "end": "01KCFF0AH353SZNYAZPX1HXMRA"
         },
         {
-            "id": 126128177217104,
+            "sid": "01KCFF107FXSDHA3Q9AX9JX7D8",
             "edge_type": 5,
-            "start": 126128182178544,
-            "end": 41
+            "start": "01KCFF0AH43WE2HJ1G3V1EVE5F",
+            "end": "01KCFF0WCMHQVD2ZDRN4P5YZS9"
         },
         {
-            "id": 130789527476960,
+            "sid": "01KCFF1AZJHXJ1TQ0RG15FW8C8",
             "edge_type": 5,
-            "start": 130789527435600,
-            "end": 126128182178304
+            "start": "01KCFF0AH43WE2HJ1G3V1EVE5F",
+            "end": "01KCFF17KRWRHCV5AEJ1RXB0WC"
         },
         {
-            "id": 130789527436112,
+            "sid": "01KCFF1GKVNPEG7G4X2S34BW7K",
             "edge_type": 5,
-            "start": 133608202507936,
-            "end": 126128177216592
+            "start": "01KCFF17KR75M7229PE4RPFX77",
+            "end": "01KCFF1DQZXSZSYXR8VXY09FA8"
         }
     ]
 }
