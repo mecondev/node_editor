@@ -279,27 +279,6 @@ class Scene(Serializable):
         if not silent:
             self.on_items_deselected()
 
-    def do_deselect_items(self, silent: bool = False) -> None:
-        """Clear selection from all items.
-
-        .. deprecated::
-            Use :meth:`deselect_all` instead.
-
-        Args:
-            silent: If True, skip onItemsDeselected callback.
-        """
-        self.deselect_all(silent)
-
-    def reset_last_selected_states(self) -> None:
-        """Clear internal selection state flags on all graphics items.
-
-        .. deprecated::
-            Delegate to :meth:`graphics_scene.reset_last_selected_states`.
-
-        Ensures proper detection of selection changes on next interaction.
-        """
-        self.graphics_scene.reset_last_selected_states()
-
     def on_item_selected(self, silent: bool = False) -> None:
         """Handle selection change events.
 
@@ -333,7 +312,7 @@ class Scene(Serializable):
         if current_selected_items == self._last_selected_items:
             return
 
-        self.reset_last_selected_states()
+        self.graphics_scene.reset_last_selected_states()
         if current_selected_items == []:
             self._last_selected_items = []
             if not silent:

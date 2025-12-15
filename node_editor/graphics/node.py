@@ -233,7 +233,7 @@ class QDMGraphicsNode(QGraphicsItem):
             self._was_moved = False
             self.node.scene.history.store_history("Node moved", set_modified=True)
 
-            self.node.scene.reset_last_selected_states()
+            self.node.scene.graphics_scene.reset_last_selected_states()
             self.do_select()
 
             self.node.scene._last_selected_items = self.node.scene.get_selected_items()
@@ -243,7 +243,7 @@ class QDMGraphicsNode(QGraphicsItem):
             self._last_selected_state != self.isSelected()
             or self.node.scene._last_selected_items != self.node.scene.get_selected_items()
         ):
-            self.node.scene.reset_last_selected_states()
+            self.node.scene.graphics_scene.reset_last_selected_states()
             self._last_selected_state = self.isSelected()
             self.on_selected()
 

@@ -145,7 +145,7 @@ class SceneClipboard:
         mousey = mouse_scene_pos.y()
 
         self.scene.set_silent_selection_events()
-        self.scene.do_deselect_items()
+        self.scene.deselect_all()
 
         created_nodes = []
 

@@ -198,7 +198,7 @@ class QDMGraphicsEdge(QGraphicsPathItem):
         """
         super().mouseReleaseEvent(event)
         if self._last_selected_state != self.isSelected():
-            self.edge.scene.reset_last_selected_states()
+            self.edge.scene.graphics_scene.reset_last_selected_states()
             self._last_selected_state = self.isSelected()
             self.on_selected()
 
