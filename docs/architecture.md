@@ -20,9 +20,17 @@ This document describes the architectural design, layering rules, data flow, and
 
 The node editor follows a **Model-View-Graphics** architecture where:
 
-- **Model Layer** (`core/`): Business logic, node graph structure, serialization
+- **Core Layer** (`core/`): Qt-free business logic, node graph structure, serialization
 - **Graphics Layer** (`graphics/`): Qt QGraphicsItem subclasses for rendering
 - **Widget Layer** (`widgets/`): Qt QWidget containers for embedding
+- **Support Layers** (`themes/`, `tools/`, `utils/`): Theming, interaction, helpers
+
+### Design Principles
+
+- **Core Independence**: No runtime Qt dependencies in `core/` - only domain logic
+- **Stable Identifiers**: ULID-based stable IDs (`sid`) for reliable persistence
+- **IO-Free Snapshots**: Serialization independent of file I/O operations
+- **Clean Separation**: Graphics layer manages visual state, core layer manages model state
 
 ```
 ┌──────────────────────────────────────────────────────────┐
@@ -35,13 +43,15 @@ The node editor follows a **Model-View-Graphics** architecture where:
 │                    Graphics Layer                         │
 │  QDMGraphicsView, QDMGraphicsScene, QDMGraphicsNode...   │
 ├──────────────────────────────────────────────────────────┤
-│                      Core Layer                           │
-│            Scene, Node, Edge, Socket, History            │
+│           Core Layer (Qt-Free Runtime)                    │
+│   Scene, Node, Edge, Socket, History, Clipboard         │
 ├──────────────────────────────────────────────────────────┤
-│                    Support Layers                         │
-│     themes/ (ThemeEngine)  │  tools/  │  utils/          │
+│      Support Layers (themes, tools, utils)              │
+│    ThemeEngine, EdgeDragging, Helpers                   │
 └──────────────────────────────────────────────────────────┘
 ```
+
+**Core Layer Constraint**: No PyQt/PySide imports at runtime - only TYPE_CHECKING for type hints.
 
 ---
 
@@ -49,19 +59,20 @@ The node editor follows a **Model-View-Graphics** architecture where:
 
 ### Core Layer (`node_editor/core/`)
 
-The foundation layer containing all model classes. **No Qt graphics imports here** (only QPointF for positions).
+The foundation layer containing all model classes. **Qt-free at runtime** - only TYPE_CHECKING imports for type hints.
 
 | Module | Class | Responsibility |
 |--------|-------|----------------|
-| `node.py` | `Node` | Graph node with sockets, evaluation state |
-| `edge.py` | `Edge` | Connection between sockets |
+| `node.py` | `Node` | Graph node with sockets, evaluation state, stable ID (sid) |
+| `edge.py` | `Edge` | Connection between sockets with stable ID |
 | `socket.py` | `Socket` | Connection point on a node |
-| `scene.py` | `Scene` | Container for nodes/edges, save/load |
+| `scene.py` | `Scene` | Container for nodes/edges, domain-level selection APIs |
 | `history.py` | `SceneHistory` | Undo/redo stack |
 | `clipboard.py` | `SceneClipboard` | Copy/paste operations |
 | `serializable.py` | `Serializable` | Base class for persistence |
+| `host_bridge.py` | `NodeHostBridge` | Host application integration interface |
 
-**Key Design**: Core classes hold references to their graphics counterparts (`node.graphics_node`, `edge.graphics_edge`, etc.) but never import graphics modules directly. Graphics classes are injected via `_init_graphics_classes()`.
+**Key Design**: Core classes hold references to their graphics counterparts (`node.graphics_node`, `edge.graphics_edge`, etc.) but never import graphics modules directly. Graphics classes are injected via `_init_graphics_classes()`. All model objects use stable ULID identifiers (`sid`) for persistent identification across sessions.
 
 ### Graphics Layer (`node_editor/graphics/`)
 
@@ -132,7 +143,49 @@ Interactive behaviors for edge manipulation.
 
 ---
 
-## Module Structure
+## Stable Identifiers (ULID)
+
+### Why Stable IDs?
+
+Python object `id()` values change between sessions, breaking deserialization. Solution: ULID-based stable IDs.
+
+### ULID Properties
+
+- **Sortable**: Ordered by timestamp (first 48 bits)
+- **Unique**: Contains 80 bits of entropy
+- **URL-safe**: Base32 encoding (Crockford)
+- **Readable**: 26 characters, no confusion (no I/L/O/U)
+
+### Implementation
+
+Every `Node`, `Edge`, and `Socket` has a `sid` (stable ID):
+
+```python
+node = Node(scene, "MyNode")
+print(node.sid)  # e.g., "01BX5ZZKBK6S0URNNZZ0BCZ7X0"
+
+# Persists across saves and loads
+data = scene.serialize()
+scene2 = Scene()
+scene2.deserialize(data)
+print(scene2.nodes[0].sid)  # Same as original
+```
+
+### Serialization
+
+```json
+{
+    "nodes": [
+        {
+            "sid": "01BX5ZZKBK6S0URNNZZ0BCZ7X0",
+            "title": "Add",
+            ...
+        }
+    ]
+}
+```
+
+---
 
 ### Import Hierarchy
 
@@ -286,18 +339,43 @@ ThemeEngine.refresh_graphics_items(scene)
 
 ## Serialization
 
+### Snapshot Format v2
+
+Scene data is converted to/from snapshots (IO-free format):
+
+```python
+# Serialization
+snapshot = scene.to_snapshot()  # Dict[str, Any], ready for JSON
+json_str = json.dumps(snapshot)
+
+# Deserialization  
+snapshot = json.loads(json_str)
+scene.from_snapshot(snapshot)  # Restores state from snapshot
+```
+
 ### Format Overview
 
 The framework uses JSON for persistence. All serializable classes inherit from `Serializable` base.
 
 ```
-Scene
-  ├─ version: str (format version, e.g. "1.0.0")
-  ├─ id: int (Python object id)
+Snapshot
+  ├─ version: str (format version, e.g. "2.0.0")
+  ├─ id: str (ULID for scene)
   ├─ scene_width: int
   ├─ scene_height: int
-  ├─ nodes: list[NodeData]
-  │    ├─ id: int
+  ├─ nodes: list[NodeSnapshot]
+  │    ├─ sid: str (ULID)
+  │    ├─ title: str
+  │    ├─ pos_x, pos_y: float
+  │    ├─ inputs: list[SocketSnapshot]
+  │    ├─ outputs: list[SocketSnapshot]
+  │    └─ content: dict
+  └─ edges: list[EdgeSnapshot]
+       ├─ sid: str (ULID)
+       ├─ edge_type: int
+       ├─ start_sid: str (socket ULID)
+       └─ end_sid: str (socket ULID)
+```
   │    ├─ title: str
   │    ├─ pos_x, pos_y: float
   │    ├─ inputs: list[SocketData]
@@ -312,20 +390,25 @@ Scene
 
 **Required fields**: Each socket entry must include `multi_edges`.
 
-### Hashmap for References
+### ID Resolution During Deserialization
 
-During deserialization, a hashmap maps old IDs to new objects:
+Snapshot references use stable IDs (ULID), not Python object IDs:
 
 ```python
-hashmap = {}
-for node_data in data["nodes"]:
+sid_map = {}  # sid (string) → object
+for node_data in snapshot["nodes"]:
     node = NodeClass(scene, ...)
-    hashmap[node_data["id"]] = node  # Old ID → new object
+    sid_map[node_data["sid"]] = node  # ULID → object
     
-for edge_data in data["edges"]:
-    start_socket = hashmap[edge_data["start"]]  # Resolve reference
+for edge_data in snapshot["edges"]:
+    start_socket = sid_map[edge_data["start_sid"]]  # Resolve ULID
     # ...
 ```
+
+**Benefits**:
+- Stable across sessions
+- Human-readable for debugging
+- Sortable (useful for diffs)
 
 ### Custom Node Serialization
 
@@ -346,34 +429,38 @@ class ConstantNode(Node):
 
 ### Versioning Strategy
 
-Scene serialization includes a version field for format identification:
+Snapshot format includes version field for identification:
 
 ```json
 {
-    "version": "1.0.0",
-    "id": 12345,
+    "version": "2.0.0",
+    "id": "01ARZ3NDEKTSV4RRFFQ69G5FAV",
     ...
 }
 ```
 
-**Implementation** (in `Scene.serialize/deserialize`):
+**Implementation** (in `Scene.to_snapshot/from_snapshot`):
 
 ```python
-def serialize(self):
-    return OrderedDict([
-        ("version", "1.0.0"),  # First field
-        ("id", self.id),
-        # ...
-    ])
+def to_snapshot(self) -> dict:
+    return {
+        "version": "2.0.0",  # Current format version
+        "id": self.sid,      # Scene's stable ID
+        # ... nodes, edges ...
+    }
 
-def deserialize(self, data, hashmap=None, restore_id=True):
-    version = data.get("version", "1.0.0")
+def from_snapshot(self, snapshot: dict) -> bool:
+    version = snapshot.get("version", "1.0.0")
+    # Migrate if needed
+    if version != "2.0.0":
+        snapshot = self._migrate_snapshot(snapshot, version)
     # ... restore nodes/edges ...
 ```
 
 **Guidelines**:
-- Bump version when changing serialization format (add/remove/rename fields)
+- Bump version when changing snapshot schema (add/remove/rename fields)
 - Use semantic versioning: major.minor.patch
+- v2.0.0: Introduced ULID (sid) replacing Python object IDs
 
 ---
 
@@ -522,4 +609,4 @@ node_editor/__init__.py
 ---
 
 *Document created: 2025-12-12*  
-*Last updated: 2025-12-14*
+*Last updated: 2025-12-15*

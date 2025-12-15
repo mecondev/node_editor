@@ -4,7 +4,7 @@ A portable, extensible framework for building node-based visual editors with PyQ
 
 ![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)
 ![PyQt5](https://img.shields.io/badge/PyQt5-5.15%2B-green)
-![Tests](https://img.shields.io/badge/tests-368%20passed-brightgreen)
+![Tests](https://img.shields.io/badge/tests-377%20passed-brightgreen)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
 ## What is this?
@@ -16,10 +16,12 @@ The framework is designed to be **portable**: simply copy the `node_editor/` fol
 ## Key Features
 
 - **Portable Package**: Self-contained, copy-paste ready
+- **Qt-Free Core**: Domain logic independent of Qt runtime (graphics/widgets layers only)
+- **Stable IDs (ULID)**: Sortable unique identifiers for reliable persistence
 - **Theme Engine**: Built-in dark/light themes with QSS stylesheet support
 - **52 Built-in Nodes**: Math, logic, string, list, time, file I/O operations
 - **Node Registry**: Decorator-based registration with unique operation codes
-- **Full Serialization**: JSON save/load with undo/redo history
+- **Full Serialization**: JSON save/load with IO-free snapshot format and undo/redo history
 - **Edge Validators**: Customizable connection rules
 - **Interactive Tools**: Edge dragging, rerouting, snapping, cut-line
 
@@ -228,13 +230,13 @@ editor.scene.deserialize(data)   # Restores state, handles version migrations
 
 ```json
 {
-    "version": "1.0.0",
-    "id": 12345,
+    "version": "2.0.0",
+    "id": "01ARZ3NDEKTSV4RRFFQ69G5FAV",
     "scene_width": 64000,
     "scene_height": 64000,
     "nodes": [
         {
-            "id": 67890,
+            "sid": "01BX5ZZKBK6S0URNNZZ0BCZ7X0",
             "title": "Add",
             "pos_x": 100,
             "pos_y": 200,
@@ -245,16 +247,19 @@ editor.scene.deserialize(data)   # Restores state, handles version migrations
     ],
     "edges": [
         {
-            "id": 11111,
+            "sid": "01BX5ZZKBK6S0URNNZZ0C5Y9K1",
             "edge_type": 2,
-            "start": 22222,
-            "end": 33333
+            "start_sid": "01BX5ZZKBK6S0URNNZZ0BCZ7X0",
+            "end_sid": "01BX5ZZKBK6S0URNNZZ0BCZZZ0"
         }
     ]
 }
 ```
 
-**Note:** The `version` field enables format migrations when needed.
+**Format v2 Features**:
+- `sid` (stable ID): ULID for reliable cross-session identification
+- IO-free snapshot: Serialization independent of file I/O operations
+- `version` field enables format migrations when needed
 
 ## Running Examples
 
